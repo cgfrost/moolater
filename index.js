@@ -14,7 +14,7 @@ var self = require("sdk/self");
 var tabs = require("sdk/tabs");
 
 var button = ui.ToggleButton({
-    id: "firecow-link",
+    id: "moolater-link",
     label: "Save to RTM",
     icon: {
         "16": "./icon-16.png",

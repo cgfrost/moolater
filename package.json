@@ -1,13 +1,13 @@
 {
-    "title": "Firecow",
-    "name": "firecow",
+    "title": "Moo Later",
+    "name": "moolater",
     "version": "0.0.1",
     "description": "Instantly save a page to Remember the Milk to read later",
     "main": "index.js",
     "permissions": {
         "private-browsing": true
     },
-    "author": "Christopher Frost<firecow@codewax.org>",
+    "author": "Christopher Frost<moolater@codewax.org>",
     "engines": {
         "firefox": ">=38.0a1",
         "fennec": ">=38.0a1"
