@@ -1,3 +1,6 @@
+/*jslint node: true */
+/*global self */
+'use strict';
 
 // When the user hits return, send the "text-entered"
 // message to main.js.
@@ -5,12 +8,10 @@
 
 var textArea = document.getElementById("edit-box");
 textArea.addEventListener('keyup', function onkeyup(event) {
-  if (event.keyCode == 13) {
-    // Remove the newline.
-    text = textArea.value.replace(/(\r\n|\n|\r)/gm,"");
-    self.port.emit("save-task", text);
-    textArea.value = '';
-  }
+    if (event.keyCode === 13) {
+        self.port.emit("save-task", textArea.value);
+        textArea.value = '';
+    }
 }, false);
 
 // Listen for the "show" event being sent from the
@@ -19,7 +20,7 @@ textArea.addEventListener('keyup', function onkeyup(event) {
 //
 // Set the focus to the text area so the user can
 // just start typing.
-self.port.on("show", function onShow(title, url) {
-    textArea.value = "Title" + title + "URL " + url
+self.port.on("update-page-details", function fooBar(title, url) {
+    textArea.value = "Title" + title + "URL " + url;
     textArea.focus();
 });
