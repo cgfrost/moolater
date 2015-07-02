@@ -35,40 +35,44 @@
  *   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  *   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+/*jslint node: true */
+'use strict';
+
 (function (root, factory) {
-    if (typeof exports === "object" && exports) {
-        module.exports = factory; // CommonJS
-    } else if (typeof define === "function" && define.amd) {
-        define(factory); // AMD
-    } else {
-        root.RememberTheMilk = factory; // <script>
-    }
+    //    if (typeof exports === "object" && exports) {
+    module.exports = factory; // CommonJS
+    //    } else if (typeof define === "function" && define.amd) {
+    //        define(factory); // AMD
+    //    } else {
+    //        root.RememberTheMilk = factory; // <script>
+    //    }
 }(this, (function () {
     var exports = function (appKey, appSecret, permissions, format) {
-        var https, crypto, ajax;
+        var https, crypto, ajax, Request;
 
         this.authUrl = 'https://www.rememberthemilk.com/services/auth/';
         this.baseUrl = 'https://api.rememberthemilk.com/services/rest/';
 
-        this.isPebble = (typeof Pebble !== 'undefined');
-        this.isWinJS = (typeof WinJS !== 'undefined');
-        this.isNode = (!this.isPebble && typeof module !== 'undefined' && module.exports);
-        this.isFirefoxOS = (typeof MozActivity !== 'undefined'); //Best way to do it right now (also working on
-                                                                 // Fifrefox for Android, and temporary as everything
-                                                                 // is built to eventually be a standard)
+        //        this.isPebble = (typeof Pebble !== 'undefined');
+        //        this.isWinJS = (typeof WinJS !== 'undefined');
+        //        this.isNode = (!this.isPebble && typeof module !== 'undefined' && module.exports);
+        //        this.isFirefoxOS = (typeof MozActivity !== 'undefined');
 
-        if (this.isNode) {
-            https = require('https');
-            crypto = require('crypto');
-            this.md5 = function (string) {
-                return crypto.createHash('md5').update(string, 'utf8').digest("hex");
-            };
-        } else if (this.isPebble) {
-            this.md5 = require('md5');
-            ajax = require('ajax');
-        } else {
-            this.md5 = md5;
-        }
+        var self = require("sdk/self");
+        this.Request = require("sdk/request").Request;
+        this.md5 = require(self.data.url("md5"));
+        //        if (this.isNode) {
+        //            https = require('https');
+        //            crypto = require('crypto');
+        //            this.md5 = function (string) {
+        //                return crypto.createHash('md5').update(string, 'utf8').digest("hex");
+        //            };
+        //        } else if (this.isPebble) {
+        //            this.md5 = require('md5');
+        //            ajax = require('ajax');
+        //        } else {
+        //            this.md5 = md5;
+        //        }
 
         var appKey = (appKey) ? appKey : '',
             appSecret = (appSecret) ? appSecret : '',
@@ -194,8 +198,7 @@
             }
 
             if (!callback) {
-                callback = function () {
-                };
+                callback = function () {};
             }
 
             if (!method) {
@@ -215,58 +218,77 @@
 
             requestUrl = this.baseUrl + this.encodeUrlParams(params, true);
 
-            if (this.isPebble) {
-                ajax({url: requestUrl, type: 'json'},
-                    function completed(data, status, request) {
-                        callback.call(this, data);
-                    },
-                    function failure(error, status, request) {
-                        console.log("AJAX Error: " + error);
-                    });
-            } else if (this.isWinJS) {
-                return WinJS.xhr({responseType: 'json', url: requestUrl}).done(
-                    function completed(resp) {
-                        callback.call(this, JSON.parse(resp.responseText));
-                    }
-                );
-            } else if (this.isNode) {
-                https.get(requestUrl, function (response) {
-                    var resp = '';
+            var quijote = Request({
+                url: "requestUrl",
+                overrideMimeType: "application/json; charset=utf-8",
+                onComplete: function (response) {
+                    console.log(response.text);
+                    callback.call(this, data);
+                }
+            });
 
-                    response.on('data', function (chunk) {
-                        resp += chunk;
-                    });
+            quijote.get();
 
-                    response.on('end', function () {
-                        resp = JSON.parse(resp);
-                        callback.call(this, resp);
-                    });
-                }).end();
-            } else if (this.isFirefoxOS) {
-                var xhr = new XMLHttpRequest({mozSystem: true});
-                xhr.open("POST", requestUrl, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.status === 200 && xhr.readyState === 4) {
-                        callback.call(this, JSON.parse(xhr.response));
-                    }
-                };
-
-                xhr.onerror = function () {
-                    console.log("XHR error");
-                };
-
-                xhr.send();
-            } else {
-                window[callbackName] = function (resp) {
-                    callback.call(this, resp);
-                    window[callbackName] = null;
-                };
-
-                s = document.createElement('script');
-                s.src = requestUrl;
-                document.body.appendChild(s);
-            }
+            //            if (this.isPebble) {
+            //                ajax({
+            //                        url: requestUrl,
+            //                        type: 'json'
+            //                    },
+            //                    function completed(data, status, request) {
+            //                        callback.call(this, data);
+            //                    },
+            //                    function failure(error, status, request) {
+            //                        console.log("AJAX Error: " + error);
+            //                    });
+            //            } else if (this.isWinJS) {
+            //                return WinJS.xhr({
+            //                    responseType: 'json',
+            //                    url: requestUrl
+            //                }).done(
+            //                    function completed(resp) {
+            //                        callback.call(this, JSON.parse(resp.responseText));
+            //                    }
+            //                );
+            //            } else if (this.isNode) {
+            //                https.get(requestUrl, function (response) {
+            //                    var resp = '';
+            //
+            //                    response.on('data', function (chunk) {
+            //                        resp += chunk;
+            //                    });
+            //
+            //                    response.on('end', function () {
+            //                        resp = JSON.parse(resp);
+            //                        callback.call(this, resp);
+            //                    });
+            //                }).end();
+            //            } else if (this.isFirefoxOS) {
+            //                var xhr = new XMLHttpRequest({
+            //                    mozSystem: true
+            //                });
+            //                xhr.open("POST", requestUrl, true);
+            //
+            //                xhr.onreadystatechange = function () {
+            //                    if (xhr.status === 200 && xhr.readyState === 4) {
+            //                        callback.call(this, JSON.parse(xhr.response));
+            //                    }
+            //                };
+            //
+            //                xhr.onerror = function () {
+            //                    console.log("XHR error");
+            //                };
+            //
+            //                xhr.send();
+            //            } else {
+            //                window[callbackName] = function (resp) {
+            //                    callback.call(this, resp);
+            //                    window[callbackName] = null;
+            //                };
+            //
+            //                s = document.createElement('script');
+            //                s.src = requestUrl;
+            //                document.body.appendChild(s);
+            //            }
         };
     }
 

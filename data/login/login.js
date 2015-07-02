@@ -10,7 +10,6 @@ var submitButton = document.getElementById("submit");
 var idField = document.getElementById("id");
 var passwordField = document.getElementById("password");
 submitButton.addEventListener('click', function click(event) {
-    console.log("Click " + event);
     self.port.emit("do-login", idField.value, passwordField.value);
 });
 
@@ -33,7 +32,7 @@ submitButton.addEventListener('click', function click(event) {
 
 
 self.port.on("show-login", function onShow(title, url) {
-//    textArea.value = "Title" + title + "URL " + url;
-//    textArea.focus();
-    console.log("show-login");
+    //    textArea.value = "Title" + title + "URL " + url;
+    //    textArea.focus();
+    console.log("msg-recieved: show-login");
 });

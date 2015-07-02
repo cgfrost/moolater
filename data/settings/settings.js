@@ -22,7 +22,7 @@ textArea.addEventListener('keyup', function onkeyup(event) {
 //
 // Set the focus to the text area so the user can
 // just start typing.
-self.port.on("show", function onShow(title, url) {
-    textArea.value = "Title" + title + "URL " + url;
-    textArea.focus();
-});
+//self.port.on("show", function onShow(title, url) {
+//    textArea.value = "Title" + title + "URL " + url;
+//    textArea.focus();
+//});

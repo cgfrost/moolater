@@ -1,4 +1,4 @@
-/*jslint node: true */
+/*jslint browser: true */
 /*global self */
 'use strict';
 
@@ -21,6 +21,7 @@ textArea.addEventListener('keyup', function onkeyup(event) {
 // Set the focus to the text area so the user can
 // just start typing.
 self.port.on("update-page-details", function fooBar(title, url) {
+    console.log("Active window title is: '" + title + "' url is: '" + url + "'");
     textArea.value = "Title" + title + "URL " + url;
     textArea.focus();
 });
