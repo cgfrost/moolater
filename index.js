@@ -28,9 +28,11 @@
         id: "moolater-link",
         label: "Save to RTM",
         icon: {
-            "16": "./icon-2-16.png",
-            "32": "./icon-2-32.png",
-            "64": "./icon-2-64.png"
+            "18": "./icon-18.png",
+            "32": "./icon-32.png",
+            "36": "./icon-36.png",
+            "64": "./icon-64.png",
+            "128": "./icon-128.png"
         },
         onChange: function (state) {
             handletoggle(state);
