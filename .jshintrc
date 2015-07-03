@@ -1,0 +1,13 @@
+{
+    "undef": true,
+    "unused": true,
+    "curly": true,
+    "freeze": true,
+    "futurehostile": true,
+    "devel": false,
+    "latedef": "nofunc",
+    "globals": {
+        "exports": true,
+        "require": true
+    }
+}

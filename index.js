@@ -1,12 +1,11 @@
-/*jslint node: true */
-
 (function () {
-    'use strict';
+    "use strict";
 
     // a dummy function, to show how tests work, look at test/test-index.js
     function dummy(text, callback) {
         callback(text);
     }
+
     exports.dummy = dummy;
 
     var ui = require("sdk/ui"),
@@ -15,16 +14,17 @@
         tabs = require("sdk/tabs"),
         base64 = require("sdk/base64"),
         credentials = require("sdk/passwords"),
-        RTM_lib = require(self.data.url("rtm.js"));
+        RtmLib = require(self.data.url("rtm.js"));
 
     var keys = JSON.parse(self.data.load("keys.json"));
-    var api_key = keys.api_key;
-    var api_secret = keys.shared_secret;
+    var apiKey = keys.api_key;
+
+    var apiSecret = keys.shared_secret;
     var loggedIn = false;
 
-    var rtm = new RTM_lib(api_key, api_secret, '');
+    var rtm = new RtmLib(apiKey, apiSecret, "write");
 
-    var button = ui.ToggleButton({
+    var button = new ui.ToggleButton({
         id: "moolater-link",
         label: "Save to RTM",
         icon: {
@@ -37,19 +37,19 @@
         }
     });
 
-    var loginPanel = panels.Panel({
+    var loginPanel = new panels.Panel({
         contentURL: self.data.url("login/login.html"),
         contentScriptFile: self.data.url("login/login.js"),
         onHide: handleHide
     });
 
-    var settingsPanel = panels.Panel({
+    var settingsPanel = new panels.Panel({
         contentURL: self.data.url("settings/settings.html"),
         contentScriptFile: self.data.url("settings/settings.js"),
         onHide: handleHide
     });
 
-    var addTaskPanel = panels.Panel({
+    var addTaskPanel = new panels.Panel({
         contentURL: self.data.url("add/addTask.html"),
         contentScriptFile: self.data.url("add/addTask.js"),
         onHide: handleHide,
@@ -74,7 +74,7 @@
     }
 
     function handleHide() {
-        button.state('window', {
+        button.state("window", {
             checked: false
         });
     }
@@ -84,7 +84,7 @@
     });
 
     loginPanel.port.on("do-login", function (id, password) {
-        console.log("Port.on(do-login): " + id + ':' + password);
+        console.log("Port.on(do-login): " + id + ":" + password);
     });
 
     exports.dummy = dummy;

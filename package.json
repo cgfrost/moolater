@@ -2,6 +2,7 @@
     "title": "Moo Later",
     "name": "moolater",
     "version": "0.0.1",
+    "license": "MIT",
     "description": "Instantly save a page to Remember the Milk to read later",
     "main": "index.js",
     "permissions": {
@@ -11,6 +12,5 @@
     "engines": {
         "firefox": ">=38.0a1",
         "fennec": ">=38.0a1"
-    },
-    "license": "MIT"
+    }
 }
