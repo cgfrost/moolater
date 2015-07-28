@@ -8,6 +8,8 @@
     "latedef": "nofunc",
     "globals": {
         "exports": true,
-        "require": true
+        "require": true,
+		"module": true,
+		"console": true
     }
 }

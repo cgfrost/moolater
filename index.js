@@ -14,15 +14,14 @@
         tabs = require("sdk/tabs"),
         base64 = require("sdk/base64"),
         credentials = require("sdk/passwords"),
-        RtmLib = require(self.data.url("rtm.js"));
+        RememberTheMilk = require(self.data.url("rtm.js"));
 
     var keys = JSON.parse(self.data.load("keys.json"));
     var apiKey = keys.api_key;
-
     var apiSecret = keys.shared_secret;
     var loggedIn = false;
 
-    var rtm = new RtmLib(apiKey, apiSecret, "write");
+    var rtm = new RememberTheMilk(apiKey, apiSecret, "write", "json");
 
     var button = new ui.ToggleButton({
         id: "moolater-link",
@@ -87,6 +86,17 @@
 
     loginPanel.port.on("do-login", function (id, password) {
         console.log("Port.on(do-login): " + id + ":" + password);
+        rtm.get('rtm.auth.getFrob', {}, function(resp){
+			var frob = resp.rsp.frob;
+			var authUrl = rtm.getAuthUrl(frob);
+			console.log("authUrl: " + authUrl);
+
+			rtm.get('rtm.auth.getToken', {frob: frob}, function(resp){
+				rtm.setAuthToken(resp.rsp.auth.token);
+				console.log("token: " + resp);
+			});
+
+		});
     });
 
     exports.dummy = dummy;
