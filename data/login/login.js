@@ -30,10 +30,10 @@
     // Set the focus to the text area so the user can
     // just start typing.
 
-    self.port.on("show-login", function onShow(title, url) {
+    self.port.on("login-failed", function onShow(title) {
         //    textArea.value = "Title" + title + "URL " + url;
         //    textArea.focus();
-        console.log("msg-recieved: show-login");
+        console.log("msg-recieved: show-login" + title);
     });
 
 }());

@@ -35,10 +35,7 @@
 		 * @return     Returns the reponse from the RTM API
 		 */
 		this.getAuthUrl = function (frob) {
-			var params,
-				url;
-
-			params = {
+			var params = {
 				api_key: this.appKey,
 				perms: this.permissions
 			};
@@ -47,9 +44,7 @@
 				params.frob = frob;
 			}
 
-			url = this.authUrl + this.encodeUrlParams(params);
-
-			return url;
+			return this.authUrl + this.encodeUrlParams(params);
 		};
 
 		/**
@@ -152,16 +147,12 @@
 		this.generateSig = function (params) {
 			params = (params) ? params : {};
 			var signature = '',
-				i,
-				keys;
+				keys = Object.keys(params);
 
-			keys = Object.keys(params);
 			keys.sort();
-
-			for (i = 0; i < keys.length; i++) {
+			for (var i = 0; i < keys.length; i++) {
 				signature += keys[i] + params[keys[i]];
 			}
-
 			signature = this.appSecret + signature;
 
 			return '&api_sig=' + this.md5(signature);
