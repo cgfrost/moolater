@@ -1,3 +1,53 @@
 body {
 	background-color: #ffffff;
+	margin: 10px;
+}
+
+p.title {
+	padding: 5px;
+	text-align: left;
+	font-size: 1.9em;
+	font-family: sans-serif;
+	font-weight: bold;
+	color: #005DC2;
+}
+
+p.msg {
+	padding: 0 5px 5px 5px;
+	text-align: center;
+	font-size: 1.3em;
+	font-family: sans-serif;
+	color: #333333;
+}
+
+p.footnote {
+	padding: 25px 5px 5px 5px;
+	text-align: left;
+	font-size: 0.9em;
+	font-family: sans-serif;
+	color: #777777;
+}
+
+form input {
+	display: block;
+}
+
+p.controls {
+	padding: 10px;
+	text-align: center;
+}
+
+p.controls button {
+	background-color: #005DC2;
+	color: #FFFFFF;
+	font-size: 1.6em;
+	font-family: sans-serif;
+	padding: 5px 5px 2px 5px;
+	border-radius: 5px;
+    border: 2px solid #005DC2;
+}
+
+p.controls button:hover {
+	background-color: #0a71e2;
+	cursor: pointer;
 }

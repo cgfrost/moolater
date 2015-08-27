@@ -1,5 +1,5 @@
 (function () {
-	'use strict';
+	"use strict";
 
 	module.exports = function (rtm, button) {
 
@@ -13,6 +13,9 @@
 			contentScriptFile: self.data.url("views/add/addTask.js"),
 			contentStyleFile: [self.data.url("views/common.css"),
 							   self.data.url("views/add/addTask.css")],
+			position: button,
+			height: 150,
+			width: 300,
 			onHide: function () {
 				button.state("window", {
 					checked: false
@@ -24,13 +27,11 @@
 		});
 
 		this.showAddTask = function () {
-			addTaskPanel.show({
-				position: button
-			});
+			addTaskPanel.show();
 		};
 
-		addTaskPanel.port.on("save-task", function (text) {
-			console.log("Port.on(save-task): " + text);
+		addTaskPanel.port.on("save-task", function (task, url) {
+			console.log("Port.on(save-task): " + task + " url: " + url);
 		});
 
 	};

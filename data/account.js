@@ -13,6 +13,9 @@
 			contentScriptFile: self.data.url("views/login/login.js"),
 			contentStyleFile: [self.data.url("views/common.css"),
 							   self.data.url("views/login/login.css")],
+			position: button,
+			height: 235,
+			width: 350,
 			onHide: function () {
 				button.state("window", {
 					checked: false
@@ -24,9 +27,7 @@
 		});
 
 		this.showLogin = function () {
-			loginPanel.show({
-				position: button
-			});
+			loginPanel.show();
 		};
 
 		this.isLoggedIn = function () {

@@ -31,7 +31,6 @@
 	var tasks = new Tasks(rtm, button);
 
 	function handletoggle(state) {
-		console.log("Handle toggle: " + state.label + " checked state: " + state.checked);
 		if (state.checked === true) {
 			if (account.isLoggedIn()) {
 				tasks.showAddTask();
