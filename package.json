@@ -1,20 +1,43 @@
 {
-    "title": "Moo Later",
-    "name": "moolater",
-    "version": "1.0.0",
-    "license": "MIT",
-    "description": "Instantly save a page to Remember the Milk to read later",
-    "main": "index.js",
-    "author": "Christopher Frost<moolater@codewax.org>",
-    "bugs": "https://github.com/cgfrost/moolater/issues",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/cgfrost/moolater"
-    },
-    "permissions": {
-        "private-browsing": true
-    },
-    "engines": {
-        "firefox": ">=38.0a1"
-    }
+	"title": "Moo Later",
+	"name": "moolater",
+	"version": "1.0.0",
+	"license": "MIT",
+	"description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give MooLater permission to use your Remember the Milk account the first time you try to save a task.",
+	"main": "index.js",
+	"author": "Christopher Frost<moolater@codewax.org>",
+	"bugs": "https://github.com/cgfrost/moolater/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cgfrost/moolater"
+	},
+	"preferences": [
+		{
+			"name": "defaultList",
+			"title": "Default List",
+			"description": "List to save new tasks to, if it dosn't exist it will be created.",
+			"type": "string",
+			"value": "Read Later"
+    	},
+		{
+			"name": "useTitle",
+			"title": "Use Title",
+			"description": "Use the title of the current tab as a task description.",
+			"type": "bool",
+			"value": true
+    	},
+		{
+			"name": "useLink",
+			"title": "Use Address",
+			"description": "Use the address of the current tab as a task link.",
+			"type": "bool",
+			"value": true
+    	}
+	],
+	"permissions": {
+		"private-browsing": true
+	},
+	"engines": {
+		"firefox": ">=38.0a1"
+	}
 }
