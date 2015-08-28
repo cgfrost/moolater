@@ -1,3 +1,4 @@
 *.xpi
 .DS_Store
 keys.json
+test-profile

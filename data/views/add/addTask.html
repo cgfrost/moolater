@@ -5,13 +5,13 @@
 
 <body>
 	<p class="title">MooLater</p>
-	<p class="msg">Add Task</p>
-	<form action="demo_form.asp">
-		<input type="text" id="task" size="40">
-		<input type="url" id="link" size="40">
+<!--	<p class="msg">Add Task</p>-->
+	<form id="new-task">
+		<span class="label">Task: </span><input type="text" id="task">
+		<span class="label">Link: </span><input type="url" id="link">
 	</form>
 	<p class="controls">
-		<button id="submit" type="submit">Add Task</button>
+		<button id="submit" form="new-task2" type="submit">Add Task</button>
 	</p>
 </body>
 

@@ -28,6 +28,7 @@
 	});
 
 	var account = new Account(rtm, button);
+
 	var tasks = new Tasks(rtm, button);
 
 	function handletoggle(state) {
