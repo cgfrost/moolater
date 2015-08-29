@@ -3,11 +3,11 @@
 
 	module.exports = function (rtm, button) {
 
-		var storage = require("sdk/simple-storage").storage,
-			tabs = require("sdk/tabs"),
+		var tabs = require("sdk/tabs"),
 			self = require("sdk/self"),
 			preferences = require("sdk/simple-prefs").prefs,
-			Panel = require("sdk/panel").Panel;
+			Panel = require("sdk/panel").Panel,
+			me = this;
 
 		var addTaskPanel = new Panel({
 			contentURL: self.data.url("views/add/addTask.html"),
@@ -25,7 +25,13 @@
 			onShow: function () {
 				var title = preferences.useTitle ? tabs.activeTab.title : "";
 				var link = preferences.useLink ? tabs.activeTab.url : "";
-				addTaskPanel.port.emit("update-page-details", title, link);
+				var defaultList = preferences.defaultList;
+				if (defaultList === null || defaultList === "") {
+					defaultList = "Inbox";
+				}
+				me.getLists(function (lists) {
+					addTaskPanel.port.emit("update-page-details", title, link, lists, defaultList);
+				});
 			}
 		});
 
@@ -33,49 +39,39 @@
 			addTaskPanel.show();
 		};
 
-		addTaskPanel.port.on("save-task", function (task, url) {
-			console.log("Port.on(save-task): " + task + " url: " + url);
-			var list = preferences.defaultList;
-			if (list === null || list === "") {
-				list = "Inbox";
-			}
-			rtm.tasks.add
-		});
-
-		this.addTask = function (name, list_id) {
+		addTaskPanel.port.on("save-task", function (name, link, listId) {
+			console.log("Port.on(save-task): " + name + " url: " + link + " listId: " + listId);
 			rtm.get('rtm.tasks.add', {
-					list_id: list_id,
+					list_id: listId,
 					name: name
 				},
 				function (resp) {
-					button.state("window", {
-						checked: false
-					});
-					storage.frob = resp.rsp.frob;
-					var authUrl = rtm.getAuthUrl(storage.frob);
-					console.log("authUrl: " + authUrl);
-
+					var newTask = resp.rsp.task;
 					rtm.get('rtm.tasks.setURL', {
-							frob: storage.frob
+							list_id: listId,
+							taskseries_id: newTask.series_id,
+							task_id: newTask.id,
+							url: link
 						},
 						function (resp) {
-							rtm.setAuthToken(resp.rsp.auth.token);
-							console.log("token: " + resp);
-							storage.token = resp.rsp.auth.token;
+							addTaskPanel.port.emit("task-saved", name, link);
+						},
+						function (response) {
+							addTaskPanel.port.emit("task-save-error", response.status, response.statusText);
 						}
 					);
 				},
 				function (response) {
-					console.log("Network Error: " + response.status + "-" + response.statusText);
+					addTaskPanel.port.emit("task-save-error", response.status, response.statusText);
 				}
 			);
-		};
+		});
 
-		this.getListId = function (listName) {
+		me.getLists = function (callback) {
 			rtm.get('rtm.lists.getList', {},
 				function (resp) {
-					var lists = resp.rsp.lists;
-
+					console.warn("Lists: " + resp);
+					callback(resp.rsp.lists);
 				},
 				function (response) {
 					console.log("Network Error: " + response.status + "-" + response.statusText);
@@ -85,8 +81,7 @@
 
 		this.addList = function (name) {
 			rtm.get('rtm.lists.add', {
-					timeline: "",
-					name: ""
+					name: name
 				},
 				function (resp) {
 					var newList = resp.rsp.list;

@@ -5,10 +5,18 @@
 
 <body>
 	<p class="title">MooLater</p>
-<!--	<p class="msg">Add Task</p>-->
+	<!-- <p class="msg">Add Task</p> -->
 	<form id="new-task">
-		<span class="label">Task: </span><input type="text" id="task">
-		<span class="label">Link: </span><input type="url" id="link">
+		<select required id="lists">
+			<option value="volvo">Volvo</option>
+			<option value="saab">Saab</option>
+			<option value="mercedes">Mercedes</option>
+			<option value="audi">Audi</option>
+		</select>
+		<span class="label">Task: </span>
+		<input type="text" id="task">
+		<span class="label">Link: </span>
+		<input type="url" id="link">
 	</form>
 	<p class="controls">
 		<button id="submit" form="new-task2" type="submit">Add Task</button>

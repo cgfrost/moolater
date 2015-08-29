@@ -31,20 +31,37 @@
 		/**
 		 * Generates a RTM authentication URL
 		 *
-		 * @param frob Optional frob for use in desktop applications
-		 * @return     Returns the reponse from the RTM API
+		 * @return     URL String
 		 */
-		this.getAuthUrl = function (frob) {
+		this.getAuthUrl = function () {
 			var params = {
 				api_key: this.appKey,
 				perms: this.permissions
 			};
 
-			if (frob) {
-				params.frob = frob;
+			if (this.frob) {
+				params.frob = this.frob;
 			}
 
 			return this.authUrl + this.encodeUrlParams(params);
+		};
+
+		/**
+		 * Gets the timeline ID
+		 *
+		 * @return     Returns the timline ID String
+		 */
+		this.setTimeline = function () {
+			if (!this.timeline) {
+				this.get("rtm.timelines.create", {},
+					function (response) {
+						this.timeline = response.rsp.timeline;
+					},
+					function (response) {
+						console.error("Network Error: " + response.status + "-" + response.statusText);
+					}
+				);
+			}
 		};
 
 		/**
@@ -79,20 +96,24 @@
 				params.auth_token = this.auth_token;
 			}
 
+			if (this.frob) {
+				params.frob = this.frob;
+			}
+
 			var requestUrl = this.baseUrl + this.encodeUrlParams(params);
 
 			this.request({
 				url: requestUrl,
 				overrideMimeType: "application/json; charset=utf-8",
 				onComplete: function (response) {
-					console.log("*************************************");
-					console.log("Request.Method  : " + method);
-					console.log("Response.Json   : " + response.json);
-					console.log("        .Text   : " + response.text);
-					console.log("        .Status : " + response.status);
-					console.log("        .Text   : " + response.statusText);
-					console.log("*************************************");
-					if(response.status === 200) {
+					console.debug("*************************************");
+					console.debug("Request.Method  : " + method);
+					console.debug("Response.Json   : " + response.json);
+					console.debug("        .Text   : " + response.text);
+					console.debug("        .Status : " + response.status);
+					console.debug("        .Text   : " + response.statusText);
+					console.debug("*************************************");
+					if (response.status === 200) {
 						complete.call(this, response.json);
 					} else {
 						error.call(this, response);
@@ -108,6 +129,15 @@
 		 */
 		this.setAuthToken = function (token) {
 			this.auth_token = token;
+		};
+
+		/**
+		 * Sets a Frob to use on all future API calls
+		 *
+		 * @param Frob to use
+		 */
+		this.setFrob = function (frob) {
+			this.frob = frob;
 		};
 
 		/**

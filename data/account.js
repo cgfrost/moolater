@@ -14,7 +14,7 @@
 			contentStyleFile: [self.data.url("views/common.css"),
 							   self.data.url("views/login/login.css")],
 			position: button,
-			height: 235,
+			height: 240,
 			width: 350,
 			onHide: function () {
 				button.state("window", {
@@ -22,7 +22,7 @@
 				});
 			},
 			onShow: function () {
-//				loginPanel.port.emit("login-failed", "msg");
+				//loginPanel.port.emit("login-failed", "msg");
 			}
 		});
 
@@ -32,6 +32,7 @@
 
 		this.isLoggedIn = function () {
 			if (storage.token && storage.frob) {
+				rtm.setTimeline();
 				return true;
 			}
 			return false;
@@ -39,30 +40,32 @@
 
 		loginPanel.port.on("do-login", function () {
 			console.log("Port.on(do-login)");
-			rtm.get('rtm.auth.getFrob', {}, function (resp) {
-				button.state("window", {
-					checked: false
-				});
-				storage.frob = resp.rsp.frob;
-				var authUrl = rtm.getAuthUrl(storage.frob);
-				console.log("authUrl: " + authUrl);
-				windows.open({
-					url: authUrl,
-					onClose: function () {
-						rtm.get('rtm.auth.getToken', {
-								frob: storage.frob
-							},
-							function (resp) {
-								rtm.setAuthToken(resp.rsp.auth.token);
-								console.log("token: " + resp);
-								storage.token = resp.rsp.auth.token;
-							});
-					}
-				});
+			rtm.get('rtm.auth.getFrob', {},
+				function (resp) {
+					button.state("window", {
+						checked: false
+					});
+					storage.frob = resp.rsp.frob;
+					rtm.setFrob(resp.rsp.frob);
+					windows.open({
+						url: rtm.getAuthUrl(),
+						onClose: function () {
+							rtm.get('rtm.auth.getToken', {},
+								function (resp) {
+									rtm.setAuthToken(resp.rsp.auth.token);
+									console.log("token: " + resp);
+									storage.token = resp.rsp.auth.token;
+									rtm.setTimeline();
+								}
+							);
+						}
+					});
 
-			}, function (response) {
-				console.log("Network Error: " + response.status + "-" + response.statusText);
-			});
+				},
+				function (response) {
+					console.log("Network Error: " + response.status + "-" + response.statusText);
+				}
+			);
 		});
 
 	};
