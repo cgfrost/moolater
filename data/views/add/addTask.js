@@ -25,8 +25,8 @@
         taskElement.focus();
     });
 
-    self.port.on("task-saved", function (title) {
-        taskElement.value = "Task Saved: " + title;
+    self.port.on("task-saved", function (title, time) {
+        taskElement.value = "Task Saved: " + title + " (" + time + ")";
     });
 
     self.port.on("task-save-error", function (error, description) {

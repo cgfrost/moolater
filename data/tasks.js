@@ -54,7 +54,7 @@
 							url: link
 						},
 						function (resp) {
-							addTaskPanel.port.emit("task-saved", name, link);
+							addTaskPanel.port.emit("task-saved", name, resp.rsp.taskseries.created);
 						},
 						function (response) {
 							addTaskPanel.port.emit("task-save-error", response.status, response.statusText);
