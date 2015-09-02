@@ -12,6 +12,7 @@
 	var apiSecret = keys.shared_secret;
 	var rtm = new RememberTheMilk(apiKey, apiSecret, "write");
 
+
 	var button = new ToggleButton({
 		id: "moolater-link",
 		label: "Save to RTM",
@@ -23,22 +24,31 @@
 			"128": "./images/icon-128.png"
 		},
 		onChange: function (state) {
-			handletoggle(state);
+			if (state.checked === true) {
+				if (account.isReady()) {
+					tasks.showAddTask();
+				} else {
+					account.showLogin();
+				}
+			}
 		}
 	});
 
 	var account = new Account(rtm, button);
-
 	var tasks = new Tasks(rtm, button);
 
-	function handletoggle(state) {
-		if (state.checked === true) {
-			if (account.isLoggedIn()) {
-				tasks.showAddTask();
-			} else {
-				account.showLogin();
-			}
-		}
+	console.log("SETUP");
+	if (account.isReady()) {
+		console.log("READY - CHECKING TOKEN");
+		rtm.get('rtm.auth.checkToken', {},
+			function () {
+				rtm.setTimeline();
+				tasks.getLists(function (lists) {
+					tasks.lists = lists;
+				});
+			});
 	}
+
+
 
 }());

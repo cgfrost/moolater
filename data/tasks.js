@@ -29,9 +29,8 @@
 				if (defaultList === null || defaultList === "") {
 					defaultList = "Inbox";
 				}
-				me.getLists(function (lists) {
-					addTaskPanel.port.emit("update-page-details", title, link, lists, defaultList);
-				});
+				addTaskPanel.port.emit("update-task", title, link);
+				addTaskPanel.port.emit("update-lists", me.lists, defaultList);
 			}
 		});
 
@@ -56,41 +55,51 @@
 						function (resp) {
 							addTaskPanel.port.emit("task-saved", name, resp.rsp.taskseries.created);
 						},
-						function (response) {
-							addTaskPanel.port.emit("task-save-error", response.status, response.statusText);
+						function (fail) {
+							addTaskPanel.port.emit("task-save-error", fail);
 						}
 					);
 				},
-				function (response) {
-					addTaskPanel.port.emit("task-save-error", response.status, response.statusText);
+				function (fail) {
+					addTaskPanel.port.emit("task-save-error", fail);
 				}
 			);
+		});
+
+		addTaskPanel.port.on("update-lists", function () {
+			me.getLists(function (lists) {
+				me.lists = lists;
+				var defaultList = preferences.defaultList;
+				if (defaultList === null || defaultList === "") {
+					defaultList = "Inbox";
+				}
+				addTaskPanel.port.emit("update-lists", me.lists, defaultList);
+			});
 		});
 
 		me.getLists = function (callback) {
 			rtm.get('rtm.lists.getList', {},
 				function (resp) {
-					console.warn("Lists: " + resp);
-					callback(resp.rsp.lists);
+					callback(resp.rsp.lists.list);
 				},
-				function (response) {
-					console.log("Network Error: " + response.status + "-" + response.statusText);
+				function (fail) {
+					console.warn(fail);
 				}
 			);
 		};
 
-		this.addList = function (name) {
-			rtm.get('rtm.lists.add', {
-					name: name
-				},
-				function (resp) {
-					var newList = resp.rsp.list;
-				},
-				function (response) {
-					console.log("Network Error: " + response.status + "-" + response.statusText);
-				}
-			);
-		};
+		//		this.addList = function (name) {
+		//			rtm.get('rtm.lists.add', {
+		//					name: name
+		//				},
+		//				function (resp) {
+		//					var newList = resp.rsp.list;
+		//				},
+		//				function (fail) {
+		//					console.warn(fail);
+		//				}
+		//			);
+		//		};
 
 	};
 

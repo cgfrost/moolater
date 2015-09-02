@@ -30,9 +30,8 @@
 			loginPanel.show();
 		};
 
-		this.isLoggedIn = function () {
+		this.isReady = function () {
 			if (storage.token && storage.frob) {
-				rtm.setTimeline();
 				return true;
 			}
 			return false;
@@ -50,23 +49,25 @@
 					windows.open({
 						url: rtm.getAuthUrl(),
 						onClose: function () {
-							rtm.get('rtm.auth.getToken', {},
-								function (resp) {
-									rtm.setAuthToken(resp.rsp.auth.token);
-									console.log("token: " + resp);
-									storage.token = resp.rsp.auth.token;
-									rtm.setTimeline();
-								}
-							);
+							rtm.fetchToken();
 						}
 					});
 
 				},
-				function (response) {
-					console.log("Network Error: " + response.status + "-" + response.statusText);
+				function (fail) {
+					console.warn(fail);
 				}
 			);
 		});
+
+
+		if (storage.token) {
+			rtm.auth_token = storage.token;
+		}
+
+		if (storage.frob) {
+			rtm.frob = storage.frob;
+		}
 
 	};
 

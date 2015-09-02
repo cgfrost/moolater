@@ -5,19 +5,20 @@
  */
 
 (function () {
-	'use strict';
+	"use strict";
 
 	module.exports = function (appKey, appSecret, permissions) {
+
+		var storage = require("sdk/simple-storage").storage,
+			self = require("sdk/self"),
+			Request = require("sdk/request").Request,
+			md5 = require(self.data.url("md5")),
+			me = this;
+
 		this.authUrl = 'https://www.rememberthemilk.com/services/auth/';
 		this.baseUrl = 'https://api.rememberthemilk.com/services/rest/';
 		this.format = 'json';
 
-		this.self = require("sdk/self");
-		this.request = require("sdk/request").Request;
-		this.md5 = require(this.self.data.url("md5"));
-
-		appKey = (appKey) ? appKey : '';
-		appSecret = (appSecret) ? appSecret : '';
 		permissions = (permissions) ? permissions : 'read';
 
 		if (!appKey || !appSecret) {
@@ -52,16 +53,14 @@
 		 * @return     Returns the timline ID String
 		 */
 		this.setTimeline = function () {
-			if (!this.timeline) {
-				this.get("rtm.timelines.create", {},
-					function (response) {
-						this.timeline = response.rsp.timeline;
-					},
-					function (response) {
-						console.error("Network Error: " + response.status + "-" + response.statusText);
-					}
-				);
-			}
+			this.get("rtm.timelines.create", {},
+				function (response) {
+					me.timeline = response.rsp.timeline;
+				},
+				function (fail) {
+					console.warn(fail);
+				}
+			);
 		};
 
 		/**
@@ -102,42 +101,67 @@
 
 			var requestUrl = this.baseUrl + this.encodeUrlParams(params);
 
-			this.request({
+			new Request({
 				url: requestUrl,
 				overrideMimeType: "application/json; charset=utf-8",
 				onComplete: function (response) {
-					console.debug("*************************************");
-					console.debug("Request.Method  : " + method);
-					console.debug("Response.Json   : " + response.json);
-					console.debug("        .Text   : " + response.text);
-					console.debug("        .Status : " + response.status);
-					console.debug("        .Text   : " + response.statusText);
-					console.debug("*************************************");
-					if (response.status === 200) {
-						complete.call(this, response.json);
+					console.log("*************************************");
+					console.log("Request.Method  : " + method);
+					console.log("Response.Json   : " + response.json);
+					console.log("        .Text   : " + response.text);
+					console.log("        .Status : " + response.status);
+					console.log("        .Text   : " + response.statusText);
+					console.log("*************************************");
+					if (response.status === 200 && response.json.rsp.stat === "ok") {
+						complete(response.json);
 					} else {
-						error.call(this, response);
+						me.handleError(response, error, [method, params, complete, error]);
 					}
 				}
 			}).get();
+
 		};
 
-		/**
-		 * Sets an Auth Token to use on all future API calls
-		 *
-		 * @param token The Token to use
-		 */
-		this.setAuthToken = function (token) {
-			this.auth_token = token;
+		this.handleError = function (response, error, retry) {
+			if (response.status === 200) {
+				var rsp = response.json.rsp;
+				if (rsp.err && rsp.err.msg && rsp.err.code) {
+					if (rsp.err.code === "98") {
+						storage.token = null;
+						me.auth_token = null;
+						me.fetchToken(retry);
+					} else if (rsp.err.code === "101"){
+						storage.token = null;
+						me.auth_token = null;
+						storage.frob = null;
+						me.frob = null;
+						error("Access has expired, please log back in to Remember the Milk");
+					} else {
+						error(response.json.rsp.err.msg);
+					}
+				} else {
+					error("Unidentified error while talking to Remember the Milk");
+				}
+			} else {
+				error("Network Error: " + response.status + " " + response.statusText);
+			}
 		};
 
-		/**
-		 * Sets a Frob to use on all future API calls
-		 *
-		 * @param Frob to use
-		 */
-		this.setFrob = function (frob) {
-			this.frob = frob;
+		this.fetchToken = function (retry) {
+			this.get('rtm.auth.getToken', {},
+				function (resp) {
+					me.auth_token = resp.rsp.auth.token;
+					storage.token = resp.rsp.auth.token;
+					me.setTimeline();
+					if (retry) {
+						me.get(retry[0], retry[1], retry[2], retry[3]);
+					}
+				},
+				function (fail) {
+					console.warn(fail);
+				}
+			);
+
 		};
 
 		/**
@@ -185,8 +209,10 @@
 			}
 			signature = this.appSecret + signature;
 
-			return '&api_sig=' + this.md5(signature);
+			return '&api_sig=' + md5(signature);
 		};
+
+		return this;
 	};
 
 }());
