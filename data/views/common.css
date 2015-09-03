@@ -9,6 +9,10 @@ body {
 	font-family: sans-serif;
 }
 
+.hide {
+	display: none;
+}
+
 p.title {
 	padding: 15px;
 	text-align: left;
@@ -90,6 +94,11 @@ p.controls button {
 p.controls button:hover {
 	background-color: #0a71e2;
 	cursor: pointer;
+}
+
+#status-img {
+	width: 275px;
+	height: 275px;
 }
 
 p.footnote {

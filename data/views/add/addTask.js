@@ -3,23 +3,19 @@
 (function () {
 	"use strict";
 
+	var taskForm = document.getElementById("new-task");
 	var taskElement = document.getElementById("task");
 	var linkElement = document.getElementById("link");
 	var listsElement = document.getElementById("lists");
+
 	var refreshButton = document.getElementById("lists-refresh");
 	var plusButton = document.getElementById("lists-plus");
 	var submitButton = document.getElementById("submit");
 
-	var createOptionElement = function (id, name, selected) {
-		var option = document.createElement("option");
-		option.value = id;
-		var label = document.createTextNode(name);
-		option.appendChild(label);
-		if (selected) {
-			option.setAttribute("selected", "selected");
-		}
-		return option;
-	};
+	var statusImg = document.getElementById("status-img");
+	var statusMsg = document.getElementById("status-msg");
+
+	//	Event Listeners
 
 	taskElement.addEventListener("keyup", function onkeyup(event) {
 		if (event.keyCode === 13) {
@@ -47,6 +43,8 @@
 		linkElement.value = "";
 	});
 
+	//	Port
+
 	self.port.on("update-task", function (title, url) {
 		taskElement.value = title;
 		linkElement.value = url;
@@ -57,9 +55,7 @@
 		while (listsElement.firstChild) {
 			listsElement.removeChild(listsElement.firstChild);
 		}
-		console.log("Default List: " + defaultList);
 		for (var i = 0; i < lists.length; i++) {
-			console.log("List: " + lists[i].name + " Id: " + lists[i].id + " Smart: " + lists[i].smart);
 			if (lists[i].smart === "0") {
 				var selected = defaultList === lists[i].name;
 				var newOption = createOptionElement(lists[i].id, lists[i].name, selected);
@@ -68,12 +64,37 @@
 		}
 	});
 
-	self.port.on("task-saved", function (title) {
-		taskElement.value = "Task Saved: " + title;
+	self.port.on("set-state", function (clear, message, icon) {
+		if (clear) {
+			taskForm.classList.remove("hide");
+			submitButton.classList.remove("hide");
+			statusImg.classList.add("hide");
+			statusMsg.classList.add("hide");
+		} else {
+			while (statusMsg.firstChild) {
+				statusMsg.removeChild(statusMsg.firstChild);
+			}
+			statusMsg.appendChild(document.createTextNode(message));
+			statusImg.setAttribute("src", "../icons/" + icon + ".svg");
+
+			taskForm.classList.add("hide");
+			submitButton.classList.add("hide");
+			statusImg.classList.remove("hide");
+			statusMsg.classList.remove("hide");
+		}
 	});
 
-	self.port.on("task-save-error", function (fail) {
-		taskElement.value = "Error: " + fail;
-	});
+	//	Methods
+
+	var createOptionElement = function (id, name, selected) {
+		var option = document.createElement("option");
+		option.value = id;
+		var label = document.createTextNode(name);
+		option.appendChild(label);
+		if (selected) {
+			option.setAttribute("selected", "selected");
+		}
+		return option;
+	};
 
 }());

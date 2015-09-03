@@ -107,8 +107,7 @@
 				onComplete: function (response) {
 					console.log("*************************************");
 					console.log("Request.Method  : " + method);
-					console.log("Response.Json   : " + response.json);
-					console.log("        .Text   : " + response.text);
+					console.log("Response.Text   : " + response.text);
 					console.log("        .Status : " + response.status);
 					console.log("        .Text   : " + response.statusText);
 					console.log("*************************************");

@@ -7,7 +7,7 @@
 			self = require("sdk/self"),
 			preferences = require("sdk/simple-prefs").prefs,
 			Panel = require("sdk/panel").Panel,
-			timeout = require("sdk/timers"),
+			setTimeout = require("sdk/timers").setTimeout,
 			me = this;
 
 		me.lists = [];
@@ -42,38 +42,42 @@
 			var useSmartAdd = preferences.useSmartAdd ? 1 : 0;
 			rtm.get('rtm.tasks.add', {
 					list_id: listId,
-					name: name + " " + link,
+					name: name,
 					timeline: rtm.timeline,
 					parse: useSmartAdd
 				},
 				function (resp) {
-					addTaskPanel.port.emit("task-saved", name);
-					timeout(function () {
-						addTaskPanel.hide();
-					}, 1000);
-
-
-					//					var newTask = resp.rsp.task;
-					//					rtm.get('rtm.tasks.setURL', {
-					//							list_id: listId,
-					//							taskseries_id: newTask.series_id,
-					//							task_id: newTask.id,
-					//							url: link,
-					//							timeline: rtm.timeline
-					//						},
-					//						function (resp) {
-					//
-					//						},
-					//						function (fail) {
-					//							addTaskPanel.port.emit("task-save-error", fail);
-					//						}
-					//					);
+					var newTask = resp.rsp.list;
+					rtm.get('rtm.tasks.setURL', {
+							list_id: newTask.id,
+							taskseries_id: newTask.taskseries.id,
+							task_id: newTask.taskseries.task.id,
+							url: link,
+							timeline: rtm.timeline
+						},
+						function () {
+							me.flashState(name, "done");
+						},
+						function (fail) {
+							me.flashState(fail, "error");
+						}
+					);
 				},
 				function (fail) {
-					addTaskPanel.port.emit("task-save-error", fail);
+					me.flashState(fail, "error");
 				}
 			);
 		});
+
+		me.flashState = function (message, icon) {
+			addTaskPanel.port.emit("set-state", false, message, icon);
+			setTimeout(function () {
+				addTaskPanel.hide();
+			}, 5000);
+			setTimeout(function () {
+				addTaskPanel.port.emit("set-state", true);
+			}, 5100);
+		};
 
 		addTaskPanel.port.on("update-lists", function () {
 			me.fetchLists();
