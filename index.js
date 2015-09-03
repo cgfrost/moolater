@@ -17,11 +17,11 @@
 		id: "moolater-link",
 		label: "Save to RTM",
 		icon: {
-			"18": "./images/icon-18.png",
-			"32": "./images/icon-32.png",
-			"36": "./images/icon-36.png",
-			"64": "./images/icon-64.png",
-			"128": "./images/icon-128.png"
+			"18": "./logo/icon-18.png",
+			"32": "./logo/icon-32.png",
+			"36": "./logo/icon-36.png",
+			"64": "./logo/icon-64.png",
+			"128": "./logo/icon-128.png"
 		},
 		onChange: function (state) {
 			if (state.checked === true) {
