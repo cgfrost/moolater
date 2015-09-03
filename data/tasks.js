@@ -39,12 +39,12 @@
 		};
 
 		addTaskPanel.port.on("add-task", function (name, link, listId) {
-			console.log("Port.on(save-task): " + name + " url: " + link + " listId: " + listId);
+			var useSmartAdd = preferences.useSmartAdd ? 1 : 0;
 			rtm.get('rtm.tasks.add', {
 					list_id: listId,
 					name: name + " " + link,
 					timeline: rtm.timeline,
-					parse: 1
+					parse: useSmartAdd
 				},
 				function (resp) {
 					addTaskPanel.port.emit("task-saved", name);

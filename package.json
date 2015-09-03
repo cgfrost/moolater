@@ -32,6 +32,13 @@
 			"description": "Use the address of the current tab as a task link.",
 			"type": "bool",
 			"value": true
+    	},
+		{
+			"name": "useSmartAdd",
+			"title": "Use Smart Add",
+			"description": "Tell Remember The Milk to use Smart Add when adding a task.",
+			"type": "bool",
+			"value": true
     	}
 	],
 	"permissions": {
