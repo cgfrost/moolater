@@ -7,7 +7,10 @@
 			self = require("sdk/self"),
 			preferences = require("sdk/simple-prefs").prefs,
 			Panel = require("sdk/panel").Panel,
+			timeout = require("sdk/timers"),
 			me = this;
+
+		me.lists = [];
 
 		var addTaskPanel = new Panel({
 			contentURL: self.data.url("views/add/addTask.html"),
@@ -15,7 +18,7 @@
 			contentStyleFile: [self.data.url("views/common.css"),
 							   self.data.url("views/add/addTask.css")],
 			position: button,
-			height: 300,
+			height: 330,
 			width: 350,
 			onHide: function () {
 				button.state("window", {
@@ -25,12 +28,9 @@
 			onShow: function () {
 				var title = preferences.useTitle ? tabs.activeTab.title : "";
 				var link = preferences.useLink ? tabs.activeTab.url : "";
-				var defaultList = preferences.defaultList;
-				if (defaultList === null || defaultList === "") {
-					defaultList = "Inbox";
-				}
+
 				addTaskPanel.port.emit("update-task", title, link);
-				addTaskPanel.port.emit("update-lists", me.lists, defaultList);
+				addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
 			}
 		});
 
@@ -38,27 +38,36 @@
 			addTaskPanel.show();
 		};
 
-		addTaskPanel.port.on("save-task", function (name, link, listId) {
+		addTaskPanel.port.on("add-task", function (name, link, listId) {
 			console.log("Port.on(save-task): " + name + " url: " + link + " listId: " + listId);
 			rtm.get('rtm.tasks.add', {
 					list_id: listId,
-					name: name
+					name: name + " " + link,
+					timeline: rtm.timeline,
+					parse: 1
 				},
 				function (resp) {
-					var newTask = resp.rsp.task;
-					rtm.get('rtm.tasks.setURL', {
-							list_id: listId,
-							taskseries_id: newTask.series_id,
-							task_id: newTask.id,
-							url: link
-						},
-						function (resp) {
-							addTaskPanel.port.emit("task-saved", name, resp.rsp.taskseries.created);
-						},
-						function (fail) {
-							addTaskPanel.port.emit("task-save-error", fail);
-						}
-					);
+					addTaskPanel.port.emit("task-saved", name);
+					timeout(function () {
+						addTaskPanel.hide();
+					}, 1000);
+
+
+					//					var newTask = resp.rsp.task;
+					//					rtm.get('rtm.tasks.setURL', {
+					//							list_id: listId,
+					//							taskseries_id: newTask.series_id,
+					//							task_id: newTask.id,
+					//							url: link,
+					//							timeline: rtm.timeline
+					//						},
+					//						function (resp) {
+					//
+					//						},
+					//						function (fail) {
+					//							addTaskPanel.port.emit("task-save-error", fail);
+					//						}
+					//					);
 				},
 				function (fail) {
 					addTaskPanel.port.emit("task-save-error", fail);
@@ -67,25 +76,29 @@
 		});
 
 		addTaskPanel.port.on("update-lists", function () {
-			me.getLists(function (lists) {
-				me.lists = lists;
-				var defaultList = preferences.defaultList;
-				if (defaultList === null || defaultList === "") {
-					defaultList = "Inbox";
-				}
-				addTaskPanel.port.emit("update-lists", me.lists, defaultList);
-			});
+			me.fetchLists();
 		});
 
-		me.getLists = function (callback) {
+		me.fetchLists = function () {
 			rtm.get('rtm.lists.getList', {},
 				function (resp) {
-					callback(resp.rsp.lists.list);
+					me.lists = resp.rsp.lists.list;
+					if (addTaskPanel.isShowing) {
+						addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
+					}
 				},
 				function (fail) {
 					console.warn(fail);
 				}
 			);
+		};
+
+		me.getDefaultList = function () {
+			var defaultList = preferences.defaultList;
+			if (defaultList === null || defaultList === "") {
+				defaultList = "Inbox";
+			}
+			return defaultList;
 		};
 
 		//		this.addList = function (name) {

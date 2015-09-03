@@ -43,9 +43,7 @@
 		rtm.get('rtm.auth.checkToken', {},
 			function () {
 				rtm.setTimeline();
-				tasks.getLists(function (lists) {
-					tasks.lists = lists;
-				});
+				tasks.fetchLists();
 			});
 	}
 
