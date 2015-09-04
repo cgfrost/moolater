@@ -1,10 +1,25 @@
+<!DOCTYPE html>
 <html>
+
+<head>
+	<link href="../common.css" type="text/css" rel="stylesheet">
+	<link href="login.css" type="text/css" rel="stylesheet">
+</head>
+
 <body>
 	<p class="title">Moo Later</p>
 	<p class="msg">Moo Later needs permission to access your Remember The Milk account.</p>
 	<p class="controls">
-		 <button id="submit" type="submit">Allow Access</button>
+		<button id="submit" type="submit">Allow Access</button>
 	</p>
 	<p class="footnote">Moo Later won't store your password and you can revoke access any time from Remember The Milk.</p>
+
+	<div id="status">
+		<p class="msg hide" id="status-msg"></p>
+		<img class="msg hide" id="status-img" src="../icons/done.svg" />
+	</div>
+
+	<script src="login.js"></script>
 </body>
+
 </html>

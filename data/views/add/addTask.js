@@ -1,4 +1,4 @@
-/* global self:false, document:false */
+/* global addon:false, document:false */
 
 (function () {
 	"use strict";
@@ -12,8 +12,9 @@
 	//	var plusButton = document.getElementById("lists-plus");
 	var submitButton = document.getElementById("submit");
 
-	var statusImg = document.getElementById("status-img");
+	var status = document.getElementById("status");
 	var statusMsg = document.getElementById("status-msg");
+	var statusImg = document.getElementById("status-img");
 
 	//	Event Listeners
 
@@ -30,7 +31,7 @@
 	}, false);
 
 	refreshButton.addEventListener("click", function click() {
-		self.port.emit("update-lists");
+		addon.port.emit("update-lists");
 	});
 
 	//	plusButton.addEventListener("click", function click() {
@@ -38,20 +39,20 @@
 	//	});
 
 	submitButton.addEventListener("click", function click() {
-		self.port.emit("add-task", taskElement.value, linkElement.value, listsElement.value);
+		addon.port.emit("add-task", taskElement.value, linkElement.value, listsElement.value);
 		taskElement.value = "";
 		linkElement.value = "";
 	});
 
 	//	Port
 
-	self.port.on("update-task", function (title, url) {
+	addon.port.on("update-task", function (title, url) {
 		taskElement.value = title;
 		linkElement.value = url;
 		taskElement.focus();
 	});
 
-	self.port.on("update-lists", function (lists, defaultList) {
+	addon.port.on("update-lists", function (lists, defaultList) {
 		while (listsElement.firstChild) {
 			listsElement.removeChild(listsElement.firstChild);
 		}
@@ -64,27 +65,34 @@
 		}
 	});
 
-	self.port.on("set-state", function (clear, message, icon) {
+	addon.port.on("set-state", function (clear, message, iconName) {
 		if (clear) {
 			taskForm.classList.remove("hide");
-			submitButton.classList.remove("hide");
-			statusImg.classList.add("hide");
-			statusMsg.classList.add("hide");
+			status.classList.add("hide");
 		} else {
 			while (statusMsg.firstChild) {
 				statusMsg.removeChild(statusMsg.firstChild);
 			}
 			statusMsg.appendChild(document.createTextNode(message));
-			statusImg.setAttribute("src", "../icons/" + icon + ".svg");
-
+			setIconState(statusImg, iconName);
 			taskForm.classList.add("hide");
-			submitButton.classList.add("hide");
-			statusImg.classList.remove("hide");
-			statusMsg.classList.remove("hide");
+			status.classList.remove("hide");
 		}
 	});
 
+	addon.port.on("set-refresh-button-icon", function (iconName) {
+		setIconState(refreshButton.firstElementChild, iconName);
+	});
+
+//	addon.port.on("set-plus-button-icon", function (iconName) {
+//		setIconState(plusButton.firstElementChild, iconName);
+//	});
+
 	//	Methods
+
+	var setIconState = function (icon, iconName) {
+		icon.setAttribute("src", "../icons/" + iconName + ".svg");
+	};
 
 	var createOptionElement = function (id, name, selected) {
 		var option = document.createElement("option");

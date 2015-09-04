@@ -10,9 +10,6 @@
 
 		var loginPanel = new Panel({
 			contentURL: self.data.url("views/login/login.html"),
-			contentScriptFile: self.data.url("views/login/login.js"),
-			contentStyleFile: [self.data.url("views/common.css"),
-							   self.data.url("views/login/login.css")],
 			position: button,
 			height: 240,
 			width: 350,

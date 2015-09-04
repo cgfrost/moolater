@@ -1,2 +1,46 @@
-foo {
+
+form span.label {
+	font-size: 1.3em;
+	display: block;
+	margin: 5px 15px 5px;
+}
+
+form input {
+	margin: 0 15px 15px;
+	padding: 5px;
+	font-size: 1.3em;
+	width: 310px;
+	background-color: #EEEEEE;
+	border-radius: 5px;
+	display: block;
+}
+
+button.icon {
+	border-radius: 5px;
+	border: 2px solid #FFFFFF;
+	background-color: #FFFFFF;
+	vertical-align: middle;
+	margin-bottom: 4px;
+}
+
+button.icon img{
+	height: 1.7em;
+	width: 1.7em;
+}
+
+button.icon:hover {
+	cursor: pointer;
+}
+
+p.lists {
+	padding: 15px 0 0 0;
+	margin: 15px 15px 15px;
+	font-size: 1.3em;
+	text-align: center;
+}
+
+p.lists select {
+	padding: 0;
+	margin: 0 10px 0 0;
+	font-size: 1em;
 }

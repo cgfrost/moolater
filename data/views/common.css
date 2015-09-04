@@ -1,4 +1,4 @@
-html, body, p, span, input, form, img {
+html, body, p, span, input, form, img, button {
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -10,7 +10,7 @@ body {
 }
 
 .hide {
-	display: none;
+	display: none !important;
 }
 
 p.title {
@@ -26,55 +26,6 @@ p.msg {
 	text-align: center;
 	font-size: 1.3em;
 	color: #333333;
-}
-
-form span.label {
-	font-size: 1.3em;
-	display: block;
-	margin: 5px 15px 5px;
-}
-
-form input {
-	margin: 0 15px 15px;
-	padding: 5px;
-	font-size: 1.3em;
-	width: 320px;
-	background-color: #EEEEEE;
-	border-radius: 5px;
-	display: block;
-}
-
-p.lists {
-	padding: 15px 0 0 0;
-	margin: 15px 15px 15px;
-	font-size: 1.3em;
-	text-align: center;
-}
-
-p.lists select {
-	padding: 0;
-	margin: 0 10px 0 0;
-	font-size: 1em;
-}
-
-button.icon {
-	border-radius: 5px;
-	border: 2px solid #FFFFFF;
-	background-color: #FFFFFF;
-	margin: 0 0 5px;
-	padding: 0;
-	vertical-align: middle;
-}
-
-button.icon img{
-	height: 1.7em;
-	width: 1.7em;
-	border: none;
-}
-
-button.icon:hover {
-	border: 2px solid #005DC2;
-	cursor: pointer;
 }
 
 p.controls {
@@ -97,14 +48,8 @@ p.controls button:hover {
 }
 
 #status-img {
-	width: 275px;
-	height: 275px;
-}
-
-p.footnote {
-	padding: 20px 15px 10px;
-	text-align: left;
-	font-size: 0.9em;
-	color: #777777;
-	line-height: 13px;
+	display: block;
+	width: 180px;
+	height: 180px;
+	margin: auto;
 }

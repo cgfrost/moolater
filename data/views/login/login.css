@@ -1,2 +1,7 @@
-foo {
+p.footnote {
+	padding: 20px 15px 10px;
+	text-align: left;
+	font-size: 0.9em;
+	color: #777777;
+	line-height: 13px;
 }

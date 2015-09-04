@@ -14,9 +14,6 @@
 
 		var addTaskPanel = new Panel({
 			contentURL: self.data.url("views/add/addTask.html"),
-			contentScriptFile: self.data.url("views/add/addTask.js"),
-			contentStyleFile: [self.data.url("views/common.css"),
-							   self.data.url("views/add/addTask.css")],
 			position: button,
 			height: 330,
 			width: 350,
