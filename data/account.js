@@ -20,9 +20,6 @@
 				button.state("window", {
 					checked: false
 				});
-			},
-			onShow: function () {
-				//loginPanel.port.emit("login-failed", "msg");
 			}
 		});
 
@@ -59,7 +56,6 @@
 				}
 			);
 		});
-
 
 		if (storage.token) {
 			rtm.auth_token = storage.token;

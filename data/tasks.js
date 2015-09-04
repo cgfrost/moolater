@@ -108,10 +108,12 @@
 
 		//		this.addList = function (name) {
 		//			rtm.get('rtm.lists.add', {
-		//					name: name
+		//					name: name,
+		//					timeline: rtm.timeline
 		//				},
 		//				function (resp) {
 		//					var newList = resp.rsp.list;
+		//					console.log("New list: " + newList);
 		//				},
 		//				function (fail) {
 		//					console.warn(fail);

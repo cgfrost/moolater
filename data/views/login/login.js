@@ -8,8 +8,4 @@
         self.port.emit("do-login");
     });
 
-//    self.port.on("login-failed", function onShow(title) {
-//        console.log("msg-recieved: show-login" + title);
-//    });
-
 }());

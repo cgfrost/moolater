@@ -37,9 +37,9 @@
 	var account = new Account(rtm, button);
 	var tasks = new Tasks(rtm, button);
 
-	console.log("SETUP");
+//	console.log("SETUP");
 	if (account.isReady()) {
-		console.log("READY - CHECKING TOKEN");
+//		console.log("READY - CHECKING TOKEN");
 		rtm.get('rtm.auth.checkToken', {},
 			function () {
 				rtm.setTimeline();

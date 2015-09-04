@@ -9,7 +9,7 @@
 	var listsElement = document.getElementById("lists");
 
 	var refreshButton = document.getElementById("lists-refresh");
-	var plusButton = document.getElementById("lists-plus");
+	//	var plusButton = document.getElementById("lists-plus");
 	var submitButton = document.getElementById("submit");
 
 	var statusImg = document.getElementById("status-img");
@@ -33,9 +33,9 @@
 		self.port.emit("update-lists");
 	});
 
-	plusButton.addEventListener("click", function click() {
-		self.port.emit("add-list", "dummy list");
-	});
+	//	plusButton.addEventListener("click", function click() {
+	//		addon.port.emit("add-list", "dummy list");
+	//	});
 
 	submitButton.addEventListener("click", function click() {
 		self.port.emit("add-task", taskElement.value, linkElement.value, listsElement.value);
