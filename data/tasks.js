@@ -39,6 +39,7 @@
 		};
 
 		addTaskPanel.port.on("add-task", function (name, link, listId) {
+			addTaskPanel.port.emit("set-state", false, "Saving", "loading");
 			var useSmartAdd = preferences.useSmartAdd ? 1 : 0;
 			rtm.get('rtm.tasks.add', {
 					list_id: listId,
