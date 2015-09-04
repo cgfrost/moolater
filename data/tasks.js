@@ -23,17 +23,15 @@
 				});
 			},
 			onShow: function () {
+				addTaskPanel.port.emit("set-state", true);
 				var title = preferences.useTitle ? tabs.activeTab.title : "";
 				var link = preferences.useLink ? tabs.activeTab.url : "";
-
 				addTaskPanel.port.emit("update-task", title, link);
 				addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
 			}
 		});
 
-		this.showAddTask = function () {
-			addTaskPanel.show();
-		};
+		// Port
 
 		addTaskPanel.port.on("add-task", function (name, link, listId) {
 			addTaskPanel.port.emit("set-state", false, "Saving", "loading");
@@ -67,35 +65,54 @@
 			);
 		});
 
-		me.flashState = function (message, icon) {
-			addTaskPanel.port.emit("set-state", false, message, icon);
-			setTimeout(function () {
-				addTaskPanel.hide();
-			}, 5000);
-			setTimeout(function () {
-				addTaskPanel.port.emit("set-state", true);
-			}, 5100);
-		};
-
 		addTaskPanel.port.on("update-lists", function () {
 			me.fetchLists();
 		});
 
-		me.fetchLists = function () {
+		// Methods
+
+		this.showAddTask = function () {
+			addTaskPanel.show();
+		};
+
+		this.flashState = function (message, icon) {
+			addTaskPanel.port.emit("set-state", false, message, icon);
+			setTimeout(function () {
+				addTaskPanel.hide();
+			}, 1200);
+			setTimeout(function () {
+				addTaskPanel.port.emit("set-state", true);
+			}, 1300);
+		};
+
+		this.fetchLists = function () {
+			if (addTaskPanel.isShowing) {
+				addTaskPanel.port.emit("set-refresh-button-icon", "loading");
+			}
 			rtm.get('rtm.lists.getList', {},
 				function (resp) {
 					me.lists = resp.rsp.lists.list;
 					if (addTaskPanel.isShowing) {
 						addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
+						addTaskPanel.port.emit("set-refresh-button-icon", "done");
+						setTimeout(function () {
+							addTaskPanel.port.emit("set-refresh-button-icon", "refresh");
+						}, 1000);
 					}
 				},
 				function (fail) {
 					console.warn(fail);
+					if (addTaskPanel.isShowing) {
+						addTaskPanel.port.emit("set-refresh-button-icon", "error");
+						setTimeout(function () {
+							addTaskPanel.port.emit("set-refresh-button-icon", "refresh");
+						}, 1000);
+					}
 				}
 			);
 		};
 
-		me.getDefaultList = function () {
+		this.getDefaultList = function () {
 			var defaultList = preferences.defaultList;
 			if (defaultList === null || defaultList === "") {
 				defaultList = "Inbox";

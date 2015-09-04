@@ -18,15 +18,19 @@
 			<select required id="lists">
 			</select>
 			<button class="icon" id="lists-refresh" type="button"><img src="../icons/refresh.svg" /></button>
-			<button class="icon" id="lists-plus" type="button"><img src="../icons/plus.svg" /></button>
+			<!--<button class="icon" id="lists-plus" type="button"><img src="../icons/plus.svg" /></button>-->
+		</p>
+		<p class="controls">
+			<button id="submit" form="new-task" type="submit">Add Task</button>
 		</p>
 	</form>
-	<p class="controls">
-		<button id="submit" form="new-task2" type="submit">Add Task</button>
-	</p>
 
-	<img class="msg hide" id="status-img" src="../icons/done.svg" />
-	<p class="msg hide" id="status-msg"></p>
+	<div id="status" class="hide">
+		<p class="msg" id="status-msg">Message</p>
+		<img class="msg" id="status-img" src="../icons/done.svg" />
+	</div>
+
+	<script src="addTask.js"></script>
 </body>
 
 </html>
