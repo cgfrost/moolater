@@ -47,20 +47,24 @@
 				},
 				function (resp) {
 					var newTask = resp.rsp.list;
-					rtm.get('rtm.tasks.setURL', {
-							list_id: newTask.id,
-							taskseries_id: newTask.taskseries.id,
-							task_id: newTask.taskseries.task.id,
-							url: link,
-							timeline: rtm.timeline
-						},
-						function () {
-							me.flashState(name, "done");
-						},
-						function (fail) {
-							me.flashState(fail, "error");
-						}
-					);
+					if (link === "") {
+						me.flashState(newTask.taskseries.name, "done");
+					} else {
+						rtm.get('rtm.tasks.setURL', {
+								list_id: newTask.id,
+								taskseries_id: newTask.taskseries.id,
+								task_id: newTask.taskseries.task.id,
+								url: link,
+								timeline: rtm.timeline
+							},
+							function () {
+								me.flashState(newTask.taskseries.name, "done");
+							},
+							function (fail) {
+								me.flashState(fail, "error");
+							}
+						);
+					}
 				},
 				function (fail) {
 					me.flashState(fail, "error");

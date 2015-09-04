@@ -9,9 +9,9 @@
 <body>
 	<p class="title">Moo Later</p>
 	<form id="new-task">
-		<span class="label">Task: </span>
+		<label for="task" id="task-label">Task: </label>
 		<input type="text" id="task">
-		<span class="label">Link: </span>
+		<label for="link" id="link-label">Link: </label>
 		<input type="url" id="link">
 		<p class="lists">
 			List:&nbsp;
@@ -21,12 +21,12 @@
 			<!--<button class="icon" id="lists-plus" type="button"><img src="../icons/plus.svg" /></button>-->
 		</p>
 		<p class="controls">
-			<button id="submit" form="new-task" type="submit">Add Task</button>
+			<button id="submit" type="button">Add Task</button>
 		</p>
 	</form>
 
 	<div id="status" class="hide">
-		<p class="msg" id="status-msg">Message</p>
+		<p class="msg" id="status-msg"></p>
 		<img class="msg" id="status-img" src="../icons/done.svg" />
 	</div>
 

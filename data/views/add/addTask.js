@@ -5,7 +5,9 @@
 
 	var taskForm = document.getElementById("new-task");
 	var taskElement = document.getElementById("task");
+	var taskLabel = document.getElementById("task-label");
 	var linkElement = document.getElementById("link");
+	var linkLabel = document.getElementById("link-label");
 	var listsElement = document.getElementById("lists");
 
 	var refreshButton = document.getElementById("lists-refresh");
@@ -15,6 +17,8 @@
 	var status = document.getElementById("status");
 	var statusMsg = document.getElementById("status-msg");
 	var statusImg = document.getElementById("status-img");
+
+	var validationRegex = new RegExp("^https?://");
 
 	//	Event Listeners
 
@@ -39,9 +43,22 @@
 	//	});
 
 	submitButton.addEventListener("click", function click() {
-		addon.port.emit("add-task", taskElement.value, linkElement.value, listsElement.value);
-		taskElement.value = "";
-		linkElement.value = "";
+		var formValid = true;
+		if (taskElement.value !== "") {
+			setTextElement(taskLabel, "Task:");
+		} else {
+			setTextElement(taskLabel, "Task: Task name can't be empty.");
+			formValid = false;
+		}
+		if (linkElement.value === "" || validationRegex.test(linkElement.value)) {
+			setTextElement(linkLabel, "Link:");
+		} else {
+			setTextElement(linkLabel, "Link: Links must start with 'http://' or 'https://'.");
+			formValid = false;
+		}
+		if (formValid) {
+			addon.port.emit("add-task", taskElement.value, linkElement.value, listsElement.value);
+		}
 	});
 
 	//	Port
@@ -70,10 +87,7 @@
 			taskForm.classList.remove("hide");
 			status.classList.add("hide");
 		} else {
-			while (statusMsg.firstChild) {
-				statusMsg.removeChild(statusMsg.firstChild);
-			}
-			statusMsg.appendChild(document.createTextNode(message));
+			setTextElement(statusMsg, message);
 			setIconState(statusImg, iconName);
 			taskForm.classList.add("hide");
 			status.classList.remove("hide");
@@ -84,14 +98,21 @@
 		setIconState(refreshButton.firstElementChild, iconName);
 	});
 
-//	addon.port.on("set-plus-button-icon", function (iconName) {
-//		setIconState(plusButton.firstElementChild, iconName);
-//	});
+	//	addon.port.on("set-plus-button-icon", function (iconName) {
+	//		setIconState(plusButton.firstElementChild, iconName);
+	//	});
 
 	//	Methods
 
 	var setIconState = function (icon, iconName) {
 		icon.setAttribute("src", "../icons/" + iconName + ".svg");
+	};
+
+	var setTextElement = function (textElement, text) {
+		while (textElement.firstChild) {
+			textElement.removeChild(textElement.firstChild);
+		}
+		textElement.appendChild(document.createTextNode(text));
 	};
 
 	var createOptionElement = function (id, name, selected) {
