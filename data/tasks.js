@@ -15,7 +15,7 @@
 		var addTaskPanel = new Panel({
 			contentURL: self.data.url("views/add/addTask.html"),
 			position: button,
-			height: 330,
+			height: 325,
 			width: 350,
 			onHide: function () {
 				button.state("window", {
@@ -26,6 +26,9 @@
 				addTaskPanel.port.emit("set-state", true);
 				var title = preferences.useTitle ? tabs.activeTab.title : "";
 				var link = preferences.useLink ? tabs.activeTab.url : "";
+				if(link === "about:blank"){
+					link ="";
+				}
 				addTaskPanel.port.emit("update-task", title, link);
 				addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
 			}
@@ -34,7 +37,7 @@
 		// Port
 
 		addTaskPanel.port.on("add-task", function (name, link, listId) {
-			addTaskPanel.port.emit("set-state", false, "Saving", "loading");
+			addTaskPanel.port.emit("set-state", false, "Adding Task", "loading");
 			var useSmartAdd = preferences.useSmartAdd ? 1 : 0;
 			rtm.get('rtm.tasks.add', {
 					list_id: listId,
