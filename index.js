@@ -33,8 +33,8 @@
 		}
 	});
 
-	var account = new Account(rtm, button);
 	var tasks = new Tasks(rtm, button);
+	var account = new Account(rtm, button, tasks);
 
 	if (account.isReady()) {
 		rtm.get('rtm.auth.checkToken', {},

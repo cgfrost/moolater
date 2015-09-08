@@ -106,6 +106,7 @@
 				overrideMimeType: "application/json; charset=utf-8",
 				onComplete: function (response) {
 					console.log("*************************************");
+					console.log("Request         : " + requestUrl);
 					console.log("Request.Method  : " + method);
 					console.log("Response.Text   : " + response.text);
 					console.log("        .Status : " + response.status);
@@ -114,7 +115,9 @@
 					if (response.status === 200 && response.json.rsp.stat === "ok") {
 						complete(response.json);
 					} else {
-						me.handleError(response, error, [method, params, complete, error]);
+						me.handleError(response, error, function(){
+							me.get(method, params, complete, error);
+						});
 					}
 				}
 			}).get();
@@ -152,7 +155,7 @@
 					storage.token = resp.rsp.auth.token;
 					me.setTimeline();
 					if (retry) {
-						me.get(retry[0], retry[1], retry[2], retry[3]);
+						retry();
 					}
 				},
 				function (fail) {

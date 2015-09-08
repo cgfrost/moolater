@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function (rtm, button) {
+	module.exports = function (rtm, button, tasks) {
 
 		var storage = require("sdk/simple-storage").storage,
 			windows = require("sdk/windows").browserWindows,
@@ -39,14 +39,13 @@
 						checked: false
 					});
 					storage.frob = resp.rsp.frob;
-					rtm.setFrob(resp.rsp.frob);
+					rtm.frob = resp.rsp.frob;
 					windows.open({
 						url: rtm.getAuthUrl(),
 						onClose: function () {
-							rtm.fetchToken();
+							rtm.fetchToken(tasks.fetchLists);
 						}
 					});
-
 				},
 				function (fail) {
 					console.warn(fail);
