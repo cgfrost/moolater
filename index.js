@@ -12,7 +12,6 @@
 	var apiSecret = keys.shared_secret;
 	var rtm = new RememberTheMilk(apiKey, apiSecret, "write");
 
-
 	var button = new ToggleButton({
 		id: "moolater-link",
 		label: "Save to RTM",
@@ -37,16 +36,12 @@
 	var account = new Account(rtm, button);
 	var tasks = new Tasks(rtm, button);
 
-//	console.log("SETUP");
 	if (account.isReady()) {
-//		console.log("READY - CHECKING TOKEN");
 		rtm.get('rtm.auth.checkToken', {},
 			function () {
 				rtm.setTimeline();
 				tasks.fetchLists();
 			});
 	}
-
-
 
 }());

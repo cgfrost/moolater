@@ -4,7 +4,9 @@
     "curly": true,
     "freeze": true,
     "futurehostile": true,
+	"eqeqeq": true,
     "devel": false,
+	"moz": true,
     "latedef": "nofunc",
     "globals": {
         "exports": true,

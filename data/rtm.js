@@ -118,7 +118,6 @@
 					}
 				}
 			}).get();
-
 		};
 
 		this.handleError = function (response, error, retry) {
@@ -160,7 +159,6 @@
 					console.warn(fail);
 				}
 			);
-
 		};
 
 		/**
