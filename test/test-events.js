@@ -2,6 +2,7 @@
 	"use strict";
 
 	let test = require("sdk/test");
+	let setTimeout = require("sdk/timers").setTimeout;
 	let {
 		before, after
 	} = require('sdk/test/utils');
@@ -9,7 +10,7 @@
 
 	exports["test register a listener"] = function (assert) {
 		events.on("dummy.event", function () {});
-		assert.strictEqual(events.numberOfListeners(), 1, "One listener registered.");
+		assert.strictEqual(events.numberOfEvents(), 1, "One listener registered.");
 	};
 
 	exports["test sending an event"] = function (assert, done) {
@@ -30,30 +31,39 @@
 		events.do("different.event", {
 			hello: "world"
 		});
-		done();
+		setTimeout(function () {
+			assert.pass("Bad callback not called after 1 second.");
+			done();
+		}, 1000);
+
 	};
 
 	exports["test unregistering a listener"] = function (assert) {
 		var callback = function () {};
 		events.on("dummy.event", callback);
-		assert.strictEqual(events.numberOfListeners(), 1, "One listener registered.");
-		events.off("dummy.event", callback);
-		assert.strictEqual(events.numberOfListeners(), 0, "No listeners registered.");
+		assert.strictEqual(events.numberOfEvents(), 1, "One listener registered.");
+		assert.strictEqual(events.off("dummy.event", callback), true, "Listener deleted");
+		assert.strictEqual(events.numberOfEvents(), 0, "No listeners registered.");
+	};
+
+	exports["test unregistering non-event is false"] = function (assert) {
+		events.on("dummy.event", () => {});
+		assert.strictEqual(events.numberOfEvents(), 1, "One listener registered.");
+		assert.strictEqual(events.off("other.event", () => {}), false, "Listener deleted");
+		assert.strictEqual(events.numberOfEvents(), 1, "One listener registered.");
 	};
 
 	before(exports, function (name) {
-		console.log("Running test: " + name);
-		events.clearListeners();
+		console.log("================================================================================");
+		console.log(`Running: ${name}`);
+		events.reset();
 	});
 
 	after(exports, function (name) {
-		console.log("Finished test: " + name);
+		console.log(`Finished: ${name}`);
+		console.log("================================================================================");
 	});
 
-	test.run(exports, function (result) {
-		console.log('Passed: ', result.passes.length);
-		console.log('Failed: ', result.fails.length);
-		console.log('Errors: ', result.errors.length);
-	});
+	test.run(exports);
 
 }());

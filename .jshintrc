@@ -6,7 +6,7 @@
     "futurehostile": true,
 	"eqeqeq": true,
     "devel": false,
-	"moz": true,
+	"esnext": true,
     "latedef": "nofunc",
     "globals": {
         "exports": true,
