@@ -2,14 +2,12 @@ language: node_js
 env:
   global:
     - DISPLAY=:99.0
-#    - JPM_FIREFOX_BINARY=$TRAVIS_BUILD_DIR/firefox/firefox
+    - JPM_FIREFOX_BINARY=$TRAVIS_BUILD_DIR/firefox/firefox
 addons:
   firefox: "38.0"
-#before_install:
-#  - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16 -extension RANDR
 before_script:
   - sh -e /etc/init.d/xvfb start
-  - tar xvjf /tmp/firefox-38.0.tar.bz2 -C $TRAVIS_BUILD_DIR/
+  - tar xvjf /tmp/firefox-*.tar.bz2 -C $TRAVIS_BUILD_DIR/
   - npm install jpm -g
 script:
-  - jpm test -b $TRAVIS_BUILD_DIR/firefox/firefox
+  - jpm test
