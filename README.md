@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/cgfrost/moolater.svg?branch=master)](https://travis-ci.org/cgfrost/moolater)
-# Moo Later
+# Moo Later [![Build Status](https://travis-ci.org/cgfrost/moolater.svg?branch=master)](https://travis-ci.org/cgfrost/moolater)
+
 <p align="center">
   <img src="data/logo/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
 </p>
@@ -7,7 +7,14 @@ Firefox extension for quickly saving a task to [Remember The Milk](https://www.r
 
 # Settings
 
-This extension can be configured through the Firefox Add-ons preferences page. This is accessed by clicking the menu items `Tools -> Add-ons`. Then select `Extensions` from the side menu and click the `Preferences` button for Moo Later. By default Moo Later will use the title and url of the currently viewed page for a new task. Unchecking the boxes will turn this off. When entering a new task the Link must be a valid URL that starts with `http://` or `https://`. To save a task with no link the Link field can be left empty. The name of the list that will be selected automatically for new tasks can also be set in the preferences and must match the name of an existing list with the same capitalization. New tasks can not be added to Smart Lists.
+This extension can be configured through the Firefox Add-ons preferences page. This is accessed by clicking the menu items `Tools -> Add-ons`. Then select `Extensions` from the side menu and click the `Preferences` button for Moo Later. 
+
+* Default List - The name of the list that will be selected automatically for new tasks. It must match the name of an existing list with the same capitalization. New tasks can not be added to Smart Lists. Default is empty which will go to the Inbox. I recommend using a separate list for Moo Later created tasks, perhaps called `Read Later`.
+* Use Title - Use the title of the currently viewed page for new tasks. Default is checked.
+* Use Address - Use the url of the currently viewed page for new tasks. Default is checked.
+* Use Smart Add - Should the new tasks title be processed by Remember the Milk [Smart Add](https://www.rememberthemilk.com/help/?ctx=basics.smartadd.whatis). Default is checked.
+ 
+When entering a new task the Address must be a valid URL that starts with `http://` or `https://`. To save a task with no Address the link field can be left empty. 
 
 # Future Features
 
