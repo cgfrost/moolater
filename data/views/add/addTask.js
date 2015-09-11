@@ -22,19 +22,19 @@
 
 	//	Event Listeners
 
-	taskElement.addEventListener("keyup", function onkeyup(event) {
+	taskElement.addEventListener("keyup", (event) => {
 		if (event.keyCode === 13) {
 			linkElement.focus();
 		}
 	}, false);
 
-	linkElement.addEventListener("keyup", function onkeyup(event) {
+	linkElement.addEventListener("keyup", (event) => {
 		if (event.keyCode === 13) {
 			submitButton.focus();
 		}
 	}, false);
 
-	refreshButton.addEventListener("click", function click() {
+	refreshButton.addEventListener("click", () => {
 		addon.port.emit("update-lists");
 	});
 
@@ -42,7 +42,7 @@
 	//		addon.port.emit("add-list", "dummy list");
 	//	});
 
-	submitButton.addEventListener("click", function click() {
+	submitButton.addEventListener("click", () => {
 		var formValid = true;
 		if (taskElement.value !== "") {
 			setTextElement(taskLabel, "Task:");
@@ -63,13 +63,13 @@
 
 	//	Port
 
-	addon.port.on("update-task", function (title, url) {
+	addon.port.on("update-task", (title, url) => {
 		taskElement.value = title;
 		linkElement.value = url;
 		taskElement.focus();
 	});
 
-	addon.port.on("update-lists", function (lists, defaultList) {
+	addon.port.on("update-lists", (lists, defaultList) => {
 		while (listsElement.firstChild) {
 			listsElement.removeChild(listsElement.firstChild);
 		}
@@ -82,7 +82,7 @@
 		}
 	});
 
-	addon.port.on("set-state", function (clear, message, iconName) {
+	addon.port.on("set-state", (clear, message, iconName) => {
 		if (clear) {
 			taskForm.classList.remove("hide");
 			status.classList.add("hide");
@@ -94,7 +94,7 @@
 		}
 	});
 
-	addon.port.on("set-refresh-button-icon", function (iconName) {
+	addon.port.on("set-refresh-button-icon", (iconName) => {
 		setIconState(refreshButton.firstElementChild, iconName);
 	});
 
@@ -104,18 +104,18 @@
 
 	//	Methods
 
-	var setIconState = function (icon, iconName) {
+	var setIconState = (icon, iconName) => {
 		icon.setAttribute("src", "../icons/" + iconName + ".svg");
 	};
 
-	var setTextElement = function (textElement, text) {
+	var setTextElement = (textElement, text) =>{
 		while (textElement.firstChild) {
 			textElement.removeChild(textElement.firstChild);
 		}
 		textElement.appendChild(document.createTextNode(text));
 	};
 
-	var createOptionElement = function (id, name, selected) {
+	var createOptionElement = (id, name, selected) => {
 		var option = document.createElement("option");
 		option.value = id;
 		var label = document.createTextNode(name);

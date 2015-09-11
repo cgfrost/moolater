@@ -25,16 +25,16 @@
 
 	exports["test sending a different event"] = function (assert, done) {
 		events.on("dummy.event", function () {
-			assert.fail("Listener callback called.");
+			assert.fail("Bad listener callback called.");
 			done();
 		});
-		events.do("different.event", {
+		events.do("other.event", {
 			hello: "world"
 		});
 		setTimeout(function () {
-			assert.pass("Bad callback not called after 1 second.");
+			assert.pass("Bad callback not called after half a second.");
 			done();
-		}, 1000);
+		}, 500);
 
 	};
 

@@ -4,7 +4,7 @@
     "use strict";
 
     var submitButton = document.getElementById("submit");
-    submitButton.addEventListener("click", function click() {
+    submitButton.addEventListener("click", () => {
         addon.port.emit("do-login");
     });
 

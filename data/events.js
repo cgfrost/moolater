@@ -27,11 +27,11 @@
 	 * @param callback
 	 * @return
 	 */
-	module.exports.on = function (eventName, callback) {
+	module.exports.on = function (eventName, listener) {
 		if (subs.has(eventName)) {
-			subs.get(eventName).add(callback);
+			subs.get(eventName).add(listener);
 		} else {
-			subs.set(eventName, new Set().add(callback));
+			subs.set(eventName, new Set().add(listener));
 		}
 	};
 

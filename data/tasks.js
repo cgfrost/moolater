@@ -1,9 +1,9 @@
 (function () {
 	"use strict";
 
-	module.exports = function (rtm, button) {
+	module.exports = function (rtm, button, events) {
 
-		var tabs = require("sdk/tabs"),
+		let tabs = require("sdk/tabs"),
 			self = require("sdk/self"),
 			preferences = require("sdk/simple-prefs").prefs,
 			Panel = require("sdk/panel").Panel,
@@ -12,115 +12,116 @@
 
 		me.lists = [];
 
-		var addTaskPanel = new Panel({
+		events.on("init", (sender) => {
+			console.log(`Tasks: Init recieved from ${sender}`);
+		});
+
+		let addTaskPanel = new Panel({
 			contentURL: self.data.url("views/add/addTask.html"),
 			position: button,
 			height: 325,
 			width: 350,
-			onHide: function () {
+			onHide: () => {
 				button.state("window", {
 					checked: false
 				});
-			},
-			onShow: function () {
-				addTaskPanel.port.emit("set-state", true);
-				var title = preferences.useTitle ? tabs.activeTab.title : "";
-				var link = preferences.useLink ? tabs.activeTab.url : "";
-				if(link === "about:blank"){
-					link ="";
-				}
-				addTaskPanel.port.emit("update-task", title, link);
-				addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
 			}
+		});
+
+		addTaskPanel.on("show", () => {
+			addTaskPanel.port.emit("set-state", true);
+			let title = preferences.useTitle ? tabs.activeTab.title : "";
+			let link = preferences.useLink ? tabs.activeTab.url : "";
+			if (link === "about:blank") {
+				link = "";
+			}
+			addTaskPanel.port.emit("update-task", title, link);
+			addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
 		});
 
 		// Port
 
-		addTaskPanel.port.on("add-task", function (name, link, listId) {
+		addTaskPanel.port.on("add-task", (name, link, listId) => {
 			addTaskPanel.port.emit("set-state", false, "Adding Task", "loading");
-			var useSmartAdd = preferences.useSmartAdd ? 1 : 0;
+			let useSmartAdd = preferences.useSmartAdd ? 1 : 0;
 			rtm.get('rtm.tasks.add', {
-					list_id: listId,
-					name: name,
-					timeline: rtm.timeline,
-					parse: useSmartAdd
-				},
-				function (resp) {
-					var newTask = resp.rsp.list;
-					if (link === "") {
+				list_id: listId,
+				name: name,
+				timeline: rtm.timeline,
+				parse: useSmartAdd
+			}, (resp) => {
+				let newTask = resp.rsp.list;
+				if (link === "") {
+					me.flashState(newTask.taskseries.name, "done");
+				} else {
+					rtm.get('rtm.tasks.setURL', {
+						list_id: newTask.id,
+						taskseries_id: newTask.taskseries.id,
+						task_id: newTask.taskseries.task.id,
+						url: link,
+						timeline: rtm.timeline
+					}, () => {
 						me.flashState(newTask.taskseries.name, "done");
-					} else {
-						rtm.get('rtm.tasks.setURL', {
-								list_id: newTask.id,
-								taskseries_id: newTask.taskseries.id,
-								task_id: newTask.taskseries.task.id,
-								url: link,
-								timeline: rtm.timeline
-							},
-							function () {
-								me.flashState(newTask.taskseries.name, "done");
-							},
-							function (fail) {
-								me.flashState(fail, "error");
-							}
-						);
-					}
-				},
-				function (fail) {
-					me.flashState(fail, "error");
+					}, (fail) => {
+						me.flashState(fail, "error");
+					});
 				}
-			);
+			}, (fail) => {
+				me.flashState(fail, "error");
+			});
 		});
 
-		addTaskPanel.port.on("update-lists", function () {
+		addTaskPanel.port.on("update-lists", () => {
 			me.fetchLists();
 		});
 
 		// Methods
 
-		this.showAddTask = function () {
+		this.showAddTask = () => {
 			addTaskPanel.show();
 		};
 
-		this.flashState = function (message, icon) {
+		this.flashState = (message, icon) => {
 			addTaskPanel.port.emit("set-state", false, message, icon);
-			setTimeout(function () {
+			setTimeout(() => {
 				addTaskPanel.hide();
 			}, 1200);
-			setTimeout(function () {
+			setTimeout(() => {
 				addTaskPanel.port.emit("set-state", true);
 			}, 1300);
 		};
 
-		this.fetchLists = function () {
+		events.on("rtm.newToken", () => {
+			console.log("newToken, going to update the lists I know about");
+			this.fetchLists();
+		});
+
+		this.fetchLists = () => {
 			if (addTaskPanel.isShowing) {
 				addTaskPanel.port.emit("set-refresh-button-icon", "loading");
 			}
-			rtm.get('rtm.lists.getList', {},
-				function (resp) {
-					me.lists = resp.rsp.lists.list;
-					if (addTaskPanel.isShowing) {
-						addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
-						addTaskPanel.port.emit("set-refresh-button-icon", "done");
-						setTimeout(function () {
-							addTaskPanel.port.emit("set-refresh-button-icon", "refresh");
-						}, 1000);
-					}
-				},
-				function (fail) {
-					console.warn(fail);
-					if (addTaskPanel.isShowing) {
-						addTaskPanel.port.emit("set-refresh-button-icon", "error");
-						setTimeout(function () {
-							addTaskPanel.port.emit("set-refresh-button-icon", "refresh");
-						}, 1000);
-					}
+			rtm.get('rtm.lists.getList', {}, (resp) => {
+				me.lists = resp.rsp.lists.list;
+				if (addTaskPanel.isShowing) {
+					addTaskPanel.port.emit("update-lists", me.lists, me.getDefaultList());
+					addTaskPanel.port.emit("set-refresh-button-icon", "done");
+					setTimeout(() => {
+						addTaskPanel.port.emit("set-refresh-button-icon", "refresh");
+					}, 1000);
 				}
-			);
+			}, (fail) => {
+				console.warn(fail);
+				if (addTaskPanel.isShowing) {
+					addTaskPanel.port.emit("set-refresh-button-icon", "error");
+					setTimeout(() => {
+						addTaskPanel.port.emit("set-refresh-button-icon", "refresh");
+					}, 1000);
+				}
+			});
 		};
 
-		this.getDefaultList = function () {
-			var defaultList = preferences.defaultList;
+		this.getDefaultList = () => {
+			let defaultList = preferences.defaultList;
 			if (defaultList === null || defaultList === "") {
 				defaultList = "Inbox";
 			}

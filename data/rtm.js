@@ -7,7 +7,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function (appKey, appSecret, permissions) {
+	module.exports = function (appKey, appSecret, events, permissions) {
 
 		var storage = require("sdk/simple-storage").storage,
 			self = require("sdk/self"),
@@ -22,7 +22,7 @@
 		permissions = (permissions) ? permissions : 'read';
 
 		if (!appKey || !appSecret) {
-			throw 'Error: App Key and Secret Key must be defined.';
+			throw 'RTM Error: App Key and Secret Key must be defined.';
 		}
 
 		this.appKey = appKey;
@@ -104,9 +104,9 @@
 			new Request({
 				url: requestUrl,
 				overrideMimeType: "application/json; charset=utf-8",
-				onComplete: function (response) {
+				onComplete: (response) => {
 					console.log("*************************************");
-					console.log("Request         : " + requestUrl);
+//					console.log("Request         : " + requestUrl);
 					console.log("Request.Method  : " + method);
 					console.log("Response.Text   : " + response.text);
 					console.log("        .Status : " + response.status);
@@ -115,7 +115,7 @@
 					if (response.status === 200 && response.json.rsp.stat === "ok") {
 						complete(response.json);
 					} else {
-						me.handleError(response, error, function(){
+						me.handleError(response, error, function () {
 							me.get(method, params, complete, error);
 						});
 					}
@@ -131,7 +131,7 @@
 						storage.token = null;
 						me.auth_token = null;
 						me.fetchToken(retry);
-					} else if (rsp.err.code === "101"){
+					} else if (rsp.err.code === "101") {
 						storage.token = null;
 						me.auth_token = null;
 						storage.frob = null;
@@ -154,6 +154,7 @@
 					me.auth_token = resp.rsp.auth.token;
 					storage.token = resp.rsp.auth.token;
 					me.setTimeline();
+					events.do("rtm.newToken", this);
 					if (retry) {
 						retry();
 					}
