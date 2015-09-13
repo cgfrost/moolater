@@ -12,10 +12,6 @@
 
 		me.lists = [];
 
-		events.on("init", (sender) => {
-			console.log(`Tasks: Init recieved from ${sender}`);
-		});
-
 		let addTaskPanel = new Panel({
 			contentURL: self.data.url("views/add/addTask.html"),
 			position: button,
@@ -29,7 +25,6 @@
 		});
 
 		addTaskPanel.on("show", () => {
-			addTaskPanel.port.emit("set-state", true);
 			let title = preferences.useTitle ? tabs.activeTab.title : "";
 			let link = preferences.useLink ? tabs.activeTab.url : "";
 			if (link === "about:blank") {
@@ -78,6 +73,7 @@
 		// Methods
 
 		this.showAddTask = () => {
+			addTaskPanel.port.emit("set-state", true);
 			addTaskPanel.show();
 		};
 
@@ -91,8 +87,7 @@
 			}, 1300);
 		};
 
-		events.on("rtm.newToken", () => {
-			console.log("newToken, going to update the lists I know about");
+		events.on("token.init", () => {
 			this.fetchLists();
 		});
 

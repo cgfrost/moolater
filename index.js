@@ -39,14 +39,10 @@
 		}
 	});
 
-	events.do("init", "index.js");
-
 	if (account.isReady()) {
 		rtm.get('rtm.auth.checkToken', {}, () => {
-			rtm.setTimeline();
-			tasks.fetchLists();
+			events.do("token.init", "index");
 		});
 	}
-
 
 }());

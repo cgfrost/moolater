@@ -29,6 +29,13 @@
 		this.appSecret = appSecret;
 		this.permissions = permissions;
 
+		if (storage.token) {
+			this.auth_token = storage.token;
+		}
+		if (storage.frob) {
+			this.frob = storage.frob;
+		}
+
 		/**
 		 * Generates a RTM authentication URL
 		 *
@@ -40,12 +47,14 @@
 				perms: this.permissions
 			};
 
-			if (this.frob) {
-				params.frob = this.frob;
-			}
+			params.frob = this.frob;
 
 			return this.authUrl + this.encodeUrlParams(params);
 		};
+
+		events.on("token.init", () => {
+			this.setTimeline();
+		});
 
 		/**
 		 * Gets the timeline ID
@@ -106,7 +115,6 @@
 				overrideMimeType: "application/json; charset=utf-8",
 				onComplete: (response) => {
 					console.log("*************************************");
-//					console.log("Request         : " + requestUrl);
 					console.log("Request.Method  : " + method);
 					console.log("Response.Text   : " + response.text);
 					console.log("        .Status : " + response.status);
@@ -115,7 +123,7 @@
 					if (response.status === 200 && response.json.rsp.stat === "ok") {
 						complete(response.json);
 					} else {
-						me.handleError(response, error, function () {
+						me.handleError(response, error, () => {
 							me.get(method, params, complete, error);
 						});
 					}
@@ -130,13 +138,13 @@
 					if (rsp.err.code === "98") {
 						storage.token = null;
 						me.auth_token = null;
-						me.fetchToken(retry);
+						me.fetchToken(retry, error);
 					} else if (rsp.err.code === "101") {
 						storage.token = null;
 						me.auth_token = null;
 						storage.frob = null;
 						me.frob = null;
-						error("Access has expired, please log back in to Remember the Milk");
+						error("Access has expired or has not been granted, please log back in to Remember the Milk");
 					} else {
 						error(response.json.rsp.err.msg);
 					}
@@ -148,21 +156,20 @@
 			}
 		};
 
-		this.fetchToken = function (retry) {
-			this.get('rtm.auth.getToken', {},
-				function (resp) {
-					me.auth_token = resp.rsp.auth.token;
-					storage.token = resp.rsp.auth.token;
-					me.setTimeline();
-					events.do("rtm.newToken", this);
-					if (retry) {
-						retry();
-					}
-				},
-				function (fail) {
-					console.warn(fail);
+		this.fetchToken = function (retry, error) {
+			this.get('rtm.auth.getToken', {}, (resp) => {
+				me.auth_token = resp.rsp.auth.token;
+				storage.token = resp.rsp.auth.token;
+				events.do("token.init", "rtm");
+				if (retry) {
+					retry();
 				}
-			);
+			}, (fail) => {
+				if (error) {
+					error(fail);
+				}
+				console.warn(fail);
+			});
 		};
 
 		/**
