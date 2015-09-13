@@ -3,7 +3,7 @@
 (function () {
 	"use strict";
 
-	var taskForm = document.getElementById("new-task");
+	var contentElement = document.getElementById("content");
 	var taskElement = document.getElementById("task");
 	var taskLabel = document.getElementById("task-label");
 	var linkElement = document.getElementById("link");
@@ -84,12 +84,12 @@
 
 	addon.port.on("set-state", (clear, message, iconName) => {
 		if (clear) {
-			taskForm.classList.remove("hide");
+			contentElement.classList.remove("hide");
 			status.classList.add("hide");
 		} else {
 			setTextElement(statusMsg, message);
 			setIconState(statusImg, iconName);
-			taskForm.classList.add("hide");
+			contentElement.classList.add("hide");
 			status.classList.remove("hide");
 		}
 	});
