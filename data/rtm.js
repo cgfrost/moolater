@@ -5,14 +5,14 @@
  */
 
 (function () {
-	"use strict";
+	'use strict';
 
 	module.exports = function (appKey, appSecret, events, permissions) {
 
-		var storage = require("sdk/simple-storage").storage,
-			self = require("sdk/self"),
-			Request = require("sdk/request").Request,
-			md5 = require(self.data.url("md5")),
+		var storage = require('sdk/simple-storage').storage,
+			self = require('sdk/self'),
+			Request = require('sdk/request').Request,
+			md5 = require(self.data.url('md5')),
 			me = this;
 
 		this.authUrl = 'https://www.rememberthemilk.com/services/auth/';
@@ -52,7 +52,7 @@
 			return this.authUrl + this.encodeUrlParams(params);
 		};
 
-		events.on("token.init", () => {
+		events.on('token.init', () => {
 			this.setTimeline();
 		});
 
@@ -62,7 +62,7 @@
 		 * @return     Returns the timline ID String
 		 */
 		this.setTimeline = function () {
-			this.get("rtm.timelines.create", {},
+			this.get('rtm.timelines.create', {},
 				function (response) {
 					me.timeline = response.rsp.timeline;
 				},
@@ -112,15 +112,15 @@
 
 			new Request({
 				url: requestUrl,
-				overrideMimeType: "application/json; charset=utf-8",
+				overrideMimeType: 'application/json; charset=utf-8',
 				onComplete: (response) => {
-					console.log("*************************************");
-					console.log("Request.Method  : " + method);
-					console.log("Response.Text   : " + response.text);
-					console.log("        .Status : " + response.status);
-					console.log("        .Text   : " + response.statusText);
-					console.log("*************************************");
-					if (response.status === 200 && response.json.rsp.stat === "ok") {
+					console.log('*************************************');
+					console.log('Request.Method  : ' + method);
+					console.log('Response.Text   : ' + response.text);
+					console.log('        .Status : ' + response.status);
+					console.log('        .Text   : ' + response.statusText);
+					console.log('*************************************');
+					if (response.status === 200 && response.json.rsp.stat === 'ok') {
 						complete(response.json);
 					} else {
 						me.handleError(response, error, () => {
@@ -135,24 +135,24 @@
 			if (response.status === 200) {
 				var rsp = response.json.rsp;
 				if (rsp.err && rsp.err.msg && rsp.err.code) {
-					if (rsp.err.code === "98") {
+					if (rsp.err.code === '98') {
 						storage.token = null;
 						me.auth_token = null;
 						me.fetchToken(retry, error);
-					} else if (rsp.err.code === "101") {
+					} else if (rsp.err.code === '101') {
 						storage.token = null;
 						me.auth_token = null;
 						storage.frob = null;
 						me.frob = null;
-						error("Access has expired or has not been granted, please log back in to Remember the Milk");
+						error('Access has expired or has not been granted, please log back in to Remember the Milk');
 					} else {
 						error(response.json.rsp.err.msg);
 					}
 				} else {
-					error("Unidentified error while talking to Remember the Milk");
+					error('Unidentified error while talking to Remember the Milk');
 				}
 			} else {
-				error("Network Error: " + response.status + " " + response.statusText);
+				error('Network Error: ' + response.status + ' ' + response.statusText);
 			}
 		};
 
@@ -160,7 +160,7 @@
 			this.get('rtm.auth.getToken', {}, (resp) => {
 				me.auth_token = resp.rsp.auth.token;
 				storage.token = resp.rsp.auth.token;
-				events.do("token.init", "rtm");
+				events.do('token.init', 'rtm');
 				if (retry) {
 					retry();
 				}
