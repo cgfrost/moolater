@@ -25,6 +25,10 @@
 			contentElement.classList.add("hide");
 			status.classList.remove("hide");
 		}
+	addon.port.on("set-button-state", (disabled) => {
+		submitButton.disabled = disabled;
+		var message = disabled ? 'Checking' : 'Allow access' ;
+		util.setTextElement(submitButton, message);
 	});
 
 	var setIconState = (icon, iconName) => {

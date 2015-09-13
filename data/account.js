@@ -23,10 +23,11 @@
 		});
 
 		this.showLogin = () => {
-			loginPanel.port.emit("set-state", false, "Checking Remember the Milk", "loading");
+			loginPanel.port.emit("set-state", true);
+			loginPanel.port.emit("set-button-state", true);
 			loginPanel.show();
 			rtm.get('rtm.auth.getFrob', {}, (resp) => {
-				loginPanel.port.emit("set-state", true);
+				loginPanel.port.emit("set-button-state", false);
 				storage.frob = resp.rsp.frob;
 				rtm.frob = resp.rsp.frob;
 			}, (fail) => {
