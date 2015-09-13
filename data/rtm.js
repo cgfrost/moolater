@@ -72,6 +72,11 @@
 			);
 		};
 
+		this.setFrob = function (frob) {
+			storage.frob = frob;
+			me.frob = frob;
+		};
+
 		/**
 		 * Main method for making API calls
 		 *

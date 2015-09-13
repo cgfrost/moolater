@@ -28,8 +28,7 @@
 			loginPanel.show();
 			rtm.get('rtm.auth.getFrob', {}, (resp) => {
 				loginPanel.port.emit('set-button-state', false);
-				storage.frob = resp.rsp.frob;
-				rtm.frob = resp.rsp.frob;
+				rtm.setFrob(resp.rsp.frob);
 			}, (fail) => {
 				me.flashState(fail, 'error');
 			});
