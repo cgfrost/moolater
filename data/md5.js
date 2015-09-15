@@ -1,5 +1,12 @@
 /* global escape:false, unescape:false */
 
+/*
+CryptoJS v3.1.2
+code.google.com/p/crypto-js
+(c) 2009-2013 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+
 (function () {
 	'use strict';
 
@@ -554,7 +561,6 @@
 		 *
 		 * @property {number} blockSize The number of 32-bit words this hasher operates on. Default: 16 (512 bits)
 		 */
-//		var Hasher = C_lib.Hasher = BufferedBlockAlgorithm.extend({
 		var Hasher = BufferedBlockAlgorithm.extend({
 			/**
 			 * Configuration options.
@@ -655,7 +661,7 @@
 			 *
 			 * @example
 			 *
-			 *     var SHA256 = CryptoJS.lib.Hasher._createFunction(MD5);
+			 *     var md5 = Hasher._createFunction(MD5);
 			 */
 			_createFunction: function (hasher) {
 				return function (message, cfg) {
@@ -664,7 +670,6 @@
 			},
 
 		});
-
 
 		/**
 		 * END OF CORE IMPLEMENTATION - START OF MD5 ALGORITHM
@@ -684,15 +689,14 @@
 		var MD5 = Hasher.extend({
 			_doReset: function () {
 				this._hash = new WordArray.init([
-                0x67452301, 0xefcdab89,
-                0x98badcfe, 0x10325476
-            ]);
+                	0x67452301, 0xefcdab89,
+                	0x98badcfe, 0x10325476
+            	]);
 			},
 
 			_doProcessBlock: function (M, offset) {
 				// Swap endian
 				for (var i = 0; i < 16; i++) {
-					// Shortcuts
 					var offset_i = offset + i;
 					var M_offset_i = M[offset_i];
 
@@ -839,8 +843,6 @@
 					H[i] = (((H_i << 8) | (H_i >>> 24)) & 0x00ff00ff) |
 						(((H_i << 24) | (H_i >>> 8)) & 0xff00ff00);
 				}
-
-				// Return final computed hash
 				return hash;
 			},
 
