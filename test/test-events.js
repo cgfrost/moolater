@@ -55,12 +55,12 @@
 
 	before(exports, function (name) {
 		console.log("================================================================================");
-		console.log(`Running: ${name}`);
+		console.log(`Running events: ${name}`);
 		events.reset();
 	});
 
 	after(exports, function (name) {
-		console.log(`Finished: ${name}`);
+		console.log(`Finished events: ${name}`);
 		console.log("================================================================================");
 	});
 

@@ -120,10 +120,10 @@
 				overrideMimeType: 'application/json; charset=utf-8',
 				onComplete: (response) => {
 					console.log('*************************************');
-					console.log('Request.Method  : ' + method);
-					console.log('Response.Text   : ' + response.text);
-					console.log('        .Status : ' + response.status);
-					console.log('        .Text   : ' + response.statusText);
+					console.log(`Request.Method  : ${method}`);
+					console.log(`Response.Text   : ${response.text}`);
+					console.log(`        .Status : ${response.status}`);
+					console.log(`        .Text   : ${response.statusText}`);
 					console.log('*************************************');
 					if (response.status === 200 && response.json.rsp.stat === 'ok') {
 						complete(response.json);
@@ -157,7 +157,7 @@
 					error('Unidentified error while talking to Remember the Milk');
 				}
 			} else {
-				error('Network Error: ' + response.status + ' ' + response.statusText);
+				error(`Network Error:${response.status} ${response.statusText}`);
 			}
 		};
 
@@ -193,9 +193,9 @@
 
 			for (var key in params) {
 				if (firstParam) {
-					paramString += key + '=' + encodeURIComponent(params[key]);
+					paramString += `${key}=${encodeURIComponent(params[key])}`;
 				} else {
-					paramString += '&' + key + '=' + encodeURIComponent(params[key]);
+					paramString += `&${key}=${encodeURIComponent(params[key])}`;
 				}
 				firstParam = false;
 			}
@@ -222,7 +222,7 @@
 			}
 			signature = this.appSecret + signature;
 
-			return '&api_sig=' + md5(signature);
+			return `&api_sig=${md5(signature)}`;
 		};
 
 		return this;
