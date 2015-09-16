@@ -6,9 +6,9 @@
 	"id": "moolater@codewax",
 	"description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give MooLater permission to use your Remember the Milk account the first time you try to save a task.",
 	"main": "index.js",
-	"author": "Christopher Frost <moolater@codewax.org> (http://chrisfrost.com)",
+	"icon": "chrome://icons/content/icon-128.png",
+	"author": "Christopher Frost (http://chrisfrost.com)",
 	"homepage": "http://chrisfrost.com/moolater",
-    "icon": "/data/logo/icon-128.png",
 	"bugs": "https://github.com/cgfrost/moolater/issues",
 	"repository": {
 		"type": "git",
@@ -45,9 +45,10 @@
     	}
 	],
 	"permissions": {
-		"private-browsing": true
+		"private-browsing": true,
+		"multiprocess": true
 	},
 	"engines": {
-		"firefox": ">=38.0a1"
+		"firefox": ">=38.0a2 <=42.*"
 	}
 }
