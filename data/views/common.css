@@ -42,15 +42,15 @@ p.controls button {
 	border: 2px solid #005DC2;
 }
 
+p.controls button:hover {
+	background-color: #0a71e2;
+	cursor: pointer;
+}
+
 p.controls button:disabled {
 	background-color: #585858;
 	border-color: #585858;
 	cursor: wait;
-}
-
-p.controls button:hover {
-	background-color: #0a71e2;
-	cursor: pointer;
 }
 
 #status-img {

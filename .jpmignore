@@ -2,4 +2,7 @@
 .DS_Store
 .jshintrc
 .jscs.json
-test-profile
+*-profile
+.git
+.travis.yml
+.gitignore
