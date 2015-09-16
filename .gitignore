@@ -1,4 +1,4 @@
 *.xpi
 .DS_Store
-keys.json
+data.json
 dev-profile

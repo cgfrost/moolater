@@ -73,6 +73,10 @@
 			addTaskPanel.show();
 		};
 
+		this.hide = () => {
+			addTaskPanel.hide();
+		};
+
 		this.flashState = (message, icon) => {
 			addTaskPanel.port.emit('set-state', false, message, icon);
 			setTimeout(() => {

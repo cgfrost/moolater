@@ -7,12 +7,13 @@
 (function () {
 	'use strict';
 
-	module.exports = function (appKey, appSecret, events, permissions) {
+	module.exports = function (events, permissions) {
 
 		var storage = require('sdk/simple-storage').storage,
 			self = require('sdk/self'),
 			Request = require('sdk/request').Request,
 			md5 = require(self.data.url('md5')),
+			data = JSON.parse(self.data.load('data.json')),
 			me = this;
 
 		this.authUrl = 'https://www.rememberthemilk.com/services/auth/';
@@ -21,12 +22,10 @@
 
 		permissions = (permissions) ? permissions : 'read';
 
-		if (!appKey || !appSecret) {
-			throw 'RTM Error: App Key and Secret Key must be defined.';
+		if (!data.a || !data.b) {
+			throw 'RTM Error: Missing data.';
 		}
 
-		this.appKey = appKey;
-		this.appSecret = appSecret;
 		this.permissions = permissions;
 
 		if (storage.token) {
@@ -43,7 +42,7 @@
 		 */
 		this.getAuthUrl = function () {
 			var params = {
-				api_key: this.appKey,
+				api_key: data.a,
 				perms: this.permissions
 			};
 
@@ -75,6 +74,10 @@
 		this.setFrob = function (frob) {
 			storage.frob = frob;
 			me.frob = frob;
+		};
+
+		this.hasFrob = function () {
+			return (me.frob && storage.frob);
 		};
 
 		/**
@@ -144,18 +147,15 @@
 						storage.token = null;
 						me.auth_token = null;
 						me.fetchToken(retry, error);
+						return;
 					} else if (rsp.err.code === '101') {
 						storage.token = null;
 						me.auth_token = null;
 						storage.frob = null;
 						me.frob = null;
-						error('Access has expired or has not been granted, please log back in to Remember the Milk');
-					} else {
-						error(response.json.rsp.err.msg);
 					}
-				} else {
-					error('Unidentified error while talking to Remember the Milk');
 				}
+				error(`Error ${rsp.err.code}: ${rsp.err.msg}`);
 			} else {
 				error(`Network Error:${response.status} ${response.statusText}`);
 			}
@@ -173,7 +173,6 @@
 				if (error) {
 					error(fail);
 				}
-				console.warn(fail);
 			});
 		};
 
@@ -189,7 +188,7 @@
 				firstParam = true;
 
 			params.format = this.format;
-			params.api_key = this.appKey;
+			params.api_key = data.a;
 
 			for (var key in params) {
 				if (firstParam) {
@@ -220,7 +219,7 @@
 			for (var i = 0; i < keys.length; i++) {
 				signature += keys[i] + params[keys[i]];
 			}
-			signature = this.appSecret + signature;
+			signature = data.b + signature;
 
 			return `&api_sig=${md5(signature)}`;
 		};

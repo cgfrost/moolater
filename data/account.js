@@ -24,14 +24,22 @@
 
 		this.showLogin = () => {
 			loginPanel.port.emit('set-state', true);
-			loginPanel.port.emit('set-button-state', true);
-			loginPanel.show();
-			rtm.get('rtm.auth.getFrob', {}, (resp) => {
+			if (!rtm.hasFrob()) {
+				loginPanel.port.emit('set-button-state', true);
+				rtm.get('rtm.auth.getFrob', {}, (resp) => {
+					loginPanel.port.emit('set-button-state', false);
+					rtm.setFrob(resp.rsp.frob);
+				}, (fail) => {
+					me.flashState(fail, 'error');
+				});
+			} else {
 				loginPanel.port.emit('set-button-state', false);
-				rtm.setFrob(resp.rsp.frob);
-			}, (fail) => {
-				me.flashState(fail, 'error');
-			});
+			}
+			loginPanel.show();
+		};
+
+		this.hide = () => {
+			loginPanel.hide();
 		};
 
 		this.isReady = () => {
