@@ -25,8 +25,8 @@
 		});
 
 		addTaskPanel.on('show', () => {
-			let title = preferences.useTitle ? tabs.activeTab.title : '';
-			let link = preferences.useLink ? tabs.activeTab.url : '';
+			let title = preferences['extensions.moolater.useTitle'] ? tabs.activeTab.title : '';
+			let link = preferences['extensions.moolater.useLink'] ? tabs.activeTab.url : '';
 			if (link === 'about:blank') {
 				link = '';
 			}
@@ -36,7 +36,7 @@
 
 		addTaskPanel.port.on('add-task', (name, link, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
-			let useSmartAdd = preferences.useSmartAdd ? 1 : 0;
+			let useSmartAdd = preferences['extensions.moolater.useSmartAdd'] ? 1 : 0;
 			rtm.get('rtm.tasks.add', {
 				list_id: listId,
 				name: name,
@@ -116,7 +116,7 @@
 		};
 
 		this.getDefaultList = () => {
-			let defaultList = preferences.defaultList;
+			let defaultList = preferences['extensions.moolater.defaultList'];
 			if (defaultList === null || defaultList === '') {
 				defaultList = 'Inbox';
 			}

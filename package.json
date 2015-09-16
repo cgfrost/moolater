@@ -16,28 +16,28 @@
 	},
 	"preferences": [
 		{
-			"name": "defaultList",
+			"name": "extensions.moolater.defaultList",
 			"title": "Default List",
 			"description": "List to save new tasks to, if it dosn't exist new tasks will go in the Inbox.",
 			"type": "string",
 			"value": "Read Later"
     	},
 		{
-			"name": "useTitle",
+			"name": "extensions.moolater.useTitle",
 			"title": "Use Title",
 			"description": "Use the title of the current tab as a task description.",
 			"type": "bool",
 			"value": true
     	},
 		{
-			"name": "useLink",
+			"name": "extensions.moolater.useLink",
 			"title": "Use Address",
 			"description": "Use the address of the current tab as a task link.",
 			"type": "bool",
 			"value": true
     	},
 		{
-			"name": "useSmartAdd",
+			"name": "extensions.moolater.useSmartAdd",
 			"title": "Use Smart Add",
 			"description": "Tell Remember The Milk to use Smart Add when adding a task.",
 			"type": "bool",
