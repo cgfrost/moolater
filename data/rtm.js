@@ -7,13 +7,12 @@
 (function () {
 	'use strict';
 
-	module.exports = function (events, permissions) {
+	module.exports = function (data, events, permissions) {
 
 		var storage = require('sdk/simple-storage').storage,
 			self = require('sdk/self'),
 			Request = require('sdk/request').Request,
 			md5 = require(self.data.url('md5')),
-			data = JSON.parse(self.data.load('data.json')),
 			me = this;
 
 		this.authUrl = 'https://www.rememberthemilk.com/services/auth/';
@@ -122,12 +121,12 @@
 				url: requestUrl,
 				overrideMimeType: 'application/json; charset=utf-8',
 				onComplete: (response) => {
-					console.log('*************************************');
-					console.log(`Request.Method  : ${method}`);
-					console.log(`Response.Text   : ${response.text}`);
-					console.log(`        .Status : ${response.status}`);
-					console.log(`        .Text   : ${response.statusText}`);
-					console.log('*************************************');
+//					console.log('*************************************');
+//					console.log(`Request.Method  : ${method}`);
+//					console.log(`Response.Text   : ${response.text}`);
+//					console.log(`        .Status : ${response.status}`);
+//					console.log(`        .Text   : ${response.statusText}`);
+//					console.log('*************************************');
 					if (response.status === 200 && response.json.rsp.stat === 'ok') {
 						complete(response.json);
 					} else {

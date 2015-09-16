@@ -64,12 +64,19 @@
 		while (listsElement.firstChild) {
 			listsElement.removeChild(listsElement.firstChild);
 		}
+		var defaultFound = false;
 		for (var i = 0; i < lists.length; i++) {
 			if (lists[i].smart === '0') {
 				var selected = defaultList === lists[i].name;
+				if (selected){
+					defaultFound = true;
+				}
 				var newOption = createOptionElement(lists[i].id, lists[i].name, selected);
 				listsElement.appendChild(newOption);
 			}
+		}
+		if (!defaultFound){
+			listsElement.selectedIndex = "0";
 		}
 	});
 

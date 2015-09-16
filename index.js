@@ -7,9 +7,10 @@
 		Account = new require(self.data.url('account.js')),
 		Tasks = new require(self.data.url('tasks.js')),
 		events = require(self.data.url('events.js')),
+		data = JSON.parse(self.data.load('data.json')),
 		Hotkey = require("sdk/hotkeys").Hotkey;
 
-	let rtm = new RememberTheMilk(events, 'write');
+	let rtm = new RememberTheMilk(data, events, 'write');
 
 	let button = new ToggleButton({
 		id: 'moolater-link',
