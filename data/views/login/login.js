@@ -14,6 +14,7 @@
 		submitButton.disabled = disabled;
 		var message = disabled ? 'Checking' : 'Allow access' ;
 		util.setTextElement(submitButton, message);
+		submitButton.focus();
 	});
 
 }());

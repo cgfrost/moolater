@@ -6,13 +6,10 @@
 		RememberTheMilk = require(self.data.url('rtm.js')),
 		Account = new require(self.data.url('account.js')),
 		Tasks = new require(self.data.url('tasks.js')),
-		events = require(self.data.url('events.js'));
+		events = require(self.data.url('events.js')),
+		Hotkey = require("sdk/hotkeys").Hotkey;
 
-	let {
-		apiKey, apiSecret
-	} = JSON.parse(self.data.load('keys.json'));
-
-	let rtm = new RememberTheMilk(apiKey, apiSecret, events, 'write');
+	let rtm = new RememberTheMilk(events, 'write');
 
 	let button = new ToggleButton({
 		id: 'moolater-link',
@@ -26,6 +23,13 @@
 		}
 	});
 
+	new Hotkey({
+		combo: "accel-shift-m",
+		onPress: function () {
+			button.click();
+		}
+	});
+
 	let tasks = new Tasks(rtm, button, events);
 	let account = new Account(rtm, button, events);
 
@@ -36,6 +40,9 @@
 			} else {
 				account.showLogin();
 			}
+		} else {
+			tasks.hide();
+			account.hide();
 		}
 	});
 

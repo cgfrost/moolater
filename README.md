@@ -5,6 +5,11 @@
 </p>
 Firefox extension for quickly saving a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar. It populates the URL field of the task in RTM with the current URL. In the settings panel you can choose to have the title of the page entered as the task description. When a first version is ready it will be published in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/extensions/).
 
+# Hot Key
+
+On Windows/Linux `Control + Shift + M` will open Moo Later.
+On Mac `Command + Shift + M` will open Moo Later.
+
 # Settings
 
 This extension can be configured through the Firefox Add-ons preferences page. This is accessed by clicking the menu items `Tools -> Add-ons`. Then select `Extensions` from the side menu and click the `Preferences` button for Moo Later. 
