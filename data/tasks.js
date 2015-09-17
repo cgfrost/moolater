@@ -24,7 +24,8 @@
 			}
 		});
 
-		addTaskPanel.on('show', () => {
+		this.showAddTask = () => {
+			addTaskPanel.port.emit('set-state', true);
 			let title = preferences['extensions.moolater.useTitle'] ? tabs.activeTab.title : '';
 			let link = preferences['extensions.moolater.useLink'] ? tabs.activeTab.url : '';
 			if (link === 'about:blank') {
@@ -32,7 +33,12 @@
 			}
 			addTaskPanel.port.emit('update-task', title, link);
 			addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
-		});
+			addTaskPanel.show();
+		};
+
+		this.hide = () => {
+			addTaskPanel.hide();
+		};
 
 		addTaskPanel.port.on('add-task', (name, link, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
@@ -67,15 +73,6 @@
 		addTaskPanel.port.on('update-lists', () => {
 			me.fetchLists();
 		});
-
-		this.showAddTask = () => {
-			addTaskPanel.port.emit('set-state', true);
-			addTaskPanel.show();
-		};
-
-		this.hide = () => {
-			addTaskPanel.hide();
-		};
 
 		this.flashState = (message, icon) => {
 			addTaskPanel.port.emit('set-state', false, message, icon);
