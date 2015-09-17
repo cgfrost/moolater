@@ -47,10 +47,12 @@
 		}
 	});
 
-	if (account.isReady()) {
-		rtm.get('rtm.auth.checkToken', {}, () => {
-			events.do('token.init', 'index');
-		});
-	}
+	(function () {
+		if (account.isReady()) {
+			rtm.get('rtm.auth.checkToken', {}, () => {
+				events.do('token.init', 'index');
+			});
+		}
+	}());
 
 }());
