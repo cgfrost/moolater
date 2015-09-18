@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	module.exports = function (rtm, button, events) {
+	module.exports = function (milk, button, events) {
 
 		let tabs = require('sdk/tabs'),
 			self = require('sdk/self'),
@@ -43,22 +43,22 @@
 		addTaskPanel.port.on('add-task', (name, link, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
 			let useSmartAdd = preferences['extensions.moolater.useSmartAdd'] ? 1 : 0;
-			rtm.get('rtm.tasks.add', {
+			milk.get('rtm.tasks.add', {
 				list_id: listId,
 				name: name,
-				timeline: rtm.timeline,
+				timeline: milk.timeline,
 				parse: useSmartAdd
 			}, (resp) => {
 				let newTask = resp.rsp.list;
 				if (link === '') {
 					me.flashState(newTask.taskseries.name, 'done');
 				} else {
-					rtm.get('rtm.tasks.setURL', {
+					milk.get('rtm.tasks.setURL', {
 						list_id: newTask.id,
 						taskseries_id: newTask.taskseries.id,
 						task_id: newTask.taskseries.task.id,
 						url: link,
-						timeline: rtm.timeline
+						timeline: milk.timeline
 					}, () => {
 						me.flashState(newTask.taskseries.name, 'done');
 					}, (fail) => {
@@ -92,7 +92,7 @@
 			if (addTaskPanel.isShowing) {
 				addTaskPanel.port.emit('set-refresh-button-icon', 'loading');
 			}
-			rtm.get('rtm.lists.getList', {}, (resp) => {
+			milk.get('rtm.lists.getList', {}, (resp) => {
 				me.lists = resp.rsp.lists.list;
 				if (addTaskPanel.isShowing) {
 					addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
@@ -121,9 +121,9 @@
 		};
 
 		//		this.addList = function (name) {
-		//			rtm.get('rtm.lists.add', {
+		//			milk.get('milk.lists.add', {
 		//					name: name,
-		//					timeline: rtm.timeline
+		//					timeline: milk.timeline
 		//				},
 		//				function (resp) {
 		//					var newList = resp.rsp.list;

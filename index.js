@@ -3,18 +3,18 @@
 
 	let self = require('sdk/self'),
 		ToggleButton = require('sdk/ui').ToggleButton,
-		RememberTheMilk = require(self.data.url('rtm.js')),
+		RememberTheMilk = require(self.data.url('milk.js')),
 		Account = new require(self.data.url('account.js')),
 		Tasks = new require(self.data.url('tasks.js')),
 		events = require(self.data.url('events.js')),
 		data = JSON.parse(self.data.load('data.json')),
 		Hotkey = require("sdk/hotkeys").Hotkey;
 
-	let rtm = new RememberTheMilk(data, events, 'write');
+	let milk = new RememberTheMilk(data, events, 'write');
 
 	let button = new ToggleButton({
-		id: 'moolater-link',
-		label: 'Save to RTM',
+		id: 'moolater-toggle',
+		label: 'Save to milk',
 		icon: {
 			'18': './logo/icon-18.png',
 			'32': './logo/icon-32.png',
@@ -31,8 +31,8 @@
 		}
 	});
 
-	let tasks = new Tasks(rtm, button, events);
-	let account = new Account(rtm, button, events);
+	let tasks = new Tasks(milk, button, events);
+	let account = new Account(milk, button, events);
 
 	button.on('change', (state) => {
 		if (state.checked === true) {
@@ -49,7 +49,7 @@
 
 	(function () {
 		if (account.isReady()) {
-			rtm.get('rtm.auth.checkToken', {}, () => {
+			milk.get('milk.auth.checkToken', {}, () => {
 				events.do('token.init', 'index');
 			});
 		}

@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	module.exports = function (rtm, button) {
+	module.exports = function (milk, button) {
 
 		let storage = require('sdk/simple-storage').storage,
 			windows = require('sdk/windows').browserWindows,
@@ -24,11 +24,11 @@
 
 		this.showLogin = () => {
 			loginPanel.port.emit('set-state', true);
-			if (!rtm.hasFrob()) {
+			if (!milk.hasFrob()) {
 				loginPanel.port.emit('set-button-state', true);
-				rtm.get('rtm.auth.getFrob', {}, (resp) => {
+				milk.get('rtm.auth.getFrob', {}, (resp) => {
 					loginPanel.port.emit('set-button-state', false);
-					rtm.setFrob(resp.rsp.frob);
+					milk.setFrob(resp.rsp.frob);
 				}, (fail) => {
 					me.flashState(fail, 'error');
 				});
@@ -52,10 +52,10 @@
 		loginPanel.port.on('do-login', () => {
 			loginPanel.port.emit('set-state', false, 'Requesting permission', 'loading');
 			windows.open({
-				url: rtm.getAuthUrl(),
+				url: milk.getAuthUrl(),
 				onClose: () => {
 					loginPanel.port.emit('set-state', true);
-					rtm.fetchToken();
+					milk.fetchToken();
 				}
 			});
 			button.state('window', {

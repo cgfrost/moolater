@@ -1,9 +1,3 @@
-/**
- *   Remember The Milk Client
- *
- *   Copyright (c) 2011 Michael Day <manveru.alma@gmail.com>
- */
-
 (function () {
 	'use strict';
 
@@ -22,7 +16,7 @@
 		permissions = (permissions) ? permissions : 'read';
 
 		if (!data.a || !data.b) {
-			throw 'RTM Error: Missing data.';
+			throw 'Milk Error: Missing data.';
 		}
 
 		this.permissions = permissions;
@@ -164,7 +158,7 @@
 			this.get('rtm.auth.getToken', {}, (resp) => {
 				me.auth_token = resp.rsp.auth.token;
 				storage.token = resp.rsp.auth.token;
-				events.do('token.init', 'rtm');
+				events.do('token.init', 'milk');
 				if (retry) {
 					retry();
 				}

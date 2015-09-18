@@ -5,7 +5,7 @@
 </p>
 
 Firefox extension for quickly saving a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar. The title and link of the current page are used to create the new task. The first version is being reviewed by Mozilla and is in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/). Using Moo Later is easy: Login, check the details then add it.
-<p>
+<p align="center">
 	<img src="screenshots/step-1.png?raw=true" alt="Moo Later Logo" width="205"/>
 	<img src="screenshots/step-2.png?raw=true" alt="Moo Later Logo" width="205"/>
 	<img src="screenshots/step-3.png?raw=true" alt="Moo Later Logo" width="205"/>

@@ -1,54 +1,63 @@
 {
-	"title": "Moo Later",
-	"name": "moolater",
-	"version": "1.0.0",
-	"license": "MITNFA",
-	"id": "moolater@codewax",
-	"description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give MooLater permission to use your Remember the Milk account the first time you try to save a task.",
-	"main": "index.js",
-	"icon": "chrome://icons/content/icon-128.png",
-	"author": "Christopher Frost (http://chrisfrost.com)",
-	"homepage": "http://chrisfrost.com/moolater",
-	"bugs": "https://github.com/cgfrost/moolater/issues",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/cgfrost/moolater"
-	},
-	"preferences": [
-		{
-			"name": "extensions.moolater.defaultList",
-			"title": "Default List",
-			"description": "List to save new tasks to, if it dosn't exist new tasks will go in the Inbox.",
-			"type": "string",
-			"value": "Read Later"
-    	},
-		{
-			"name": "extensions.moolater.useTitle",
-			"title": "Use Title",
-			"description": "Use the title of the current tab as a task description.",
-			"type": "bool",
-			"value": true
-    	},
-		{
-			"name": "extensions.moolater.useLink",
-			"title": "Use Address",
-			"description": "Use the address of the current tab as a task link.",
-			"type": "bool",
-			"value": true
-    	},
-		{
-			"name": "extensions.moolater.useSmartAdd",
-			"title": "Use Smart Add",
-			"description": "Tell Remember The Milk to use Smart Add when adding a task.",
-			"type": "bool",
-			"value": true
-    	}
-	],
-	"permissions": {
-		"private-browsing": true,
-		"multiprocess": true
-	},
-	"engines": {
-		"firefox": ">=38.0a2 <=42.*"
-	}
+  "title": "Moo Later",
+  "name": "moolater",
+  "version": "1.0.0",
+  "license": "MITNFA",
+  "id": "moolater@codewax",
+  "description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give MooLater permission to use your Remember the Milk account the first time you try to save a task.",
+  "main": "index.js",
+  "icon": "chrome://icons/content/icon-128.png",
+  "author": "Christopher Frost (http://chrisfrost.com)",
+  "homepage": "http://chrisfrost.com/moolater",
+  "bugs": "https://github.com/cgfrost/moolater/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cgfrost/moolater"
+  },
+  "scripts": {
+    "info": "echo 'NPM build tool'",
+    "pretest": "echo '=> linting\n' && ./node_modules/.bin/jshint --config .jshintrc data/*.js test/*.js",
+    "test": "echo '=> testing\n' && jpm test",
+    "build": "npm run test -s && echo '\n=> building\n' && jpm xpi"
+  },
+  "preferences": [
+    {
+      "name": "extensions.moolater.defaultList",
+      "title": "Default List",
+      "description": "List to save new tasks to, if it dosn't exist new tasks will go in the Inbox.",
+      "type": "string",
+      "value": "Read Later"
+    },
+    {
+      "name": "extensions.moolater.useTitle",
+      "title": "Use Title",
+      "description": "Use the title of the current tab as a task description.",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "extensions.moolater.useLink",
+      "title": "Use Address",
+      "description": "Use the address of the current tab as a task link.",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "extensions.moolater.useSmartAdd",
+      "title": "Use Smart Add",
+      "description": "Tell Remember The Milk to use Smart Add when adding a task.",
+      "type": "bool",
+      "value": true
+    }
+  ],
+  "permissions": {
+    "private-browsing": true,
+    "multiprocess": true
+  },
+  "engines": {
+    "firefox": ">=38.0a2 <=42.*"
+  },
+  "devDependencies": {
+    "jshint": "^2.8.0"
+  }
 }

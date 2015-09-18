@@ -9,5 +9,6 @@ before_script:
   - sh -e /etc/init.d/xvfb start
   - tar xvjf /tmp/firefox-*.tar.bz2 -C $TRAVIS_BUILD_DIR/
   - npm install jpm -g
+	- npm install
 script:
-  - jpm test
+  - npm test -s

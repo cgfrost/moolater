@@ -9,3 +9,4 @@
 .gitignore
 test/*
 screenshots/*
+node_modules
