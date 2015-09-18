@@ -9,7 +9,7 @@
 	let Milk = require('./stub-milk.js');
 	let	ToggleButton = require('sdk/ui').ToggleButton;
 	let	Account = new require('../data/account.js');
-	let stubMilk = new Milk(false);
+	let stubMilk = new Milk();
 
 	let button = new ToggleButton({
 		id: 'test-moolater-toggle-account',

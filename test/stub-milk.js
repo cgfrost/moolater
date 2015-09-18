@@ -1,26 +1,40 @@
 (function () {
 	'use strict';
 
-	module.exports = function (fail) {
-		
-		/**
-		 * Main method for making API calls
-		 *
-		 * @param method    Specifies what API method to be used
-		 * @param params    Array of API parameters to accompany the method parameter
-		 * @param complete  Callback to fire after the request comes back
-		 * @param error     (Optional) Callback to fire if the request fails
-		 * @return          Returns the reponse from the milk API
-		 */
+	module.exports = function () {
+
+		let lastCalled = '';
+
+		let result = {};
+
+		let succeed = true;
+
+		// Stubbed methods
+
 		this.get = function (method, params, complete, error) {
 			console.log(`Get called with method '${method}' and params '${params}'`);
-			if(fail){
-				error('Fail requested');
+			lastCalled = method;
+			if(succeed){
+				complete(result);
 			}else{
-				complete('Sucsess requested');
+				error(result);
 			}
 		};
 		
+		// Helper methods
+
+		this.getLastMethodCalled = function(){
+			return lastCalled;
+		};
+
+		this.setMethodReturn = function(newResult){
+			result = newResult;
+		};
+
+		this.setSucceed = function(newSucceed) {
+			succeed = newSucceed;
+		};
+
 	};
 	
 }());
