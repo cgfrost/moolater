@@ -1,11 +1,17 @@
-# Moo Later [![Build Status](https://travis-ci.org/cgfrost/moolater.svg?branch=master)](https://travis-ci.org/cgfrost/moolater)
+# Moo Later &nbsp;&nbsp;[![Build Status](https://travis-ci.org/cgfrost/moolater.svg?branch=master)](https://travis-ci.org/cgfrost/moolater)
 
 <p align="center">
   <img src="data/logo/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
 </p>
-Firefox extension for quickly saving a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar. It populates the URL field of the task in RTM with the current URL. In the settings panel you can choose to have the title of the page entered as the task description. When a first version is ready it will be published in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/extensions/).
 
-# Hot Key
+Firefox extension for quickly saving a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar. The title and link of the current page are used to create the new task. The first version is being reviewed by Mozilla and is in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/). Using Moo Later is easy: Login, check the details then add it.
+<p>
+	<img src="screenshots/screenshot-1.png?raw=true" alt="Moo Later Logo" width="205"/>
+	<img src="screenshots/screenshot-2.png?raw=true" alt="Moo Later Logo" width="205"/>
+	<img src="screenshots/screenshot-3.png?raw=true" alt="Moo Later Logo" width="205"/>
+</p>
+
+# Hotkeys
 
 On Windows/Linux `Control + Shift + M` will open Moo Later.
 On Mac `Command + Shift + M` will open Moo Later.
@@ -23,7 +29,7 @@ When entering a new task the Address must be a valid URL that starts with `http:
 
 # Future Features
 
-After releasing version 1.0.0 with a decent set of initial features I plan on adding the following.
+Once version 1.0.0 is approved I plan on adding the following.
 
 * Remorse option to remove the previously added task.
 * The ability to create new lists straight from the Moo Later UI.
