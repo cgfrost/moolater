@@ -25,7 +25,7 @@
 	});
 
 	new Hotkey({
-		combo: "accel-shift-m",
+		combo: 'accel-shift-m',
 		onPress: function () {
 			button.click();
 		}
