@@ -1,4 +1,4 @@
-# Moo Later &nbsp;&nbsp;[![Build Status](https://travis-ci.org/cgfrost/moolater.svg?branch=master)](https://travis-ci.org/cgfrost/moolater)
+# Moo Later &nbsp;&nbsp;[![Build Status](https://travis-ci.org/cgfrost/moolater.svg?branch=master)](https://travis-ci.org/cgfrost/moolater) [![dependencies Status](https://david-dm.org/cgfrost/moolater/status.png?theme=shields.io)](https://david-dm.org/cgfrost/moolater#info=dependencies) [![devDependencies Status](https://david-dm.org/cgfrost/moolater/dev-status.png?theme=shields.io)](https://david-dm.org/cgfrost/moolater#info=devDependencies)
 
 <p align="center">
   <img src="data/logo/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
