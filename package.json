@@ -1,7 +1,7 @@
 {
   "title": "Moo Later",
   "name": "moolater",
-  "version": "1.0.1-snapshot",
+  "version": "1.0.1",
   "license": "MITNFA",
   "id": "moolater@codewax",
   "description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give MooLater permission to use your Remember the Milk account the first time you try to save a task.",
