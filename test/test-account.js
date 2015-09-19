@@ -22,7 +22,7 @@
 		setTimeout(() => {
 			assert.strictEqual(true, account.isShowing(), 'Login panel not displayed.');
 			done();
-		}, 500);
+		}, 5000);
 	};
 
 	exports['test isReady'] = function (assert) {
