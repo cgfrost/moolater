@@ -8,25 +8,36 @@
 
 	let Events = require('../data/events.js');
 	let Milk = require('./stub-milk.js');
-	let	ToggleButton = require('sdk/ui').ToggleButton;
-	let	Tasks = new require('../data/tasks.js');
+	let Tasks = new require('../data/tasks.js');
+	let stubButtonFactory = require('./stub-toggle-button.js');
 
+	let setTimeout = require('sdk/timers').setTimeout;
 	let stubMilk = new Milk();
+	let button = stubButtonFactory('test-moolater-toggle-tasks');
 	let events = new Events();
 
-	let button = new ToggleButton({
-		id: 'test-moolater-toggle-tasks',
-		label: 'Save to milk',
-		icon: './logo/icon-32.png'
-	});
+	exports['test showAddTask'] = function (assert, done) {
+		let tasks = new Tasks(stubMilk, button, events);
+		tasks.showAddTask();
+		setTimeout(() => {
+			assert.strictEqual(true, tasks.isShowing(), 'Task panel not displayed.');
+			done();
+		}, 300);
+	};
 
 	exports['test getDefaultList'] = function (assert) {
 		let tasks = new Tasks(stubMilk, button, events);
 		assert.strictEqual('Read Later', tasks.getDefaultList(), 'Wrong default list returned.');
 	};
 
-	exports['test new token event'] = function (assert) {
-		stubMilk.setMethodReturn({rsp: {lists: {list: [{id: '1'},{id: '1'}]}}});
+	exports['test token.init event'] = function (assert) {
+		stubMilk.setMethodReturn({
+			rsp: {
+				lists: {
+					list: []
+				}
+			}
+		});
 		new Tasks(stubMilk, button, events);
 		events.do('token.init');
 		assert.strictEqual('rtm.lists.getList', stubMilk.getLastMethodCalled(), 'Lists not refreshed after new token event.');

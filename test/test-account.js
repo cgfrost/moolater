@@ -8,16 +8,22 @@
 
 	let Events = require('../data/events.js');
 	let Milk = require('./stub-milk.js');
-	let	ToggleButton = require('sdk/ui').ToggleButton;
-	let	Account = new require('../data/account.js');
+	let Account = new require('../data/account.js');
+	let stubButtonFactory = require('./stub-toggle-button.js');
+
+	let setTimeout = require('sdk/timers').setTimeout;
 	let events = new Events();
 	let stubMilk = new Milk();
+	let button = stubButtonFactory('test-moolater-toggle-account');
 
-	let button = new ToggleButton({
-		id: 'test-moolater-toggle-account',
-		label: 'Save to milk',
-		icon: './logo/icon-32.png'
-	});
+	exports['test showLogin'] = function (assert, done) {
+		let account = new Account(stubMilk, button, events);
+		account.showLogin();
+		setTimeout(() => {
+			assert.strictEqual(true, account.isShowing(), 'Login panel not displayed.');
+			done();
+		}, 300);
+	};
 
 	exports['test isReady'] = function (assert) {
 		let account = new Account(stubMilk, button, events);

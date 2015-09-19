@@ -42,6 +42,10 @@
 			loginPanel.hide();
 		};
 
+		this.isShowing = () => {
+			return loginPanel.isShowing;
+		};
+
 		this.isReady = () => {
 			if (storage.token && storage.frob) {
 				return true;

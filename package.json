@@ -16,9 +16,9 @@
   },
   "scripts": {
     "info": "echo 'NPM build tool'",
-    "pretest": "echo '=> linting\n' && ./node_modules/.bin/jshint --config .jshintrc data/*.js test/*.js",
-    "test": "echo '=> testing\n' && jpm test",
-    "build": "npm run test -s && echo '\n=> building\n' && jpm xpi"
+    "pretest": "echo '=> linting' && ./node_modules/.bin/jshint --config .jshintrc data/*.js test/*.js",
+    "test": "echo '=> testing' && jpm test",
+    "build": "npm run test -s && echo '=> building' && jpm xpi"
   },
   "preferences": [
     {

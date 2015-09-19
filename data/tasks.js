@@ -40,6 +40,10 @@
 			addTaskPanel.hide();
 		};
 
+		this.isShowing = () => {
+			return addTaskPanel.isShowing;
+		};
+
 		addTaskPanel.port.on('add-task', (name, link, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
 			let useSmartAdd = preferences['extensions.moolater.useSmartAdd'] ? 1 : 0;
