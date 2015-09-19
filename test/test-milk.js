@@ -5,8 +5,10 @@
 	let {
 		before, after
 	} = require('sdk/test/utils');
-	let events = require("../data/events.js");
+	let Events = require("../data/events.js");
 	let RememberTheMilk = require('../data/milk.js');
+
+	let events = new Events();
 
 	exports['test auth url'] = function (assert) {
 		let milk = new RememberTheMilk({a: 'key', b: 'secret'}, events, 'write');

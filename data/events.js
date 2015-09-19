@@ -1,76 +1,76 @@
 (function () {
 	'use strict';
 
-	//	module.exports = function () {
-
 	let subs = new Map();
 
-	/*
-	 * Send an event to any subscribed listeners
-	 *
-	 * @param eventName
-	 * @param callback
-	 * @return
-	 */
-	module.exports.do = function (eventName, sender) {
-		if (subs.has(eventName)) {
-			subs.get(eventName).forEach(listener => {
-				listener(sender);
-			});
-		}
-	};
+	module.exports = function () {
 
-	/*
-	 * Register a listener for the given event name
-	 *
-	 * @param eventName
-	 * @param callback
-	 * @return
-	 */
-	module.exports.on = function (eventName, listener) {
-		if (subs.has(eventName)) {
-			subs.get(eventName).add(listener);
-		} else {
-			subs.set(eventName, new Set().add(listener));
-		}
-	};
-
-	/*
-	 * Unregister a listener for the given event name
-	 *
-	 * @param eventName
-	 * @param callback
-	 * @return
-	 */
-	module.exports.off = function (eventName, callback) {
-		if (subs.has(eventName)) {
-			subs.get(eventName).delete(callback);
-			if (subs.get(eventName).size === 0) {
-				subs.delete(eventName);
+		/*
+		 * Send an event to any subscribed listeners
+		 *
+		 * @param eventName
+		 * @param callback
+		 * @return
+		 */
+		this.do = function (eventName, sender) {
+			if (subs.has(eventName)) {
+				subs.get(eventName).forEach(listener => {
+					listener(sender);
+				});
 			}
-			return true;
-		}
-		return false;
-	};
+		};
 
-	/*
-	 * Returns the number of registerd listeners.
-	 *
-	 */
-	module.exports.numberOfEvents = function () {
-		return subs.size;
-	};
+		/*
+		 * Register a listener for the given event name
+		 *
+		 * @param eventName
+		 * @param callback
+		 * @return
+		 */
+		this.on = function (eventName, listener) {
+			if (subs.has(eventName)) {
+				subs.get(eventName).add(listener);
+			} else {
+				subs.set(eventName, new Set().add(listener));
+			}
+		};
 
-	/*
-	 * Removed all listeners and returns how many were removed.
-	 *
-	 */
-	module.exports.reset = function () {
-		var count = subs.size;
-		subs = new Map();
-		return count;
-	};
+		/*
+		 * Unregister a listener for the given event name
+		 *
+		 * @param eventName
+		 * @param callback
+		 * @return
+		 */
+		this.off = function (eventName, callback) {
+			if (subs.has(eventName)) {
+				subs.get(eventName).delete(callback);
+				if (subs.get(eventName).size === 0) {
+					subs.delete(eventName);
+				}
+				return true;
+			}
+			return false;
+		};
 
-	//	};
+		/*
+		 * Returns the number of registerd listeners.
+		 *
+		 */
+		this.numberOfEvents = function () {
+			return subs.size;
+		};
+
+		/*
+		 * Removed all listeners and returns how many were removed.
+		 *
+		 */
+		this.reset = function () {
+			var count = subs.size;
+			subs = new Map();
+			return count;
+		};
+
+	};
 
 }());

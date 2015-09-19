@@ -6,10 +6,11 @@
 		RememberTheMilk = require(self.data.url('milk.js')),
 		Account = new require(self.data.url('account.js')),
 		Tasks = new require(self.data.url('tasks.js')),
-		events = require(self.data.url('events.js')),
+		Events = require(self.data.url('events.js')),
 		data = JSON.parse(self.data.load('data.json')),
 		Hotkey = require("sdk/hotkeys").Hotkey;
 
+	let events = new Events();
 	let milk = new RememberTheMilk(data, events, 'write');
 
 	let button = new ToggleButton({

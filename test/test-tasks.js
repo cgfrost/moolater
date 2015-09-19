@@ -6,12 +6,13 @@
 		before, after
 	} = require('sdk/test/utils');
 
-	let events = require('../data/events.js');
+	let Events = require('../data/events.js');
 	let Milk = require('./stub-milk.js');
 	let	ToggleButton = require('sdk/ui').ToggleButton;
 	let	Tasks = new require('../data/tasks.js');
 
 	let stubMilk = new Milk();
+	let events = new Events();
 
 	let button = new ToggleButton({
 		id: 'test-moolater-toggle-tasks',
