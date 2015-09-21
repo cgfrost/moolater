@@ -3,11 +3,15 @@ env:
   global:
     - JPM_FIREFOX_BINARY=$TRAVIS_BUILD_DIR/firefox/firefox
     - DISPLAY=:99.0
+    - XVFB=/usr/bin/Xvfb
+    - XVFBARGS=":99 -screen 0 1024x768x24 -fbdir /var/run -ac"
+    - PIDFILE=/var/run/xvfb.pid
 addons:
   firefox: "38.0"
 before_script:
-  - sh -e /etc/init.d/xvfb start
+  - start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background --exec $XVFB -- $XVFBARGS
   - tar xvjf /tmp/firefox-*.tar.bz2 -C $TRAVIS_BUILD_DIR/
   - npm install jpm -g
+  - ll /usr/bin
 script:
   - npm test -s
