@@ -3,9 +3,7 @@ env:
   global:
     - JPM_FIREFOX_BINARY=$TRAVIS_BUILD_DIR/firefox/firefox
     - DISPLAY=:99.0
-    - XVFB=/usr/bin/Xvfb
-    - XVFBARGS=":99 -screen 0 1024x768x24 -ac"
-    - PIDFILE=/tmp/custom_xvfb_99.pid
+    - XVFBARGS=":99 -screen 0 1280x1024x24 -ac -extension RANDR"
 addons:
   firefox: "38.0"
 before_script:

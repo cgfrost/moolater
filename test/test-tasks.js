@@ -22,7 +22,7 @@
 		setTimeout(() => {
 			assert.strictEqual(true, tasks.isShowing(), 'Task panel not displayed.');
 			done();
-		}, 5000);
+		}, 1000);
 	};
 
 	exports['test getDefaultList'] = function (assert) {
