@@ -6,7 +6,7 @@ env:
 addons:
   firefox: "38.0"
 before_script:
-  - xvfb :99 -ac -screen 0 1920x1200x24
+  - sh -e /etc/init.d/xvfb start
   - tar xvjf /tmp/firefox-*.tar.bz2 -C $TRAVIS_BUILD_DIR/
   - npm install jpm -g
 script:
