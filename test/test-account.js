@@ -25,10 +25,11 @@
     } else {
       let account = new Account(stubMilk, button, events);
       account.showLogin();
-      setTimeout(() => {
+      let id = setTimeout(() => {
         assert.strictEqual(true, account.isShowing(), 'Login panel not displayed.');
         done();
-      }, 1000);
+      }, 500);
+      console.log(`Timeout for panel display 500ms - ${id}`);
     }
   };
 

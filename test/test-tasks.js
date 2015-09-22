@@ -25,10 +25,11 @@
     } else {
       let tasks = new Tasks(stubMilk, button, events);
       tasks.showAddTask();
-      setTimeout(() => {
+      let id = setTimeout(() => {
         assert.strictEqual(true, tasks.isShowing(), 'Task panel not displayed.');
         done();
-      }, 1000);
+      }, 500);
+      console.log(`Timeout for panel display 500ms - ${id}`);
     }
   };
 
