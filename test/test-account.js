@@ -17,6 +17,7 @@
 	let button = stubButtonFactory('test-moolater-toggle-account');
 
 	exports['test showLogin'] = function (assert, done) {
+    console.log(`env ${process.env.TRAVIS}`);
 		let account = new Account(stubMilk, button, events);
 		account.showLogin();
 		setTimeout(() => {
