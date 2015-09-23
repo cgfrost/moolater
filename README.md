@@ -11,6 +11,10 @@ Firefox extension for quickly saving a task to [Remember The Milk](https://www.r
 	<img src="screenshots/step-3.png?raw=true" alt="Moo Later Logo" width="205"/>
 </p>
 
+# Comments
+
+If you have a bug please raise it here on GitHub but for discussion and ideas head on over to the Remember the Milk [Forums](https://www.rememberthemilk.com/forums/tips/20401/).
+
 # Hotkeys
 
 On Windows/Linux `Control + Shift + M` will open Moo Later.
