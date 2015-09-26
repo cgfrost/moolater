@@ -13,7 +13,7 @@ Firefox extension for quickly saving a task to [Remember The Milk](https://www.r
 
 # Comments
 
-If you have a bug please raise it here on GitHub but for discussion and ideas head on over to the Remember the Milk [Forums](https://www.rememberthemilk.com/forums/tips/20401/).
+If you have a bug please raise it here on GitHub but for discussion and ideas head on over to the Remember the Milk [Forums](https://www.rememberthemilk.com/forums/tips/20401/). You can also leave a review on the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/) page.
 
 # Hotkeys
 
