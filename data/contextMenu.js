@@ -1,12 +1,35 @@
 (function () {
-	'use strict';
+  'use strict';
 
-	module.exports = function (events) {
-    
-		events.on('init', () => {
+  module.exports = function (events) {
+
+    let contextMenu = require('sdk/context-menu');
+
+    events.on('init', () => {
       console.log('init');
-		});
+    });
     
+    var script = "self.on('click', function (node, data) {" +
+      "  console.log('clicked: ' + node.nodeName + ' data: ' + data);" +
+      "});";
+
+    let pageContext = contextMenu.PageContext();
+    let selectionContext = contextMenu.SelectionContext();
+
+    let moo = new contextMenu.Item({
+      label: 'Moo Later - page',
+      context: pageContext,
+      contentScript: script,
+      data: 'moo'
+    });
+
+    let foo = new contextMenu.Item({
+      label: 'Moo Later - selection',
+      context: [pageContext, selectionContext],
+      contentScript: script,
+      data: 'foo'
+    });
+
   };
-  
+
 }());
