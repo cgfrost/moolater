@@ -16,14 +16,14 @@
     let pageContext = contextMenu.PageContext();
     let selectionContext = contextMenu.SelectionContext();
 
-    let moo = new contextMenu.Item({
+    new contextMenu.Item({
       label: 'Moo Later - page',
       context: pageContext,
       contentScript: script,
       data: 'moo'
     });
 
-    let foo = new contextMenu.Item({
+    new contextMenu.Item({
       label: 'Moo Later - selection',
       context: [pageContext, selectionContext],
       contentScript: script,
