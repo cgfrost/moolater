@@ -55,7 +55,7 @@
     "multiprocess": true
   },
   "engines": {
-    "firefox": ">=38.0a2 <=42.*"
+    "firefox": ">=38.0a2 <=44.*"
   },
   "devDependencies": {
     "jshint": "^2.8.0"

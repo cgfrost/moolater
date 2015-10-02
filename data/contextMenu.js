@@ -8,26 +8,26 @@
     events.on('init', () => {
       console.log('init');
     });
-    
-    var script = "self.on('click', function (node, data) {" +
-      "  console.log('clicked: ' + node.nodeName + ' data: ' + data);" +
-      "});";
 
-    let pageContext = contextMenu.PageContext();
-    let selectionContext = contextMenu.SelectionContext();
+    var script = 'self.on("click", function (node, data) {self.postMessage(data);});';
 
     new contextMenu.Item({
-      label: 'Moo Later - page',
-      context: pageContext,
+      label: 'Moo Later - Add task',
       contentScript: script,
-      data: 'moo'
+      data: 'Add task',
+      onMessage: function (data) {
+        console.log(`clicked: + ${data}`);
+      }
     });
 
     new contextMenu.Item({
-      label: 'Moo Later - selection',
-      context: [pageContext, selectionContext],
+      label: 'Moo Later - Add task with selection',
+      context: contextMenu.SelectionContext(),
       contentScript: script,
-      data: 'foo'
+      data: 'Add task with selection',
+      onMessage: function (data) {
+        console.log(`clicked: + ${data}`);
+      }
     });
 
   };
