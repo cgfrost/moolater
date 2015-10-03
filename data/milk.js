@@ -158,7 +158,7 @@
 			this.get('rtm.auth.getToken', {}, (resp) => {
 				me.auth_token = resp.rsp.auth.token;
 				storage.token = resp.rsp.auth.token;
-				events.do('token.init', 'milk');
+				events.do('token.init');
 				if (retry) {
 					retry();
 				}

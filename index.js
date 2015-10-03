@@ -24,29 +24,40 @@
       '36': './logo/icon-36.png',
       '64': './logo/icon-64.png',
       '128': './logo/icon-128.png'
+    },
+    onClick: () => {
+      events.do('go.mooLater');
     }
   });
 
   new Hotkey({
     combo: 'accel-shift-m',
     onPress: function () {
-      button.click();
+      events.do('go.mooLater');
     }
   });
 
   let tasks = new Tasks(milk, button, events);
-  let account = new Account(milk, button, events);
+  let account = new Account(milk, button);
 
-  button.on('change', (state) => {
-    if (state.checked === true) {
+  events.on('go.mooLater', () => {
+    let showing = account.isShowing() || tasks.isShowing();
+    console.log(`Button: ${button.state('window').checked} Showing: ${showing}`);
+    if (showing) {
+      tasks.hide();
+      account.hide();
+      button.state('window', {
+        checked: false
+      });
+    } else {
       if (account.isReady()) {
         tasks.showAddTask();
       } else {
         account.showLogin();
       }
-    } else {
-      tasks.hide();
-      account.hide();
+      button.state('window', {
+        checked: true
+      });
     }
   });
 

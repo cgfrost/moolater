@@ -9,13 +9,12 @@
 		 * Send an event to any subscribed listeners
 		 *
 		 * @param eventName
-		 * @param callback
 		 * @return
 		 */
-		this.do = function (eventName, sender) {
+		this.do = function (eventName) {
 			if (subs.has(eventName)) {
 				subs.get(eventName).forEach(listener => {
-					listener(sender);
+					listener(eventName);
 				});
 			}
 		};

@@ -17,6 +17,7 @@
       data: 'Add task',
       onMessage: function (data) {
         console.log(`clicked: + ${data}`);
+        events.do('go.mooLater');
       }
     });
 
