@@ -193,7 +193,6 @@
 			}
 
 			paramString += this.generateSig(params);
-
 			return paramString;
 		};
 

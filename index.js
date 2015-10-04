@@ -63,8 +63,8 @@
 
   (function () {
     if (account.isReady()) {
-      milk.get('milk.auth.checkToken', {}, () => {
-        events.do('token.init', 'index');
+      milk.get('rtm.auth.checkToken', {}, () => {
+        events.do('token.init');
       });
     }
   }());
