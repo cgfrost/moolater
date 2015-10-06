@@ -1,33 +1,43 @@
 (function () {
-  'use strict';
+	'use strict';
 
-  module.exports = function (events) {
+	module.exports = function (events) {
 
-    let contextMenu = require('sdk/context-menu');
-    let script = 'self.on("click", function () {self.postMessage();});';
+		let selection = require('sdk/selection');
+		let contextMenu = require('sdk/context-menu');
+		let script = 'self.on("click", () => {self.postMessage();});';
 
-    new contextMenu.Item({
-      label: 'Moo Later - Add task',
-      contentScript: script,
-      data: 'Add task',
-      onMessage: function () {
-        events.do('go.mooLater');
-      }
-    });
+		new contextMenu.Item({
+			label: 'Moo Later - Add task',
+			contentScript: script,
+			data: 'Add task',
+			onMessage: () => {
+				events.do('go.mooLater');
+			}
+		});
 
-    let script2 = 'self.on("click", function () {self.postMessage(window.getSelection().toString());});';
+		new contextMenu.Item({
+			label: 'Moo Later - Add task with selection',
+			context: contextMenu.SelectionContext(),
+			contentScript: script,
+			data: 'Add task with selection',
+			onMessage: () => {
+				let selectedText;
+				if (selection.isContiguous) {
+					selectedText = `"${selection.text}"`;
+				} else {
+					for (var subselection in selection) {
+						if (selectedText) {
+							selectedText = selectedText.concat(`, "${subselection.text}"`);
+						} else {
+							selectedText = `"${subselection.text}"`;
+						}
+					}
+				}
+				events.do('go.mooLater', selectedText);
+			}
+		});
 
-    new contextMenu.Item({
-      label: 'Moo Later - Add task with selection',
-      context: contextMenu.SelectionContext(),
-      contentScript: script2,
-      data: 'Add task with selection',
-      onMessage: function (selection) {
-        console.log(`FOO: ${selection}`);
-        console.log('Clicked: Add task with selection');
-      }
-    });
-
-  };
+	};
 
 }());

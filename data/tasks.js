@@ -24,7 +24,8 @@
 			}
 		});
 
-		this.showAddTask = () => {
+		this.showAddTask = (note) => {
+			console.log(`THE MESSAGE: ${note}`);
 			addTaskPanel.port.emit('set-state', true);
 			let title = preferences['extensions.moolater.useTitle'] ? tabs.activeTab.title : '';
 			let link = preferences['extensions.moolater.useLink'] ? tabs.activeTab.url : '';
@@ -89,7 +90,7 @@
 		};
 
 		events.on('token.init', () => {
-			this.fetchLists();
+			me.fetchLists();
 		});
 
 		this.fetchLists = () => {
@@ -125,7 +126,7 @@
 		};
 
 		//		this.addList = function (name) {
-		//			milk.get('milk.lists.add', {
+		//			milk.get('rtm.lists.add', {
 		//					name: name,
 		//					timeline: milk.timeline
 		//				},
