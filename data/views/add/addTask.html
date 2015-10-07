@@ -9,17 +9,20 @@
 <body>
 	<p class="title">Moo Later</p>
 	<form id="content">
-		<label for="task" id="task-label">Task: </label>
-		<input type="text" id="task">
-		<label for="link" id="link-label">Link: </label>
-		<input type="url" id="link">
-		<p class="lists">
-			List:&nbsp;
-			<select required id="lists">
-			</select>
+		<label id="task-label" class="multi-label">Task:
+			<input type="text" id="task" class="multi-input">
+		</label>
+		<label id="link-label" class="multi-label">Link:
+			<input type="url" id="link" class="multi-input">
+		</label>
+		<label id="selected-text-label" class="line-input hide">Add selected text:
+			<input type="checkbox" id="selected-text">
+		</label>
+		<label class="line-input">List:
+			<select required id="lists"></select>
 			<button class="icon" id="lists-refresh" type="button"><img src="../icons/refresh.svg" /></button>
 			<!--<button class="icon" id="lists-plus" type="button"><img src="../icons/plus.svg" /></button>-->
-		</p>
+		</label>
 		<p class="controls">
 			<button id="submit" type="button">Add Task</button>
 		</p>

@@ -1,12 +1,10 @@
-
-form label {
+form .multi-label {
 	font-size: 1.3em;
 	display: block;
-	margin: 5px 15px 5px;
+	margin: 15px 15px 5px;
 }
 
-form input {
-	margin: 0 15px 15px;
+form .multi-input {
 	padding: 5px;
 	font-size: 1.3em;
 	width: 310px;
@@ -32,15 +30,16 @@ button.icon:hover {
 	cursor: pointer;
 }
 
-p.lists {
-	padding: 15px 0 0 0;
+form .line-input {
+	padding: 5px 0 0 0;
 	margin: 15px 15px 15px;
 	font-size: 1.3em;
-	text-align: center;
+  display: block;
 }
 
-p.lists select {
+form .line-input select, form .line-input #selected-text {
 	padding: 0;
-	margin: 0 10px 0 0;
+	margin: 0 10px 0 5px;
 	font-size: 1em;
+	vertical-align: middle;
 }

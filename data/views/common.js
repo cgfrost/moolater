@@ -2,7 +2,7 @@
 
 (function () {
 	'use strict';
-	
+
 	var contentElement = document.getElementById('content');
 	var status = document.getElementById('status');
 	var statusMsg = document.getElementById('status-msg');
@@ -26,13 +26,22 @@
 		icon.setAttribute('src', '../icons/' + iconName + '.svg');
 	};
 
-	util.setTextElement = (textElement, text) => {
-		while (textElement.firstChild) {
-			textElement.removeChild(textElement.firstChild);
+	util.setTextElement = (label, text) => {
+		var firstTextElement;
+		var children = label.childNodes;
+		for (var i = 0; i < children.length; i++) {
+			if (children[i].nodeName === '#text') {
+				firstTextElement = children[i];
+				break;
+			}
 		}
-		textElement.appendChild(document.createTextNode(text));
+		if (firstTextElement) {
+			label.replaceChild(document.createTextNode(text), firstTextElement);
+		} else {
+			label.appendChild(document.createTextNode(text));
+		}
 	};
-	
+
 	window.util = util;
 
 }());

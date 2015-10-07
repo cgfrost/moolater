@@ -40,7 +40,7 @@
 	let tasks = new Tasks(milk, button, events);
 	let account = new Account(milk, button);
 
-	events.on('go.mooLater', (_eventName, withNote) => {
+	events.on('go.mooLater', () => {
 		let showing = account.isShowing() || tasks.isShowing();
 		if (showing) {
 			tasks.hide();
@@ -50,7 +50,7 @@
 			});
 		} else {
 			if (account.isReady()) {
-				tasks.showAddTask(withNote);
+				tasks.showAddTask();
 			} else {
 				account.showLogin();
 			}

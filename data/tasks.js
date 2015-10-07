@@ -7,6 +7,7 @@
 			self = require('sdk/self'),
 			preferences = require('sdk/simple-prefs').prefs,
 			Panel = require('sdk/panel').Panel,
+			selection = require('sdk/selection'),
 			setTimeout = require('sdk/timers').setTimeout,
 			me = this;
 
@@ -15,7 +16,7 @@
 		let addTaskPanel = new Panel({
 			contentURL: self.data.url('views/add/addTask.html'),
 			position: button,
-			height: 325,
+			height: 310,
 			width: 350,
 			onHide: () => {
 				button.state('window', {
@@ -24,8 +25,7 @@
 			}
 		});
 
-		this.showAddTask = (note) => {
-			console.log(`THE MESSAGE: ${note}`);
+		this.showAddTask = () => {
 			addTaskPanel.port.emit('set-state', true);
 			let title = preferences['extensions.moolater.useTitle'] ? tabs.activeTab.title : '';
 			let link = preferences['extensions.moolater.useLink'] ? tabs.activeTab.url : '';
@@ -34,6 +34,14 @@
 			}
 			addTaskPanel.port.emit('update-task', title, link);
 			addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
+			if(me.isTextSelected()){
+				console.log(`THE MESSAGE: ${me.getSelectedText()}`);
+				addTaskPanel.port.emit('show-use-selected-text');
+				addTaskPanel.resize(350, 345);
+			} else{
+				addTaskPanel.port.emit('hide-use-selected-text');
+				addTaskPanel.resize(350, 310);
+			}
 			addTaskPanel.show();
 		};
 
@@ -45,7 +53,10 @@
 			return addTaskPanel.isShowing;
 		};
 
-		addTaskPanel.port.on('add-task', (name, link, listId) => {
+		addTaskPanel.port.on('add-task', (name, link, useSelection, listId) => {
+			if (useSelection) {
+				console.log(`Using selection: ${me.getSelectedText()}`);
+			}
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
 			let useSmartAdd = preferences['extensions.moolater.useSmartAdd'] ? 1 : 0;
 			milk.get('rtm.tasks.add', {
@@ -139,6 +150,30 @@
 		//				}
 		//			);
 		//		};
+
+		this.isTextSelected = () => {
+			if (selection.text) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+
+		this.getSelectedText = () => {
+				let selectedText;
+				if (selection.isContiguous) {
+					selectedText = `"${selection.text}"`;
+				} else {
+					for (var subselection in selection) {
+						if (selectedText) {
+							selectedText = selectedText.concat(`, "${subselection.text}"`);
+						} else {
+							selectedText = `"${subselection.text}"`;
+						}
+					}
+				}
+			return selectedText;
+		};
 
 	};
 

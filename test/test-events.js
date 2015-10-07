@@ -15,11 +15,11 @@
 	};
 
 	exports['test sending an event'] = function (assert, done) {
-		events.on('dummy.event', (eventName, message) => {
-			assert.strictEqual('foo', message, 'Listener callback called.');
+		events.on('dummy.event', (eventName) => {
+			assert.strictEqual('dummy.event', eventName, 'Listener callback called.');
 			done();
 		});
-		events.do('dummy.event', 'foo');
+		events.do('dummy.event');
 	};
 
 	exports['test sending a different event'] = function (assert, done) {

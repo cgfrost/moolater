@@ -9,6 +9,10 @@
 	var linkLabel = document.getElementById('link-label');
 	var listsElement = document.getElementById('lists');
 	var refreshButton = document.getElementById('lists-refresh');
+
+	var selectedElement = document.getElementById('selected-text');
+	var selectedLabel = document.getElementById('selected-text-label');
+
 	var submitButton = document.getElementById('submit');
 	//	var plusButton = document.getElementById('lists-plus');
 
@@ -50,9 +54,19 @@
 			formValid = false;
 		}
 		if (formValid) {
-			addon.port.emit('add-task', taskElement.value, linkElement.value, listsElement.value);
+			addon.port.emit('add-task', taskElement.value, linkElement.value, selectedElement.checked, listsElement.value);
 		}
 	}, false);
+
+	addon.port.on('hide-use-selected-text', () => {
+		selectedElement.checked = false;
+		selectedLabel.classList.add('hide');
+	});
+
+	addon.port.on('show-use-selected-text', () => {
+		selectedElement.checked = true;
+		selectedLabel.classList.remove('hide');
+	});
 
 	addon.port.on('update-task', (title, url) => {
 		taskElement.value = title;
