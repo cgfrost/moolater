@@ -13,6 +13,7 @@
 
 	let events = new Events();
 	let milk = new RememberTheMilk(data, events, 'write');
+
 	new ContectMenu(events);
 
 	let button = new ToggleButton({

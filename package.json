@@ -48,6 +48,13 @@
       "description": "Tell Remember The Milk to use Smart Add when adding a task.",
       "type": "bool",
       "value": true
+    },
+    {
+      "name": "extensions.moolater.showContextMenu",
+      "title": "Show in context meuns",
+      "description": "Show Moo Later in context menus.",
+      "type": "bool",
+      "value": true
     }
   ],
   "permissions": {
