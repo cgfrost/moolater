@@ -8,6 +8,7 @@
 			preferences = require('sdk/simple-prefs').prefs,
 			Panel = require('sdk/panel').Panel,
 			selection = require('sdk/selection'),
+			milkTasks = require(self.data.url('milk/MilkTasks.js')),
 			setTimeout = require('sdk/timers').setTimeout,
 			me = this;
 
@@ -34,11 +35,10 @@
 			}
 			addTaskPanel.port.emit('update-task', title, link);
 			addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
-			if(me.isTextSelected()){
-				console.log(`THE MESSAGE: ${me.getSelectedText()}`);
-				addTaskPanel.port.emit('show-use-selected-text');
+			if (me.isTextSelected()) {
+				addTaskPanel.port.emit('show-use-selected-text', me.getSelectedText());
 				addTaskPanel.resize(350, 345);
-			} else{
+			} else {
 				addTaskPanel.port.emit('hide-use-selected-text');
 				addTaskPanel.resize(350, 310);
 			}
@@ -53,36 +53,19 @@
 			return addTaskPanel.isShowing;
 		};
 
-		addTaskPanel.port.on('add-task', (name, link, useSelection, listId) => {
-			if (useSelection) {
-				console.log(`Using selection: ${me.getSelectedText()}`);
-			}
+		addTaskPanel.port.on('add-task', (name, link, useSelection, selection, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
-			let useSmartAdd = preferences['extensions.moolater.useSmartAdd'] ? 1 : 0;
-			milk.get('rtm.tasks.add', {
-				list_id: listId,
-				name: name,
-				timeline: milk.timeline,
-				parse: useSmartAdd
-			}, (resp) => {
-				let newTask = resp.rsp.list;
-				if (link === '') {
-					me.flashState(newTask.taskseries.name, 'done');
-				} else {
-					milk.get('rtm.tasks.setURL', {
-						list_id: newTask.id,
-						taskseries_id: newTask.taskseries.id,
-						task_id: newTask.taskseries.task.id,
-						url: link,
-						timeline: milk.timeline
-					}, () => {
-						me.flashState(newTask.taskseries.name, 'done');
-					}, (fail) => {
-						me.flashState(fail, 'error');
-					});
-				}
-			}, (fail) => {
-				me.flashState(fail, 'error');
+			milkTasks.addTask(milk, name, listId).then((resp) => {
+				let task = resp.rsp.list;
+				let addLinkPromise = link === '' ? true : milkTasks.addUrlToTask(milk, task, link);
+				let addNotePromise = useSelection ? milkTasks.addNoteToTask(milk, task, 'Selected Text', selection) : true;
+				Promise.all([addLinkPromise, addNotePromise]).then(() => {
+					me.flashState(task.taskseries.name, 'done');
+				}, (reason) => {
+					me.flashState(reason, 'error');
+				});
+			}, (reason) => {
+				me.flashState(reason, 'error');
 			});
 		});
 
@@ -136,21 +119,6 @@
 			return defaultList;
 		};
 
-		//		this.addList = function (name) {
-		//			milk.get('rtm.lists.add', {
-		//					name: name,
-		//					timeline: milk.timeline
-		//				},
-		//				function (resp) {
-		//					var newList = resp.rsp.list;
-		//					console.log('New list: ' + newList);
-		//				},
-		//				function (fail) {
-		//					console.warn(fail);
-		//				}
-		//			);
-		//		};
-
 		this.isTextSelected = () => {
 			if (selection.text) {
 				return true;
@@ -160,18 +128,18 @@
 		};
 
 		this.getSelectedText = () => {
-				let selectedText;
-				if (selection.isContiguous) {
-					selectedText = `"${selection.text}"`;
-				} else {
-					for (var subselection in selection) {
-						if (selectedText) {
-							selectedText = selectedText.concat(`, "${subselection.text}"`);
-						} else {
-							selectedText = `"${subselection.text}"`;
-						}
+			let selectedText;
+			if (selection.isContiguous) {
+				selectedText = `"${selection.text}"`;
+			} else {
+				for (var subselection in selection) {
+					if (selectedText) {
+						selectedText = selectedText.concat(`, "${subselection.text}"`);
+					} else {
+						selectedText = `"${subselection.text}"`;
 					}
 				}
+			}
 			return selectedText;
 		};
 

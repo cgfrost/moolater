@@ -3,9 +3,10 @@
 
 	module.exports = function (data, events, permissions) {
 
-		var storage = require('sdk/simple-storage').storage,
+		let storage = require('sdk/simple-storage').storage,
 			self = require('sdk/self'),
 			Request = require('sdk/request').Request,
+			milkAuth = require(self.data.url('milk/MilkAuth.js')),
 			md5 = require(self.data.url('md5')),
 			me = this;
 
@@ -54,14 +55,21 @@
 		 * @return     Returns the timline ID String
 		 */
 		this.setTimeline = function () {
-			this.get('rtm.timelines.create', {},
-				function (response) {
-					me.timeline = response.rsp.timeline;
-				},
-				function (fail) {
-					console.warn(fail);
-				}
-			);
+
+			milkAuth.createTimeline(this).then((response) => {
+				me.timeline = response.rsp.timeline;
+			}, (reason) => {
+				console.warn(reason);
+			});
+
+			//			this.get('rtm.timelines.create', {},
+			//				function (response) {
+			//					me.timeline = response.rsp.timeline;
+			//				},
+			//				function (fail) {
+			//					console.warn(fail);
+			//				}
+			//			);
 		};
 
 		this.setFrob = function (frob) {
@@ -115,12 +123,12 @@
 				url: requestUrl,
 				overrideMimeType: 'application/json; charset=utf-8',
 				onComplete: (response) => {
-//					console.log('*************************************');
-//					console.log(`Request.Method  : ${method}`);
-//					console.log(`Response.Text   : ${response.text}`);
-//					console.log(`        .Status : ${response.status}`);
-//					console.log(`        .Text   : ${response.statusText}`);
-//					console.log('*************************************');
+					//					console.log('*************************************');
+					//					console.log(`Request.Method  : ${method}`);
+					//					console.log(`Response.Text   : ${response.text}`);
+					//					console.log(`        .Status : ${response.status}`);
+					//					console.log(`        .Text   : ${response.statusText}`);
+					//					console.log('*************************************');
 					if (response.status === 200 && response.json.rsp.stat === 'ok') {
 						complete(response.json);
 					} else {
@@ -155,18 +163,30 @@
 		};
 
 		this.fetchToken = function (retry, error) {
-			this.get('rtm.auth.getToken', {}, (resp) => {
+			milkAuth.getToken(this).then((resp) => {
 				me.auth_token = resp.rsp.auth.token;
 				storage.token = resp.rsp.auth.token;
 				events.do('token.init');
 				if (retry) {
 					retry();
 				}
-			}, (fail) => {
+			}, (reason) => {
 				if (error) {
-					error(fail);
+					error(reason);
 				}
 			});
+			//			this.get('rtm.auth.getToken', {}, (resp) => {
+			//				me.auth_token = resp.rsp.auth.token;
+			//				storage.token = resp.rsp.auth.token;
+			//				events.do('token.init');
+			//				if (retry) {
+			//					retry();
+			//				}
+			//			}, (fail) => {
+			//				if (error) {
+			//					error(fail);
+			//				}
+			//			});
 		};
 
 		/**

@@ -3,7 +3,7 @@
 
 	let self = require('sdk/self'),
 		ToggleButton = require('sdk/ui').ToggleButton,
-		RememberTheMilk = require(self.data.url('milk.js')),
+		RememberTheMilk = require(self.data.url('milk/Milk.js')),
 		Account = new require(self.data.url('account.js')),
 		Tasks = new require(self.data.url('tasks.js')),
 		Events = require(self.data.url('events.js')),
