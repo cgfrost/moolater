@@ -54,18 +54,20 @@
 			formValid = false;
 		}
 		if (formValid) {
-			addon.port.emit('add-task', taskElement.value, linkElement.value, selectedElement.checked, listsElement.value);
+			addon.port.emit('add-task', taskElement.value, linkElement.value, selectedElement.checked, selectedElement.value, listsElement.value);
 		}
 	}, false);
 
-	addon.port.on('hide-use-selected-text', () => {
-		selectedElement.checked = false;
-		selectedLabel.classList.add('hide');
+	addon.port.on('show-use-selected-text', (selectedText) => {
+		selectedElement.checked = true;
+		selectedElement.value = selectedText;
+		selectedLabel.classList.remove('hide');
 	});
 
-	addon.port.on('show-use-selected-text', () => {
-		selectedElement.checked = true;
-		selectedLabel.classList.remove('hide');
+	addon.port.on('hide-use-selected-text', () => {
+		selectedElement.checked = false;
+		selectedElement.value = '';
+		selectedLabel.classList.add('hide');
 	});
 
 	addon.port.on('update-task', (title, url) => {

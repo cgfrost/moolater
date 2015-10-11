@@ -5,12 +5,31 @@ form .multi-label {
 }
 
 form .multi-input {
+	font-size: 1em;
 	padding: 5px;
-	font-size: 1.3em;
+	margin: 5px 0 0 0;
 	width: 310px;
 	background-color: #EEEEEE;
 	border-radius: 5px;
 	display: block;
+}
+
+form .line-label {
+	padding: 5px 0 0 0;
+	margin: 15px 15px 15px;
+	font-size: 1.3em;
+  display: block;
+}
+
+form #selected-text {
+	margin-bottom: 3px;
+}
+
+form .line-input {
+	padding: 0;
+	margin: 0 0 0 5px;
+	font-size: 1em;
+	vertical-align: middle;
 }
 
 button.icon {
@@ -18,7 +37,6 @@ button.icon {
 	border: 2px solid #FFFFFF;
 	background-color: #FFFFFF;
 	vertical-align: middle;
-	margin-bottom: 4px;
 }
 
 button.icon img{
@@ -28,18 +46,4 @@ button.icon img{
 
 button.icon:hover {
 	cursor: pointer;
-}
-
-form .line-input {
-	padding: 5px 0 0 0;
-	margin: 15px 15px 15px;
-	font-size: 1.3em;
-  display: block;
-}
-
-form .line-input select, form .line-input #selected-text {
-	padding: 0;
-	margin: 0 10px 0 5px;
-	font-size: 1em;
-	vertical-align: middle;
 }
