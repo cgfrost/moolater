@@ -6,7 +6,7 @@
 		before, after
 	} = require('sdk/test/utils');
 	let Events = require("../data/events.js");
-	let RememberTheMilk = require('../data/milk.js');
+	let RememberTheMilk = require('../data/milk/Milk.js');
 
 	let events = new Events();
 
