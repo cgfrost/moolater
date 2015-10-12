@@ -35,7 +35,7 @@
 			}
 			addTaskPanel.port.emit('update-task', title, link);
 			addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
-			if (me.isTextSelected()) {
+			if (selection.text) {
 				addTaskPanel.port.emit('show-use-selected-text', me.getSelectedText());
 				addTaskPanel.resize(350, 345);
 			} else {
@@ -116,14 +116,6 @@
 				defaultList = 'Inbox';
 			}
 			return defaultList;
-		};
-
-		this.isTextSelected = () => {
-			if (selection.text) {
-				return true;
-			} else {
-				return false;
-			}
 		};
 
 		this.getSelectedText = () => {
