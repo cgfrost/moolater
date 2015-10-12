@@ -47,6 +47,14 @@
 			});
 		},
 
+		getLists: (milk) => {
+			return new Promise((resolve, reject) => {
+				milk.get('rtm.lists.getList', {},
+					resolve,
+					reject);
+			});
+		},
+
 		addList: (milk, name) => {
 			return new Promise((resolve, reject) => {
 				milk.get('rtm.lists.add', {

@@ -7,7 +7,7 @@
 			self = require('sdk/self'),
 			Request = require('sdk/request').Request,
 			milkAuth = require(self.data.url('milk/MilkAuth.js')),
-			md5 = require(self.data.url('md5')),
+			md5 = require(self.data.url('milk/md5')),
 			me = this;
 
 		this.authUrl = 'https://www.rememberthemilk.com/services/auth/';

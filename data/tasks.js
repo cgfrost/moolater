@@ -91,7 +91,7 @@
 			if (addTaskPanel.isShowing) {
 				addTaskPanel.port.emit('set-refresh-button-icon', 'loading');
 			}
-			milk.get('rtm.lists.getList', {}, (resp) => {
+			milkTasks.getLists(milk).then((resp) => {
 				me.lists = resp.rsp.lists.list;
 				if (addTaskPanel.isShowing) {
 					addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
@@ -100,8 +100,7 @@
 						addTaskPanel.port.emit('set-refresh-button-icon', 'refresh');
 					}, 1000);
 				}
-			}, (fail) => {
-				console.warn(fail);
+			}, () => {
 				if (addTaskPanel.isShowing) {
 					addTaskPanel.port.emit('set-refresh-button-icon', 'error');
 					setTimeout(() => {

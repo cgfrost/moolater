@@ -7,6 +7,7 @@
 		Account = new require(self.data.url('account.js')),
 		Tasks = new require(self.data.url('tasks.js')),
 		Events = require(self.data.url('events.js')),
+		milkAuth = require(self.data.url('milk/MilkAuth.js')),
 		ContectMenu = require(self.data.url('contextMenu.js')),
 		data = JSON.parse(self.data.load('data.json')),
 		Hotkey = require('sdk/hotkeys').Hotkey;
@@ -63,7 +64,7 @@
 
 	(function () {
 		if (account.isReady()) {
-			milk.get('rtm.auth.checkToken', {}, () => {
+			milkAuth.checkToken(milk).then(() => {
 				events.do('token.init');
 			});
 		}

@@ -7,6 +7,7 @@
 			windows = require('sdk/windows').browserWindows,
 			self = require('sdk/self'),
 			setTimeout = require('sdk/timers').setTimeout,
+			milkAuth = require(self.data.url('milk/MilkAuth.js')),
 			Panel = require('sdk/panel').Panel,
 			me = this;
 
@@ -26,11 +27,11 @@
 			loginPanel.port.emit('set-state', true);
 			if (!milk.hasFrob()) {
 				loginPanel.port.emit('set-button-state', true);
-				milk.get('rtm.auth.getFrob', {}, (resp) => {
+				milkAuth.getFrob(milk).then((resp) => {
 					loginPanel.port.emit('set-button-state', false);
 					milk.setFrob(resp.rsp.frob);
-				}, (fail) => {
-					me.flashState(fail, 'error');
+				}, (reason) => {
+					me.flashState(reason, 'error');
 				});
 			} else {
 				loginPanel.port.emit('set-button-state', false);
