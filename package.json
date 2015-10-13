@@ -6,7 +6,7 @@
   "id": "moolater@codewax",
   "description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give MooLater permission to use your Remember the Milk account the first time you try to save a task.",
   "main": "index.js",
-  "icon": "chrome://icons/content/icon-128.png",
+  "icon": "chrome://moo-later-icons/content/icon-128.png",
   "author": "Christopher Frost (http://chrisfrost.com)",
   "homepage": "http://chrisfrost.com/moolater",
   "bugs": "https://github.com/cgfrost/moolater/issues",
