@@ -55,18 +55,20 @@
 
 		addTaskPanel.port.on('add-task', (name, link, useSelection, selection, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
-			milkTasks.addTask(milk, name, listId).then((resp) => {
-				let task = resp.rsp.list;
-				let addLinkPromise = link === '' ? true : milkTasks.addUrlToTask(milk, task, link);
-				let addNotePromise = useSelection ? milkTasks.addNoteToTask(milk, task, 'Selected Text', selection) : true;
-				Promise.all([addLinkPromise, addNotePromise]).then(() => {
-					me.flashState(task.taskseries.name, 'done');
-				}, (reason) => {
+			milkTasks.addTask(milk, name, listId)
+				.then((resp) => {
+					let task = resp.rsp.list;
+					let addLinkPromise = link === '' ? true : milkTasks.addUrlToTask(milk, task, link);
+					let addNotePromise = useSelection ? milkTasks.addNoteToTask(milk, task, 'Selected Text', selection) : true;
+					Promise.all([addLinkPromise, addNotePromise])
+						.then(() => {
+							me.flashState(task.taskseries.name, 'done');
+						}).catch((reason) => {
+							me.flashState(reason, 'error');
+						});
+				}).catch((reason) => {
 					me.flashState(reason, 'error');
 				});
-			}, (reason) => {
-				me.flashState(reason, 'error');
-			});
 		});
 
 		addTaskPanel.port.on('update-lists', () => {
@@ -100,7 +102,7 @@
 						addTaskPanel.port.emit('set-refresh-button-icon', 'refresh');
 					}, 1000);
 				}
-			}, () => {
+			}).catch(() => {
 				if (addTaskPanel.isShowing) {
 					addTaskPanel.port.emit('set-refresh-button-icon', 'error');
 					setTimeout(() => {

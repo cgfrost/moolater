@@ -27,12 +27,13 @@
 			loginPanel.port.emit('set-state', true);
 			if (!milk.hasFrob()) {
 				loginPanel.port.emit('set-button-state', true);
-				milkAuth.getFrob(milk).then((resp) => {
-					loginPanel.port.emit('set-button-state', false);
-					milk.setFrob(resp.rsp.frob);
-				}, (reason) => {
-					me.flashState(reason, 'error');
-				});
+				milkAuth.getFrob(milk)
+					.then((resp) => {
+						loginPanel.port.emit('set-button-state', false);
+						milk.setFrob(resp.rsp.frob);
+					}).catch((reason) => {
+						me.flashState(reason, 'error');
+					});
 			} else {
 				loginPanel.port.emit('set-button-state', false);
 			}
