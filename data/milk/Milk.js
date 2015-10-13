@@ -10,9 +10,9 @@
 			md5 = require(self.data.url('milk/md5')),
 			me = this;
 
-		this.authUrl = 'https://www.rememberthemilk.com/services/auth/';
-		this.baseUrl = 'https://api.rememberthemilk.com/services/rest/';
-		this.format = 'json';
+		const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
+		const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
+		const FORMAT = 'json';
 
 		permissions = (permissions) ? permissions : 'read';
 
@@ -42,7 +42,7 @@
 
 			params.frob = this.frob;
 
-			return this.authUrl + this.encodeUrlParams(params);
+			return AUTH_URL + this.encodeUrlParams(params);
 		};
 
 		events.on('token.init', () => {
@@ -55,21 +55,11 @@
 		 * @return     Returns the timline ID String
 		 */
 		this.setTimeline = function () {
-
 			milkAuth.createTimeline(this).then((response) => {
 				me.timeline = response.rsp.timeline;
-			}, (reason) => {
+			}).catch((reason) => {
 				console.warn(reason);
 			});
-
-			//			this.get('rtm.timelines.create', {},
-			//				function (response) {
-			//					me.timeline = response.rsp.timeline;
-			//				},
-			//				function (fail) {
-			//					console.warn(fail);
-			//				}
-			//			);
 		};
 
 		this.setFrob = function (frob) {
@@ -117,7 +107,7 @@
 				params.frob = this.frob;
 			}
 
-			var requestUrl = this.baseUrl + this.encodeUrlParams(params);
+			var requestUrl = BASE_URL + this.encodeUrlParams(params);
 
 			new Request({
 				url: requestUrl,
@@ -163,30 +153,19 @@
 		};
 
 		this.fetchToken = function (retry, error) {
-			milkAuth.getToken(this).then((resp) => {
-				me.auth_token = resp.rsp.auth.token;
-				storage.token = resp.rsp.auth.token;
-				events.do('token.init');
-				if (retry) {
-					retry();
-				}
-			}, (reason) => {
-				if (error) {
-					error(reason);
-				}
-			});
-			//			this.get('rtm.auth.getToken', {}, (resp) => {
-			//				me.auth_token = resp.rsp.auth.token;
-			//				storage.token = resp.rsp.auth.token;
-			//				events.do('token.init');
-			//				if (retry) {
-			//					retry();
-			//				}
-			//			}, (fail) => {
-			//				if (error) {
-			//					error(fail);
-			//				}
-			//			});
+			milkAuth.getToken(this)
+				.then((resp) => {
+					me.auth_token = resp.rsp.auth.token;
+					storage.token = resp.rsp.auth.token;
+					events.do('token.init');
+					if (retry) {
+						retry();
+					}
+				}).catch((reason) => {
+					if (error) {
+						error(reason);
+					}
+				});
 		};
 
 		/**
@@ -200,7 +179,7 @@
 			var paramString = '?',
 				firstParam = true;
 
-			params.format = this.format;
+			params.format = FORMAT;
 			params.api_key = data.a;
 
 			for (var key in params) {
