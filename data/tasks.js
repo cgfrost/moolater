@@ -7,10 +7,22 @@
 			self = require('sdk/self'),
 			preferences = require('sdk/simple-prefs').prefs,
 			Panel = require('sdk/panel').Panel,
-			selection = require('sdk/selection'),
 			milkTasks = require(self.data.url('milk/MilkTasks.js')),
 			setTimeout = require('sdk/timers').setTimeout,
+			selection,
 			me = this;
+
+		try {
+			selection = require('sdk/selection');
+		} catch (e) {
+			console.error(`SELECTION MULTIPROCESS ERROR: '${e}'`);
+			let browserWindows = require("sdk/windows").browserWindows;
+			let window = require("sdk/view/core").viewFor(browserWindows);
+			selection = {
+				text: window.getSelectedText(),
+				isContiguous: true
+			};
+		}
 
 		me.lists = [];
 
