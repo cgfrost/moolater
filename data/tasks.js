@@ -15,12 +15,9 @@
 		try {
 			selection = require('sdk/selection');
 		} catch (e) {
-			console.error(`SELECTION MULTIPROCESS ERROR: '${e}'`);
-			let browserWindows = require("sdk/windows").browserWindows;
-			let window = require("sdk/view/core").viewFor(browserWindows);
+			console.error(`Selection MultiProcess Error: '${e}' - See: https://bugzilla.mozilla.org/show_bug.cgi?id=1060695`);
 			selection = {
-				text: window.getSelectedText(),
-				isContiguous: true
+				text: undefined
 			};
 		}
 
@@ -67,6 +64,7 @@
 
 		addTaskPanel.port.on('add-task', (name, link, useSelection, selection, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
+			addTaskPanel.resize(350, 310);
 			milkTasks.addTask(milk, name, listId)
 				.then((resp) => {
 					let task = resp.rsp.list;
