@@ -1,14 +1,14 @@
 /* global addon:false, document:false, window:false */
 
 (function () {
-    'use strict';
+	'use strict';
 
-    var submitButton = document.getElementById('submit');
+	var submitButton = document.getElementById('submit');
 	var util = window.util;
 
-    submitButton.addEventListener('click', () => {
-        addon.port.emit('do-login');
-    }, false);
+	submitButton.addEventListener('click', () => {
+		addon.port.emit('do-login');
+	}, false);
 
 	addon.port.on('set-button-state', (disabled) => {
 		submitButton.disabled = disabled;

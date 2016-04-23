@@ -12,9 +12,10 @@
 
 		const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
 		const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
+		const API_VERSION = '2';
 		const FORMAT = 'json';
 
-		permissions = (permissions) ? permissions : 'read';
+		permissions = (permissions) ? permissions : 'write';
 
 		if (!data.a || !data.b) {
 			throw 'Milk Error: Missing data.';
@@ -41,7 +42,9 @@
 			};
 
 			params.frob = this.frob;
-
+			console.log('');
+			console.log(`Auth URL: ${AUTH_URL + this.encodeUrlParams(params)}`);
+			console.log('');
 			return AUTH_URL + this.encodeUrlParams(params);
 		};
 
@@ -97,6 +100,8 @@
 				error = function () {};
 			}
 
+			params.v = API_VERSION;
+			params.format = FORMAT;
 			params.method = method;
 
 			if (this.auth_token) {
@@ -113,12 +118,13 @@
 				url: requestUrl,
 				overrideMimeType: 'application/json; charset=utf-8',
 				onComplete: (response) => {
-					//					console.log('*************************************');
-					//					console.log(`Request.Method  : ${method}`);
-					//					console.log(`Response.Text   : ${response.text}`);
-					//					console.log(`        .Status : ${response.status}`);
-					//					console.log(`        .Text   : ${response.statusText}`);
-					//					console.log('*************************************');
+										console.log('*************************************');
+										console.log(`Request.Url     : ${requestUrl}`);
+										console.log(`Request.Method  : ${method}`);
+										console.log(`Response.Text   : ${response.text}`);
+										console.log(`        .Status : ${response.status}`);
+										console.log(`        .Text   : ${response.statusText}`);
+										console.log('*************************************');
 					if (response.status === 200 && response.json.rsp.stat === 'ok') {
 						complete(response.json);
 					} else {
@@ -179,7 +185,6 @@
 			var paramString = '?',
 				firstParam = true;
 
-			params.format = FORMAT;
 			params.api_key = data.a;
 
 			for (var key in params) {
