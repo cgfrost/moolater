@@ -12,7 +12,7 @@
 
 	exports['test auth url'] = function (assert) {
 		let milk = new RememberTheMilk({a: 'key', b: 'secret'}, events, 'write');
-		let expectedAuthUrl = 'https://www.rememberthemilk.com/services/auth/?api_key=key&perms=write&frob=FOOBAR&format=json&api_sig=56c0c8efe2714fefa886349f56447414';
+		let expectedAuthUrl = 'https://www.rememberthemilk.com/services/auth/?api_key=key&perms=write&frob=FOOBAR&api_sig=0018da7b53dfd5606939a45023087738';
 		milk.setFrob('FOOBAR');
 		assert.strictEqual(milk.getAuthUrl(), expectedAuthUrl, 'Bad authUrl returned.');
 	};
