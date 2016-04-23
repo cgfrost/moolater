@@ -26,8 +26,8 @@
 		let addTaskPanel = new Panel({
 			contentURL: self.data.url('views/add/addTask.html'),
 			position: button,
-			height: 310,
 			width: 350,
+			height: 340,
 			onHide: () => {
 				button.state('window', {
 					checked: false
@@ -44,12 +44,13 @@
 			}
 			addTaskPanel.port.emit('update-task', title, link);
 			addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
+			addTaskPanel.port.emit('update-add-list');
 			if (selection.text) {
 				addTaskPanel.port.emit('show-use-selected-text', me.getSelectedText());
-				addTaskPanel.resize(350, 345);
+				addTaskPanel.resize(350, 375);
 			} else {
 				addTaskPanel.port.emit('hide-use-selected-text');
-				addTaskPanel.resize(350, 310);
+				addTaskPanel.resize(350, 340);
 			}
 			addTaskPanel.show();
 		};
@@ -64,7 +65,7 @@
 
 		addTaskPanel.port.on('add-task', (name, link, useSelection, selection, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
-			addTaskPanel.resize(350, 310);
+			addTaskPanel.resize(350, 340);
 			milkTasks.addTask(milk, name, listId)
 				.then((resp) => {
 					let task = resp.rsp.list;
@@ -83,6 +84,10 @@
 
 		addTaskPanel.port.on('update-lists', () => {
 			me.fetchLists();
+		});
+
+		addTaskPanel.port.on('add-list', (listName) => {
+			me.addList(listName);
 		});
 
 		this.flashState = (message, icon) => {
@@ -119,6 +124,31 @@
 						addTaskPanel.port.emit('set-refresh-button-icon', 'refresh');
 					}, 1000);
 				}
+			});
+		};
+
+		this.addList = (listName) => {
+
+			console.log(`Adding list: ${listName}`);
+
+			if (addTaskPanel.isShowing) {
+				addTaskPanel.port.emit('set-add-list-status', 'loading');
+			}
+			milkTasks.addList(milk, listName).then((resp) => {
+//				if (addTaskPanel.isShowing) {
+//					addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
+//					addTaskPanel.port.emit('set-refresh-button-icon', 'done');
+//					setTimeout(() => {
+//						addTaskPanel.port.emit('set-refresh-button-icon', 'refresh');
+//					}, 1000);
+//				}
+			}).catch(() => {
+//				if (addTaskPanel.isShowing) {
+//					addTaskPanel.port.emit('set-refresh-button-icon', 'error');
+//					setTimeout(() => {
+//						addTaskPanel.port.emit('set-refresh-button-icon', 'refresh');
+//					}, 1000);
+//				}
 			});
 		};
 

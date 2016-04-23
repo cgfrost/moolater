@@ -1,7 +1,7 @@
 form .multi-label {
 	font-size: 1.3em;
 	display: block;
-	margin: 15px 15px 5px;
+	padding: 15px 15px 5px;
 }
 
 form .multi-input {
@@ -32,14 +32,14 @@ form .line-input {
 	vertical-align: middle;
 }
 
-button.icon {
+button.icon, div.icon {
 	border-radius: 5px;
 	border: 2px solid #FFFFFF;
 	background-color: #FFFFFF;
 	vertical-align: middle;
 }
 
-button.icon img{
+button.icon img, div.icon img{
 	height: 1.7em;
 	width: 1.7em;
 }

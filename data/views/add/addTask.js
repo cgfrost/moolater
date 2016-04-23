@@ -9,12 +9,19 @@
 	var linkLabel = document.getElementById('link-label');
 	var listsElement = document.getElementById('lists');
 	var refreshButton = document.getElementById('lists-refresh');
+	var plusButton = document.getElementById('lists-plus');
 
 	var selectedElement = document.getElementById('selected-text');
 	var selectedLabel = document.getElementById('selected-text-label');
 
+	var contentElement = document.getElementById('content');
+	var addListForm = document.getElementById('add-list');
+	var addlistElement = document.getElementById('list');
+	var addlistLabel = document.getElementById('list-label');
+	var addListSubmitButton = document.getElementById('add-list-submit');
+	var addListCancelButton = document.getElementById('add-list-cancel');
+
 	var submitButton = document.getElementById('submit');
-	//	var plusButton = document.getElementById('lists-plus');
 
 	var validationRegex = new RegExp('^https?://');
 	var util = window.util;
@@ -35,9 +42,30 @@
 		addon.port.emit('update-lists');
 	}, false);
 
-	//	plusButton.addEventListener('click', function click() {
-	//		addon.port.emit('add-list', 'dummy list');
-	//	});
+	plusButton.addEventListener('click', () => {
+		util.setTextElement(addlistLabel, 'New List:');
+		contentElement.classList.add('hide');
+		addListForm.classList.remove('hide');
+		addlistElement.focus();
+	});
+
+	addListCancelButton.addEventListener('click', () => {
+		addListForm.classList.add('hide');
+		contentElement.classList.remove('hide');
+	});
+
+	addListSubmitButton.addEventListener('click', () => {
+		var formValid = true;
+		if (addlistElement.value !== '') {
+			util.setTextElement(addlistLabel, 'New List:');
+		} else {
+			util.setTextElement(addlistLabel, 'New List: List name can\'t be empty.');
+			formValid = false;
+		}
+		if (formValid) {
+			addon.port.emit('add-list', listElement.value);
+		}
+	});
 
 	submitButton.addEventListener('click', () => {
 		var formValid = true;
@@ -71,9 +99,16 @@
 	});
 
 	addon.port.on('update-task', (title, url) => {
+		util.setTextElement(taskLabel, 'Task:');
+		util.setTextElement(linkLabel, 'Link:');
 		taskElement.value = title;
 		linkElement.value = url;
 		taskElement.focus();
+	});
+
+	addon.port.on('update-add-list', () => {
+		addListForm.classList.add('hide');
+		addlistElement.value = '';
 	});
 
 	addon.port.on('update-lists', (lists, defaultList) => {
@@ -84,14 +119,14 @@
 		for (var i = 0; i < lists.length; i++) {
 			if (lists[i].smart === '0') {
 				var selected = defaultList === lists[i].name;
-				if (selected){
+				if (selected) {
 					defaultFound = true;
 				}
 				var newOption = createOptionElement(lists[i].id, lists[i].name, selected);
 				listsElement.appendChild(newOption);
 			}
 		}
-		if (!defaultFound){
+		if (!defaultFound) {
 			listsElement.selectedIndex = "0";
 		}
 	});
@@ -111,8 +146,8 @@
 		util.setIconState(refreshButton.firstElementChild, iconName);
 	});
 
-	//	addon.port.on('set-plus-button-icon', function (iconName) {
-	//		setIconState(plusButton.firstElementChild, iconName);
-	//	});
+	addon.port.on('set-add-list-status', (iconName) => {
+		util.setIconState(plusButton.firstElementChild, iconName);
+	});
 
 }());

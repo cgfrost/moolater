@@ -44,7 +44,7 @@
 
 	events.on('go.mooLater', () => {
 		let showing = account.isShowing() || tasks.isShowing();
-		console.log(`Showing: ${showing}`);
+//		console.log(`Showing: ${showing}`);
 		if (showing) {
 			tasks.hide();
 			account.hide();

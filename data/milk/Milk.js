@@ -40,11 +40,7 @@
 				api_key: data.a,
 				perms: this.permissions
 			};
-
 			params.frob = this.frob;
-			console.log('');
-			console.log(`Auth URL: ${AUTH_URL + this.encodeUrlParams(params)}`);
-			console.log('');
 			return AUTH_URL + this.encodeUrlParams(params);
 		};
 
@@ -119,7 +115,7 @@
 				overrideMimeType: 'application/json; charset=utf-8',
 				onComplete: (response) => {
 										console.log('*************************************');
-										console.log(`Request.Url     : ${requestUrl}`);
+//										console.log(`Request.Url     : ${requestUrl}`);
 										console.log(`Request.Method  : ${method}`);
 										console.log(`Response.Text   : ${response.text}`);
 										console.log(`        .Status : ${response.status}`);

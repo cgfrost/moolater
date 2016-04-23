@@ -22,10 +22,21 @@
 		<label class="line-label">List:
 			<select required id="lists" class="line-input"></select>
 			<button class="icon" id="lists-refresh" type="button"><img src="../icons/refresh.svg" /></button>
-			<!--<button class="icon" id="lists-plus" type="button"><img src="../icons/plus.svg" /></button>-->
+			<button class="icon" id="lists-plus" type="button"><img src="../icons/plus.svg" /></button>
 		</label>
 		<p class="controls">
 			<button id="submit" type="button">Add Task</button>
+		</p>
+	</form>
+
+	<form id="add-list" class="hide">
+		<label id="list-label" class="multi-label">New List:
+			<input type="text" id="list" class="multi-input">
+			<div class="icon" id="add-list-status"><img src="../icons/blank.svg" /></button>
+		</label>
+		<p class="controls">
+			<button id="add-list-submit" type="button">Add List</button>
+			<button id="add-list-cancel" type="button">Cancel</button>
 		</p>
 	</form>
 
