@@ -4,7 +4,7 @@
   <img src="data/logo/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
 </p>
 
-Firefox extension for quickly saving a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar. The title and link of the current page are used to create the new task. The first version is being reviewed by Mozilla and is in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/). Using Moo Later is easy: Login, check the details then add it.
+Firefox extension for quickly saving a webpage as a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar. The title and link of the current page are used to create the new task. Create new lists from MooLater before saving a new task to it. Find it in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/). Using Moo Later is easy: Login, check the details then start adding tasks.
 <p align="center">
 	<img src="screenshots/step-1.png?raw=true" alt="Moo Later Logo" width="205"/>
 	<img src="screenshots/step-2.png?raw=true" alt="Moo Later Logo" width="205"/>
@@ -17,8 +17,8 @@ If you have a bug please raise it here on GitHub but for discussion and ideas he
 
 # Hotkeys
 
-On Windows/Linux `Control + Shift + M` will open Moo Later.
-On Mac `Command + Shift + M` will open Moo Later.
+* On Windows/Linux `Control + Shift + M` will open Moo Later.
+* On Mac `Command + Shift + M` will open Moo Later.
 
 # Settings
 
@@ -36,8 +36,6 @@ When entering a new task the Address must be a valid URL that starts with `http:
 Once version 1.0.0 is approved I plan on adding the following.
 
 * Remorse option to remove the previously added task.
-* The ability to create new lists straight from the Moo Later UI.
-* Look at support for tags but I may leave that to `smart add` for users to specify instead of any direct support.
 * Firefox Android, see what's involved and if it's actually useful.
 
 There is no timeline for when these might get done as I work on this in my spare time. It also depends on what bugs people find in 1.0.0.
