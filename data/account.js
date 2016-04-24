@@ -14,8 +14,8 @@
 		let loginPanel = new Panel({
 			contentURL: self.data.url('views/login/login.html'),
 			position: button,
-			height: 250,
-			width: 350,
+			width: 355,
+			height: 255,
 			onHide: () => {
 				button.state('window', {
 					checked: false

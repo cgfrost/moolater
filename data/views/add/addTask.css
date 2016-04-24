@@ -1,5 +1,5 @@
 form .multi-label {
-	font-size: 1.3em;
+	font-size: 1.2em;
 	display: block;
 	padding: 15px 15px 5px;
 }
@@ -17,7 +17,7 @@ form .multi-input {
 form .line-label {
 	padding: 5px 0 0 0;
 	margin: 15px 15px 15px;
-	font-size: 1.3em;
+	font-size: 1.2em;
   display: block;
 }
 
@@ -26,27 +26,31 @@ form #selected-text {
 }
 
 form .line-input {
-	padding: 0;
-	margin: 0 0 0 5px;
 	font-size: 1em;
+	padding: 0;
+	margin: 0 5px 0 5px;
 	vertical-align: middle;
 }
 
 div#add-list-status {
-	margin-top: 15px;
+	margin-top: 25px;
 	text-align: center;
 }
 
 button.icon, div.icon {
 	border-radius: 5px;
-	border: 2px solid #FFFFFF;
 	background-color: #FFFFFF;
 	vertical-align: middle;
 }
 
-button.icon img, div.icon img{
+button.icon img {
 	height: 1.7em;
 	width: 1.7em;
+}
+
+div#add-list-status img{
+	height: 7em;
+	width: 7em;
 }
 
 button.icon:hover {

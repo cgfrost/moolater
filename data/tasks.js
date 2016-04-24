@@ -26,8 +26,8 @@
 		let addTaskPanel = new Panel({
 			contentURL: self.data.url('views/add/addTask.html'),
 			position: button,
-			width: 350,
-			height: 340,
+			width: 355,
+			height: 345,
 			onHide: () => {
 				button.state('window', {
 					checked: false
@@ -47,10 +47,10 @@
 			addTaskPanel.port.emit('update-add-list');
 			if (selection.text) {
 				addTaskPanel.port.emit('show-use-selected-text', me.getSelectedText());
-				addTaskPanel.resize(350, 375);
+				addTaskPanel.resize(355, 380);
 			} else {
 				addTaskPanel.port.emit('hide-use-selected-text');
-				addTaskPanel.resize(350, 340);
+				addTaskPanel.resize(355, 345);
 			}
 			addTaskPanel.show();
 		};
@@ -65,7 +65,7 @@
 
 		addTaskPanel.port.on('add-task', (name, link, useSelection, selection, listId) => {
 			addTaskPanel.port.emit('set-state', false, 'Adding Task', 'loading');
-			addTaskPanel.resize(350, 340);
+			addTaskPanel.resize(355, 345);
 			milkTasks.addTask(milk, name, listId)
 				.then((resp) => {
 					let task = resp.rsp.list;
