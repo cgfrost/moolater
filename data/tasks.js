@@ -86,10 +86,6 @@
 			me.fetchLists();
 		});
 
-		addTaskPanel.port.on('add-list', (listName) => {
-			me.addList(listName);
-		});
-
 		this.flashState = (message, icon) => {
 			addTaskPanel.port.emit('set-state', false, message, icon);
 			setTimeout(() => {
@@ -127,30 +123,31 @@
 			});
 		};
 
-		this.addList = (listName) => {
-
-			console.log(`Adding list: ${listName}`);
-
+		addTaskPanel.port.on('add-list', (listName) => {
 			if (addTaskPanel.isShowing) {
 				addTaskPanel.port.emit('set-add-list-status', 'loading');
 			}
 			milkTasks.addList(milk, listName).then((resp) => {
-//				if (addTaskPanel.isShowing) {
-//					addTaskPanel.port.emit('update-lists', me.lists, me.getDefaultList());
-//					addTaskPanel.port.emit('set-refresh-button-icon', 'done');
-//					setTimeout(() => {
-//						addTaskPanel.port.emit('set-refresh-button-icon', 'refresh');
-//					}, 1000);
-//				}
-			}).catch(() => {
-//				if (addTaskPanel.isShowing) {
-//					addTaskPanel.port.emit('set-refresh-button-icon', 'error');
-//					setTimeout(() => {
-//						addTaskPanel.port.emit('set-refresh-button-icon', 'refresh');
-//					}, 1000);
-//				}
+				me.lists.push(resp.rsp.list);
+				if (addTaskPanel.isShowing) {
+					addTaskPanel.port.emit('update-lists', me.lists, resp.rsp.list.name);
+					addTaskPanel.port.emit('set-add-list-status', 'done');
+					setTimeout(() => {
+						addTaskPanel.port.emit('set-add-list-status', 'blank');
+						addTaskPanel.port.emit('hide-add-list', 'blank');
+					}, 1000);
+				}
+			}).catch((reason) => {
+				if (addTaskPanel.isShowing) {
+					addTaskPanel.port.emit('set-add-list-status', 'error');
+					addTaskPanel.port.emit('set-add-list-msg', reason);
+					addTaskPanel.port.emit('set-add-list-buttons');
+					setTimeout(() => {
+						addTaskPanel.port.emit('set-add-list-status', 'blank');
+					}, 1000);
+				}
 			});
-		};
+		});
 
 		this.getDefaultList = () => {
 			let defaultList = preferences['extensions.moolater.defaultList'];

@@ -32,6 +32,11 @@ form .line-input {
 	vertical-align: middle;
 }
 
+div#add-list-status {
+	margin-top: 15px;
+	text-align: center;
+}
+
 button.icon, div.icon {
 	border-radius: 5px;
 	border: 2px solid #FFFFFF;

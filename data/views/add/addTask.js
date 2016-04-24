@@ -18,6 +18,7 @@
 	var addListForm = document.getElementById('add-list');
 	var addlistElement = document.getElementById('list');
 	var addlistLabel = document.getElementById('list-label');
+	var addlistStatus = document.getElementById('add-list-status');
 	var addListSubmitButton = document.getElementById('add-list-submit');
 	var addListCancelButton = document.getElementById('add-list-cancel');
 
@@ -42,17 +43,37 @@
 		addon.port.emit('update-lists');
 	}, false);
 
+	addon.port.on('hide-add-list', () => {
+		hideAddList();
+	});
+
+	addon.port.on('set-add-list-msg', (msg) => {
+		util.setTextElement(addlistLabel, `New List: ${msg}`);
+	});
+
+	addon.port.on('set-add-list-status', () => {
+		addListSubmitButton.disabled = false;
+		addListCancelButton.disabled = false;
+	});
+
 	plusButton.addEventListener('click', () => {
 		util.setTextElement(addlistLabel, 'New List:');
+		addlistElement.value = '';
+		addListSubmitButton.disabled = false;
+		addListCancelButton.disabled = false;
 		contentElement.classList.add('hide');
 		addListForm.classList.remove('hide');
 		addlistElement.focus();
 	});
 
 	addListCancelButton.addEventListener('click', () => {
+		hideAddList();
+	});
+
+	var hideAddList = () => {
 		addListForm.classList.add('hide');
 		contentElement.classList.remove('hide');
-	});
+	};
 
 	addListSubmitButton.addEventListener('click', () => {
 		var formValid = true;
@@ -63,7 +84,9 @@
 			formValid = false;
 		}
 		if (formValid) {
-			addon.port.emit('add-list', listElement.value);
+			addListSubmitButton.disabled = true;
+			addListCancelButton.disabled = true;
+			addon.port.emit('add-list', addlistElement.value);
 		}
 	});
 
@@ -147,7 +170,7 @@
 	});
 
 	addon.port.on('set-add-list-status', (iconName) => {
-		util.setIconState(plusButton.firstElementChild, iconName);
+		util.setIconState(addlistStatus.firstElementChild, iconName);
 	});
 
 }());
