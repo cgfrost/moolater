@@ -53,6 +53,10 @@ div#add-list-status img{
 	width: 7em;
 }
 
+#status-img {
+	padding-top: 10px;
+}
+
 button.icon:hover {
 	cursor: pointer;
 }
