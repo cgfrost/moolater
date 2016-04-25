@@ -16,9 +16,9 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="/Users/cgfrost/Repos/moolater/data/icon-64-white.png"
-   inkscape:export-xdpi="11.25"
-   inkscape:export-ydpi="11.25">
+   inkscape:export-filename="/Users/cgfrost/Repos/moolater/data/logo/icon-32-white.png"
+   inkscape:export-xdpi="5.1245551"
+   inkscape:export-ydpi="5.1245551">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -29,7 +29,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="219"
+     inkscape:cx="217.5"
      inkscape:cy="268.78567"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -60,11 +60,11 @@
     <rect
        style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3336"
-       width="512"
-       height="512"
-       x="0"
-       y="540.36218"
-       ry="39" />
+       width="562"
+       height="562"
+       x="-25"
+       y="515.36218"
+       ry="42.808594" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:226.63952637px;line-height:125%;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#41aaff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"

@@ -9,6 +9,7 @@ Firefox extension for quickly saving a webpage as a task to [Remember The Milk](
 	<img src="screenshots/step-1.png?raw=true" alt="Moo Later Logo" width="205"/>
 	<img src="screenshots/step-2.png?raw=true" alt="Moo Later Logo" width="205"/>
 	<img src="screenshots/step-3.png?raw=true" alt="Moo Later Logo" width="205"/>
+	<img src="screenshots/step-4.png?raw=true" alt="Moo Later Logo" width="205"/>
 </p>
 
 # Comments
