@@ -1,35 +1,39 @@
 {
-
-  "description": "Adds a browser action icon to the toolbar. Click the button to choose a beast. The active tab's body content is then replaced with a picture of the chosen beast. See https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Examples#beastify",
+  "description": "DEV - Quickly save a web page as a task in Remember the Milk to read later. You will need to give MooLater permission to use your Remember the Milk account the first time you try to save a task.",
   "manifest_version": 2,
-  "name": "Beastify",
+  "name": "MooLater",
   "version": "2.0",
-  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/beastify",
+  "homepage_url": "http://chrisfrost.com/moolater",
   "icons": {
-    "48": "icons/icon-64.png"
+    "32": "icons/icon-32.png",
+    "64": "icons/icon-64.png",
+    "128": "icons/icon-128.png"
+  },
+
+  "background": {
+    "scripts": ["moo/index.js"]
   },
 
   "applications": {
     "gecko": {
-      "id": "beastify@mozilla.org",
+      "id": "moolater@codewax.org",
       "strict_min_version": "48.0"
     }
   },
 
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "contextMenus",
+    "storage"
   ],
 
   "browser_action": {
     "default_icon": "icons/icon-32.png",
-    "default_title": "Beastify",
-    "default_popup": "popup/choose_beast.html"
+    "default_title": "MooLater"
   },
 
-  "web_accessible_resources": [
-    "beasts/frog.jpg",
-    "beasts/turtle.jpg",
-    "beasts/snake.jpg"
-  ]
+  "options_ui": {
+    "page": "settings/options.html"
+  }
 
 }
