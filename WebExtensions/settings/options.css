@@ -1,0 +1,53 @@
+body {
+    font-family: sans-serif;
+    color: #333333;
+    font-size: 0.85em;
+}
+
+body, form {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.option {
+    padding: 10px 0 10px 6px;
+    display: block;
+    border-top: 1px solid #C0C0C0;
+}
+
+.option label {
+    display: inline-block;
+    width: 34%;
+    max-width: 400px;
+}
+
+.option input {
+    display: inline-block;
+}
+
+.option .description {
+    margin-top: 12px;
+    display: block;
+    color: #444444;
+}
+
+#submit {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 100px;
+    text-align: center;
+}
+
+#submit button {
+    padding: 5px 10px;
+    border-radius: 2px;
+    border: 1px solid #B4B4B4;
+    background-color: transparent;
+    font-size: 1.06em;
+}
+
+#submit button:hover {
+    background-color: #E6E6E6;
+}

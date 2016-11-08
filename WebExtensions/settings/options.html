@@ -1,61 +1,45 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="utf-8">
-  </head>
 
-  <body>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="options.css" />
+</head>
+
+<body>
 
     <form>
-        <label>Default List<input type="text" id="moolater.defaultList" ></label>
-        <label>Use Title<input type="text" id="moolater.useTitle" ></label>
-        <label>Use Address<input type="text" id="moolater.useLink" ></label>
-        <label>Use Smart Add<input type="text" id="moolater.useSmartAdd" ></label>
-        <label>Show in context meuns<input type="text" id="moolater.showContextMenu" ></label>
-        <button type="submit">Save</button>
+        <div class="option">
+            <label for="moolater-defaultList">Default List</label>
+            <input type="text" id="moolater-defaultList">
+            <span class="description">List to save new tasks to, if it dosn't exist new tasks will go in the Inbox.</span>
+        </div>
+        <div class="option">
+            <label for="moolater-useTitle">Use Title</label>
+            <input type="checkbox" id="moolater-useTitle">
+            <span class="description">Use the title of the current tab as a task description.</span>
+        </div>
+        <div class="option">
+            <label for="moolater-useLink">Use Address</label>
+            <input type="checkbox" id="moolater-useLink">
+            <span class="description">Use the address of the current tab as a task link.</span>
+        </div>
+        <div class="option">
+            <label for="moolater-useSmartAdd">Use Smart Add</label>
+            <input type="checkbox" id="moolater-useSmartAdd">
+            <span class="description">Tell Remember The Milk to use Smart Add when adding a task.</span>
+        </div>
+        <div class="option">
+            <label for="moolater-showContextMenu">Show in context meuns</label>
+            <input type="checkbox" id="moolater-showContextMenu">
+            <span class="description">Show Moo Later in context menus.</span>
+        </div>
+        <div id="submit"><button type="submit">Save</button></div>
     </form>
-
-    <!-- "preferences": [
-      {
-        "name": "extensions.moolater.defaultList",
-        "title": "Default List",
-        "description": "List to save new tasks to, if it dosn't exist new tasks will go in the Inbox.",
-        "type": "string",
-        "value": "Read Later"
-      },
-      {
-        "name": "extensions.moolater.useTitle",
-        "title": "Use Title",
-        "description": "Use the title of the current tab as a task description.",
-        "type": "bool",
-        "value": true
-      },
-      {
-        "name": "extensions.moolater.useLink",
-        "title": "Use Address",
-        "description": "Use the address of the current tab as a task link.",
-        "type": "bool",
-        "value": true
-      },
-      {
-        "name": "extensions.moolater.useSmartAdd",
-        "title": "Use Smart Add",
-        "description": "Tell Remember The Milk to use Smart Add when adding a task.",
-        "type": "bool",
-        "value": true
-      },
-      {
-        "name": "extensions.moolater.showContextMenu",
-        "title": "Show in context meuns",
-        "description": "Show Moo Later in context menus.",
-        "type": "bool",
-        "value": true
-      }
-    ] -->
 
     <script src="options.js"></script>
 
-  </body>
+</body>
 
 </html>
