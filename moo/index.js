@@ -15,7 +15,7 @@
 	let events = new Events();
 	let milk = new RememberTheMilk(data, events, 'write');
 
-	new ContectMenu(events);
+	// new ContectMenu(events);
 
   chrome.browserAction.onClicked.addListener(events.do('go.mooLater'));
 
