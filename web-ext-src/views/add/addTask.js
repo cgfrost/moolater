@@ -23,6 +23,7 @@
 	var addListCancelButton = document.getElementById('add-list-cancel');
 
 	var submitButton = document.getElementById('submit');
+	var submitPermissionButton = document.getElementById('submit-permission');
 
 	var validationRegex = new RegExp('^https?://');
 	var util = window.util;

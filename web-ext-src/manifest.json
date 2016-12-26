@@ -10,10 +10,6 @@
     "128": "data/icon-128.png"
   },
 
-  "background": {
-    "scripts": ["scripts/index.js"]
-  },
-
   "applications": {
     "gecko": {
       "id": "moolater@codewax.org",

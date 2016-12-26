@@ -3,7 +3,7 @@
 (function () {
 	'use strict';
 
-	var submitButton = document.getElementById('submit');
+	var submitButton = document.getElementById('submit-permission');
 	var util = window.util;
 
 	submitButton.addEventListener('click', () => {
