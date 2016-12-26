@@ -110,6 +110,10 @@
 		}
 	}, false);
 
+
+	submitPermissionButton.addEventListener('click', () => {
+	}, false);
+
 	addon.port.on('show-use-selected-text', (selectedText) => {
 		selectedElement.checked = true;
 		selectedElement.value = selectedText;
