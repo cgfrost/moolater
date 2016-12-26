@@ -8,6 +8,12 @@
 	var statusMsg = document.getElementById('status-msg');
 	var statusImg = document.getElementById('status-img');
 
+
+	window.onload = () => {
+		console.log("LOADED PAGE");
+	};
+
+
 	var util = {};
 
 	addon.port.on('set-state', (clear, message, iconName) => {
@@ -23,7 +29,7 @@
 	});
 
 	util.setIconState = (icon, iconName) => {
-		icon.setAttribute('src', '../icons/' + iconName + '.svg');
+		icon.setAttribute('src', '../images/' + iconName + '.svg');
 	};
 
 	util.setTextElement = (label, text) => {

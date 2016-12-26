@@ -5,9 +5,9 @@
   "version": "2.0",
   "homepage_url": "http://chrisfrost.com/moolater",
   "icons": {
-    "32": "data/icon-32.png",
-    "64": "data/icon-64.png",
-    "128": "data/icon-128.png"
+    "32": "icons/icon-32.png",
+    "64": "icons/icon-64.png",
+    "128": "icons/icon-128.png"
   },
 
   "applications": {
@@ -26,10 +26,10 @@
   "browser_action": {
     "browser_style": false,
     "default_icon": {
-      "18": "data/icon-18.png",
-      "36": "data/icon-36.png"
+      "18": "icons/icon-18.png",
+      "36": "icons/icon-36.png"
     },
-    "default_popup": "views/add/addTask.html",
+    "default_popup": "add/addTask.html",
     "default_title": "Save to Remember The Milk"
   },
 
