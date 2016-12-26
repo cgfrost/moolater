@@ -57,9 +57,77 @@ p.controls button:disabled {
 	cursor: wait;
 }
 
+form .multi-label {
+	font-size: 1.2em;
+	display: block;
+	padding: 15px 15px 5px;
+}
+
+form .multi-input {
+	font-size: 1em;
+	padding: 5px;
+	margin: 5px 0 0 0;
+	width: 310px;
+	background-color: #EEEEEE;
+	border-radius: 5px;
+	display: block;
+}
+
+form .line-label {
+	padding: 5px 0 0 0;
+	margin: 15px 15px 15px;
+	font-size: 1.2em;
+  display: block;
+}
+
+form #selected-text {
+	margin-bottom: 3px;
+}
+
+form .line-input {
+	font-size: 1em;
+	padding: 0;
+	margin: 0 5px 0 5px;
+	vertical-align: middle;
+}
+
+div#add-list-status {
+	margin-top: 25px;
+	text-align: center;
+}
+
+button.icon, div.icon {
+	border-radius: 5px;
+	background-color: #FFFFFF;
+	vertical-align: middle;
+}
+
+button.icon img {
+	height: 1.7em;
+	width: 1.7em;
+}
+
+div#add-list-status img{
+	height: 7em;
+	width: 7em;
+}
+
 #status-img {
 	display: block;
+	padding-top: 25px;
 	width: 180px;
 	height: 180px;
 	margin: auto;
+}
+
+button.icon:hover {
+	cursor: pointer;
+}
+
+p.footnote {
+	padding: 20px 15px 10px;
+	text-align: left;
+	font-size: 0.9em;
+	color: #777777;
+	line-height: 13px;
 }
