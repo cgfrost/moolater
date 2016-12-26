@@ -12,6 +12,7 @@
 		 * @return
 		 */
 		this.do = function (eventName) {
+			console.log("Event called: " + eventName);
 			if (subs.has(eventName)) {
 				subs.get(eventName).forEach(listener => {
 					listener(eventName);
