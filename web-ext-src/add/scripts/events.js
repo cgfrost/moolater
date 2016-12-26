@@ -3,7 +3,7 @@
 
 	let subs = new Map();
 
-	module.exports = function () {
+	var events = {};
 
 		/*
 		 * Send an event to any subscribed listeners
@@ -11,7 +11,7 @@
 		 * @param eventName - event name to call
 		 * @return
 		 */
-		this.do = function (eventName) {
+		events.do = function (eventName) {
 			console.log("Event called: " + eventName);
 			if (subs.has(eventName)) {
 				subs.get(eventName).forEach(listener => {
@@ -27,7 +27,7 @@
 		 * @param callback
 		 * @return
 		 */
-		this.on = function (eventName, listener) {
+		events.on = function (eventName, listener) {
 			if (subs.has(eventName)) {
 				subs.get(eventName).add(listener);
 			} else {
@@ -42,7 +42,7 @@
 		 * @param callback
 		 * @return
 		 */
-		this.off = function (eventName, callback) {
+		events.off = function (eventName, callback) {
 			if (subs.has(eventName)) {
 				subs.get(eventName).delete(callback);
 				if (subs.get(eventName).size === 0) {
@@ -57,7 +57,7 @@
 		 * Returns the number of registerd listeners.
 		 *
 		 */
-		this.numberOfEvents = function () {
+		events.numberOfEvents = function () {
 			return subs.size;
 		};
 
@@ -65,12 +65,12 @@
 		 * Removed all listeners and returns how many were removed.
 		 *
 		 */
-		this.reset = function () {
+		events.reset = function () {
 			var count = subs.size;
 			subs = new Map();
 			return count;
 		};
 
-	};
+		ml.events = events;
 
 }());

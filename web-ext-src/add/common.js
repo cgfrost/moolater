@@ -1,5 +1,7 @@
 /* global addon:false, document:false, window:false */
 
+var ml = {};
+
 (function () {
 	'use strict';
 
@@ -10,13 +12,13 @@
 
 
 	window.onload = () => {
-		console.log("LOADED PAGE");
+		console.debug("LOADED PAGE");
 	};
 
 
 	var util = {};
 
-	addon.port.on('set-state', (clear, message, iconName) => {
+	util.setState = (clear, message, iconName) => {
 		if (clear) {
 			contentElement.classList.remove('hide');
 			status.classList.add('hide');
@@ -26,7 +28,7 @@
 			contentElement.classList.add('hide');
 			status.classList.remove('hide');
 		}
-	});
+	};
 
 	util.setIconState = (icon, iconName) => {
 		icon.setAttribute('src', '../images/' + iconName + '.svg');
@@ -48,6 +50,6 @@
 		}
 	};
 
-	window.util = util;
+	ml.util = util;
 
 }());

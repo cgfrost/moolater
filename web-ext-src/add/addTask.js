@@ -26,7 +26,6 @@
 	var submitPermissionButton = document.getElementById('submit-permission');
 
 	var validationRegex = new RegExp('^https?://');
-	var util = window.util;
 
 	taskElement.addEventListener('keyup', (event) => {
 		if (event.keyCode === 13) {
@@ -41,24 +40,24 @@
 	}, false);
 
 	refreshButton.addEventListener('click', () => {
-		addon.port.emit('update-lists');
+		// addon.port.emit('update-lists');
 	}, false);
 
-	addon.port.on('hide-add-list', () => {
-		hideAddList();
-	});
+	// addon.port.on('hide-add-list', () => {
+	// 	hideAddList();
+	// });
+	//
+	// addon.port.on('set-add-list-msg', (msg) => {
+	// 	ml.util.setTextElement(addlistLabel, `New List: ${msg}`);
+	// });
 
-	addon.port.on('set-add-list-msg', (msg) => {
-		util.setTextElement(addlistLabel, `New List: ${msg}`);
-	});
-
-	addon.port.on('set-add-list-status', () => {
-		addListSubmitButton.disabled = false;
-		addListCancelButton.disabled = false;
-	});
+	// addon.port.on('set-add-list-status', () => {
+	// 	addListSubmitButton.disabled = false;
+	// 	addListCancelButton.disabled = false;
+	// });
 
 	plusButton.addEventListener('click', () => {
-		util.setTextElement(addlistLabel, 'New List:');
+		ml.util.setTextElement(addlistLabel, 'New List:');
 		addlistElement.value = '';
 		addListSubmitButton.disabled = false;
 		addListCancelButton.disabled = false;
@@ -79,34 +78,34 @@
 	addListSubmitButton.addEventListener('click', () => {
 		var formValid = true;
 		if (addlistElement.value !== '') {
-			util.setTextElement(addlistLabel, 'New List:');
+			ml.util.setTextElement(addlistLabel, 'New List:');
 		} else {
-			util.setTextElement(addlistLabel, 'New List: List name can\'t be empty.');
+			ml.util.setTextElement(addlistLabel, 'New List: List name can\'t be empty.');
 			formValid = false;
 		}
 		if (formValid) {
 			addListSubmitButton.disabled = true;
 			addListCancelButton.disabled = true;
-			addon.port.emit('add-list', addlistElement.value);
+			// addon.port.emit('add-list', addlistElement.value);
 		}
 	});
 
 	submitButton.addEventListener('click', () => {
 		var formValid = true;
 		if (taskElement.value !== '') {
-			util.setTextElement(taskLabel, 'Task:');
+			ml.util.setTextElement(taskLabel, 'Task:');
 		} else {
-			util.setTextElement(taskLabel, 'Task: Task name can\'t be empty.');
+			ml.util.setTextElement(taskLabel, 'Task: Task name can\'t be empty.');
 			formValid = false;
 		}
 		if (linkElement.value === '' || validationRegex.test(linkElement.value)) {
-			util.setTextElement(linkLabel, 'Link:');
+			ml.util.setTextElement(linkLabel, 'Link:');
 		} else {
-			util.setTextElement(linkLabel, 'Link: Links must start with \'http://\' or \'https://\'.');
+			ml.util.setTextElement(linkLabel, 'Link: Links must start with \'http://\' or \'https://\'.');
 			formValid = false;
 		}
 		if (formValid) {
-			addon.port.emit('add-task', taskElement.value, linkElement.value, selectedElement.checked, selectedElement.value, listsElement.value);
+			// addon.port.emit('add-task', taskElement.value, linkElement.value, selectedElement.checked, selectedElement.value, listsElement.value);
 		}
 	}, false);
 
@@ -114,50 +113,50 @@
 	submitPermissionButton.addEventListener('click', () => {
 	}, false);
 
-	addon.port.on('show-use-selected-text', (selectedText) => {
-		selectedElement.checked = true;
-		selectedElement.value = selectedText;
-		selectedLabel.classList.remove('hide');
-	});
+	// addon.port.on('show-use-selected-text', (selectedText) => {
+	// 	selectedElement.checked = true;
+	// 	selectedElement.value = selectedText;
+	// 	selectedLabel.classList.remove('hide');
+	// });
 
-	addon.port.on('hide-use-selected-text', () => {
-		selectedElement.checked = false;
-		selectedElement.value = '';
-		selectedLabel.classList.add('hide');
-	});
-
-	addon.port.on('update-task', (title, url) => {
-		util.setTextElement(taskLabel, 'Task:');
-		util.setTextElement(linkLabel, 'Link:');
-		taskElement.value = title;
-		linkElement.value = url;
-		taskElement.focus();
-	});
-
-	addon.port.on('update-add-list', () => {
-		addListForm.classList.add('hide');
-		addlistElement.value = '';
-	});
-
-	addon.port.on('update-lists', (lists, defaultList) => {
-		while (listsElement.firstChild) {
-			listsElement.removeChild(listsElement.firstChild);
-		}
-		var defaultFound = false;
-		for (var i = 0; i < lists.length; i++) {
-			if (lists[i].smart === '0') {
-				var selected = defaultList === lists[i].name;
-				if (selected) {
-					defaultFound = true;
-				}
-				var newOption = createOptionElement(lists[i].id, lists[i].name, selected);
-				listsElement.appendChild(newOption);
-			}
-		}
-		if (!defaultFound) {
-			listsElement.selectedIndex = "0";
-		}
-	});
+	// addon.port.on('hide-use-selected-text', () => {
+	// 	selectedElement.checked = false;
+	// 	selectedElement.value = '';
+	// 	selectedLabel.classList.add('hide');
+	// });
+	//
+	// addon.port.on('update-task', (title, url) => {
+	// 	ml.util.setTextElement(taskLabel, 'Task:');
+	// 	ml.util.setTextElement(linkLabel, 'Link:');
+	// 	taskElement.value = title;
+	// 	linkElement.value = url;
+	// 	taskElement.focus();
+	// });
+	//
+	// addon.port.on('update-add-list', () => {
+	// 	addListForm.classList.add('hide');
+	// 	addlistElement.value = '';
+	// });
+	//
+	// addon.port.on('update-lists', (lists, defaultList) => {
+	// 	while (listsElement.firstChild) {
+	// 		listsElement.removeChild(listsElement.firstChild);
+	// 	}
+	// 	var defaultFound = false;
+	// 	for (var i = 0; i < lists.length; i++) {
+	// 		if (lists[i].smart === '0') {
+	// 			var selected = defaultList === lists[i].name;
+	// 			if (selected) {
+	// 				defaultFound = true;
+	// 			}
+	// 			var newOption = createOptionElement(lists[i].id, lists[i].name, selected);
+	// 			listsElement.appendChild(newOption);
+	// 		}
+	// 	}
+	// 	if (!defaultFound) {
+	// 		listsElement.selectedIndex = "0";
+	// 	}
+	// });
 
 	var createOptionElement = (id, name, selected) => {
 		var option = document.createElement('option');
@@ -170,12 +169,12 @@
 		return option;
 	};
 
-	addon.port.on('set-refresh-button-icon', (iconName) => {
-		util.setIconState(refreshButton.firstElementChild, iconName);
-	});
-
-	addon.port.on('set-add-list-status', (iconName) => {
-		util.setIconState(addlistStatus.firstElementChild, iconName);
-	});
+	// addon.port.on('set-refresh-button-icon', (iconName) => {
+	// 	ml.util.setIconState(refreshButton.firstElementChild, iconName);
+	// });
+	//
+	// addon.port.on('set-add-list-status', (iconName) => {
+	// 	ml.util.setIconState(addlistStatus.firstElementChild, iconName);
+	// });
 
 }());
