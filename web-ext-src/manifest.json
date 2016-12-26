@@ -5,13 +5,13 @@
   "version": "2.0",
   "homepage_url": "http://chrisfrost.com/moolater",
   "icons": {
-    "32": "icons/icon-32.png",
-    "64": "icons/icon-64.png",
-    "128": "icons/icon-128.png"
+    "32": "data/icon-32.png",
+    "64": "data/icon-64.png",
+    "128": "data/icon-128.png"
   },
 
   "background": {
-    "scripts": ["moo/index.js"]
+    "scripts": ["scripts/index.js"]
   },
 
   "applications": {
@@ -28,8 +28,21 @@
   ],
 
   "browser_action": {
-    "default_icon": "icons/icon-32.png",
-    "default_title": "MooLater"
+    "browser_style": false,
+    "default_icon": {
+      "18": "data/icon-18.png",
+      "36": "data/icon-36.png"
+    },
+    "default_popup": "views/add/addTask.html",
+    "default_title": "Save to Remember The Milk"
+  },
+
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+M"
+      }
+    }
   },
 
   "options_ui": {

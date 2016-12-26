@@ -12,14 +12,14 @@
 			selection,
 			me = this;
 
-		try {
-			selection = require('sdk/selection');
-		} catch (e) {
-			console.error(`Selection MultiProcess Error: '${e}' - See: https://bugzilla.mozilla.org/show_bug.cgi?id=1060695`);
-			selection = {
-				text: undefined
-			};
-		}
+		// try {
+		// 	selection = require('sdk/selection');
+		// } catch (e) {
+		// 	console.error(`Selection MultiProcess Error: '${e}' - See: https://bugzilla.mozilla.org/show_bug.cgi?id=1060695`);
+		// 	selection = {
+		// 		text: undefined
+		// 	};
+		// }
 
 		me.lists = [];
 

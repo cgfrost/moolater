@@ -1,45 +1,25 @@
 (function () {
 	'use strict';
 
-	let self = require('sdk/self'),
-		ToggleButton = require('sdk/ui').ToggleButton,
-		RememberTheMilk = require(self.data.url('milk/Milk.js')),
+	let	RememberTheMilk = require(self.data.url('milk/Milk.js')),
 		Account = new require(self.data.url('account.js')),
 		Tasks = new require(self.data.url('tasks.js')),
 		Events = require(self.data.url('events.js')),
 		milkAuth = require(self.data.url('milk/MilkAuth.js')),
-		ContectMenu = require(self.data.url('contextMenu.js')),
-		data = JSON.parse(self.data.load('data.json')),
-		Hotkey = require('sdk/hotkeys').Hotkey;
+		// ContectMenu = require(self.data.url('contextMenu.js')),
+		data = JSON.parse(self.data.load('data.json'));
 
 	let events = new Events();
 	let milk = new RememberTheMilk(data, events, 'write');
 
 	// new ContectMenu(events);
 
-  chrome.browserAction.onClicked.addListener(events.do('go.mooLater'));
+	browser.browserAction.onClicked.addListener((tab) => {
+	  console.log(tab.url);
+		events.do('go.mooLater')
+	});
 
-	// let button = new ToggleButton({
-	// 	id: 'moolater-toggle',
-	// 	label: 'Save to milk',
-	// 	icon: {
-	// 		'18': './logo/icon-18.png',
-	// 		'32': './logo/icon-32.png',
-	// 		'36': './logo/icon-36.png',
-	// 		'64': './logo/icon-64.png',
-	// 		'128': './logo/icon-128.png'
-	// 	},
-	// 	onClick: () => {
-	// 		events.do('go.mooLater');
-	// 	}
-	// });
-	//
-	// new Hotkey({
-	// 	combo: 'accel-shift-m',
-	// 	onPress: () => {
-	// 		events.do('go.mooLater');
-	// 	}
-	// });
+	browser.browserAction.setPopup({popup: browser.extension.getURL("views/login/login.html")})
 
 	let tasks = new Tasks(milk, button, events);
 	let account = new Account(milk, button);
