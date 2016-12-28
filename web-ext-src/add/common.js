@@ -12,7 +12,7 @@ var ml = {};
 
 
 	window.onload = () => {
-		console.debug("LOADED PAGE");
+		console.warn("LOADED PAGE");
 	};
 
 
