@@ -30,7 +30,7 @@
       "18": "icons/icon-18.png",
       "36": "icons/icon-36.png"
     },
-    "default_popup": "add/addTask.html",
+    "default_popup": "popup/mooLater.html",
     "default_title": "Save to Remember The Milk"
   },
 

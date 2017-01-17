@@ -22,6 +22,8 @@
 	var addListSubmitButton = document.getElementById('add-list-submit');
 	var addListCancelButton = document.getElementById('add-list-cancel');
 
+	var loginElement = document.getElementById('login');
+
 	var submitButton = document.getElementById('submit');
 	var submitPermissionButton = document.getElementById('submit-permission');
 
@@ -109,6 +111,8 @@
 		}
 	}, false);
 
+
+	loginElement.classList.remove('hide');
 
 	submitPermissionButton.addEventListener('click', () => {
 	}, false);
