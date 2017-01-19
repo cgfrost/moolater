@@ -10,12 +10,6 @@ var ml = {};
 	var statusMsg = document.getElementById('status-msg');
 	var statusImg = document.getElementById('status-img');
 
-
-	window.onload = () => {
-		console.warn("LOADED PAGE");
-	};
-
-
 	var util = {};
 
 	util.setState = (clear, message, iconName) => {

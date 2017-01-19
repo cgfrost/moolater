@@ -1,5 +1,12 @@
 /* global addon:false, document:false, window:false */
 
+var loadScript = (scriptName, callback) => {
+    var scriptEl = document.createElement('script');
+    scriptEl.src = chrome.extension.getURL(scriptName + '.js');
+    scriptEl.addEventListener('load', callback, false);
+    document.head.appendChild(scriptEl);
+}
+
 (function () {
 	'use strict';
 
@@ -28,6 +35,17 @@
 	var submitPermissionButton = document.getElementById('submit-permission');
 
 	var validationRegex = new RegExp('^https?://');
+
+	// IS THE USER AUTHENTICATED
+
+	loadScript('MilkAuth');
+
+	// Initialization
+	document.addEventListener('DOMContentLoaded', function () {
+		console.log(window.hello("Bob"));
+		loginElement.classList.remove('hide');
+	});
+
 
 	// taskElement.addEventListener('keyup', (event) => {
 	// 	if (event.keyCode === 13) {
