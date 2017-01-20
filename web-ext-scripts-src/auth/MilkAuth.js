@@ -1,29 +1,17 @@
+import md5 from './md5';
+
 export default class {
 
   constructor(data) {
     if (!data.a || !data.b) {
-      throw 'Milk Error: Missing data.';
+      throw `Milk Error: Missing data. ${md5("bob")}`;
     }
     this.data = data;
   }
 
-  hello (name) {
-    return `Hello ${name}`;
-  }
-
-  /**
-   * Generates a RTM authentication URL
-   *
-   * @return     URL String
-   */
-  getAuthUrl () {
-    var params = {
-      api_key: data.a,
-      perms: this.permissions
-    };
-    params.frob = this.frob;
-    return AUTH_URL + this.encodeUrlParams(params);
+  isUserAuthenticated(callback, onError) {
+    browser.storage.local.get(["token", "frob"]).then(callback, onError);
   }
 
 
-};
+}

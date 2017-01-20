@@ -7,10 +7,7 @@ code.google.com/p/crypto-js
 code.google.com/p/crypto-js/wiki/License
 */
 
-(function () {
-	'use strict';
-
-	var hasherBuilder = function (Math) {
+export default function () {
 
 		var Base = (function () {
 			function F() {}
@@ -889,7 +886,4 @@ code.google.com/p/crypto-js/wiki/License
 		 *     var hash = MD5(wordArray);
 		 */
 		return Hasher._createFunction(MD5);
-	};
-
-	module.exports = hasherBuilder(Math);
-}());
+}();

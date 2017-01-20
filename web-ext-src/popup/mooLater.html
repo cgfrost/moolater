@@ -9,7 +9,7 @@
 <body>
 	<p class="title">Moo Later</p>
 
-	<form id="content">
+	<form id="content" class="section">
 		<label id="task-label" class="multi-label">Task:
 			<input type="text" id="task" class="multi-input">
 		</label>
@@ -29,7 +29,7 @@
 		</p>
 	</form>
 
-	<form id="add-list" class="hide">
+	<form id="add-list" class="section hide">
 		<label id="list-label" class="multi-label">New List:
 			<input type="text" id="list" class="multi-input">
 		</label>
@@ -40,7 +40,7 @@
 		<div class="icon" id="add-list-status"><img src="../images/blank.svg" /></div>
 	</form>
 
-	<div id="login" class="hide">
+	<div id="login" class="section hide">
 		<p class="msg">Moo Later needs permission to access your Remember The Milk account.</p>
 		<p class="controls">
 			<button id="submit-permission" type="submit">Allow Access</button>
@@ -48,14 +48,12 @@
 		<p class="footnote">Moo Later won't store your password and you can revoke access any time from Remember The Milk.</p>
 	</div>
 
-	<div id="status" class="hide">
+	<div id="status" class="section hide">
 		<p class="msg" id="status-msg"></p>
 		<img class="msg" id="status-img" src="../images/done.svg" />
 	</div>
 
-	<!-- <script src="common.js" type="text/javascript" charset="utf-8"></script> -->
-	<script src="launch.js" type="text/javascript" charset="utf-8"></script>
-	<!-- <script src="scripts/events.js" type="text/javascript" charset="utf-8"></script> -->
+	<script src="main.js" type="text/javascript" charset="utf-8"></script>
 </body>
 
 </html>
