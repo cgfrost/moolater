@@ -1,17 +1,39 @@
-import md5 from './md5';
-
 export default class {
 
-  constructor(data) {
-    if (!data.a || !data.b) {
-      throw `Milk Error: Missing data. ${md5("bob")}`;
-    }
-    this.data = data;
-  }
+	constructor() {
+		console.log("MilkAuth");
+	}
 
-  isUserAuthenticated(callback, onError) {
-    browser.storage.local.get(["token", "frob"]).then(callback, onError);
-  }
+	getToken(milk) {
+		return new Promise((resolve, reject) => {
+			milk.get('rtm.auth.getToken', {},
+				resolve,
+				reject);
+		});
+	}
 
+	checkToken(milk) {
+		return new Promise((resolve, reject) => {
+			milk.get('rtm.auth.checkToken', {},
+				resolve,
+				reject);
+		});
+	}
+
+	getFrob(milk) {
+		return new Promise((resolve, reject) => {
+			milk.get('rtm.auth.getFrob', {},
+				resolve,
+				reject);
+		});
+	}
+
+	createTimeline(milk) {
+		return new Promise((resolve, reject) => {
+			milk.get('rtm.timelines.create', {},
+				resolve,
+				reject);
+		});
+	}
 
 }
