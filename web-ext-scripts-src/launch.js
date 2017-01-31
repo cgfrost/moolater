@@ -1,20 +1,29 @@
 /* global addon:false, document:false, window:false */
 
-import MilkAuth from './auth/MilkAuth.js';
+import Milk from './auth/Milk.js';
 'use strict';
 
+	//Sections
 	var addTaskSection = document.getElementById('content');
 	var addListSection = document.getElementById('add-list');
 	var loginSection = document.getElementById('login');
 	var statusSection = document.getElementById('status');
+
+	//Buttons
+	var addListSubmitButton = document.getElementById('add-list-submit');
+	var addListCancelButton = document.getElementById('add-list-cancel');
+	var addTaskSubmitButton = document.getElementById('add-task-submit');
+	var permissionSubmitButton = document.getElementById('permissions-submit');
+	var listRefreshButton = document.getElementById('lists-refresh');
+	var listPlusButton = document.getElementById('lists-plus');
+
+
 
 	// var taskElement = document.getElementById('task');
 	// var taskLabel = document.getElementById('task-label');
 	// var linkElement = document.getElementById('link');
 	// var linkLabel = document.getElementById('link-label');
 	// var listsElement = document.getElementById('lists');
-	// var refreshButton = document.getElementById('lists-refresh');
-	// var plusButton = document.getElementById('lists-plus');
 	//
 	// var selectedElement = document.getElementById('selected-text');
 	// var selectedLabel = document.getElementById('selected-text-label');
@@ -23,22 +32,18 @@ import MilkAuth from './auth/MilkAuth.js';
 	// var addlistElement = document.getElementById('list');
 	// var addlistLabel = document.getElementById('list-label');
 	// var addlistStatus = document.getElementById('add-list-status');
-	// var addListSubmitButton = document.getElementById('add-list-submit');
-	// var addListCancelButton = document.getElementById('add-list-cancel');
-	//
-	// var submitButton = document.getElementById('submit');
-	// var submitPermissionButton = document.getElementById('submit-permission');
+
+
 
 	var validationRegex = new RegExp('^https?://');
 
-	// IS THE USER AUTHENTICATED
 
   let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
-  let milkAuth = new MilkAuth(JSON.parse(data));
+  let milk = new Milk(JSON.parse(data), 'write');
 
 	// Initialization
 	document.addEventListener('DOMContentLoaded', () => {
-		milkAuth.isUserAuthenticated(
+		milk.getUserAuthenticated(
 			(result) => {
 				if(result.frob && result.token) {
 					showSection(addTaskSection);
@@ -50,6 +55,28 @@ import MilkAuth from './auth/MilkAuth.js';
 				console.error(`Error while retreiving data from storage ${error}`);
 				showSection(loginSection);
 			});
+
+			addListSubmitButton.addEventListener('click', () => {
+			}, false);
+
+			addListCancelButton.addEventListener('click', () => {
+				showSection(addTaskSection);
+			}, false);
+
+			addTaskSubmitButton.addEventListener('click', () => {
+			}, false);
+
+			permissionSubmitButton.addEventListener('click', () => {
+				doLogin();
+			}, false);
+
+			listRefreshButton.addEventListener('click', () => {
+			}, false);
+
+			listPlusButton.addEventListener('click', () => {
+				showSection(addListSection);
+			}, false);
+
 	});
 
 	let showSection = (element) => {
@@ -59,6 +86,50 @@ import MilkAuth from './auth/MilkAuth.js';
 		}
 		element.classList.remove('hide');
 	};
+
+	let showMessage = (message, icon) => {
+		submitButton.disabled = disabled;
+		var message = disabled ? 'Checking' : 'Allow access' ;
+		util.setTextElement(submitButton, message);
+		submitButton.focus();
+
+		showSection(statusSection);
+	};
+
+	let setIconState = (icon, iconName) => {
+		icon.setAttribute('src', '../icons/' + iconName + '.svg');
+	};
+
+	let setTextElement = (label, text) => {
+		let firstTextElement;
+		let children = label.childNodes;
+		for (let i = 0; i < children.length; i++) {
+			if (children[i].nodeName === '#text') {
+				firstTextElement = children[i];
+				break;
+			}
+		}
+		if (firstTextElement) {
+			label.replaceChild(document.createTextNode(text), firstTextElement);
+		} else {
+			label.appendChild(document.createTextNode(text));
+		}
+	};
+
+	let doLogin = () => {
+		showMessage('Requesting permission', 'loading');
+		windows.open({
+			url: milk.getAuthUrl(),
+			onClose: () => {
+				milk.fetchToken();
+			}
+		});
+		// setTimeout(() => {
+		// 	loginPanel.hide();
+		// }, 1200);
+	};
+
+
 
 	// taskElement.addEventListener('keyup', (event) => {
 	// 	if (event.keyCode === 13) {
