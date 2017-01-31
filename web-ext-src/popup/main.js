@@ -931,71 +931,56 @@ var MilkAuth = class {
 
 };
 
+const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
+const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
+const API_VERSION = '2';
+const FORMAT = 'json';
+
 var Milk = class {
 
 	constructor(data, permissions) {
-		console.log("Milk");
 		this.milkAuth = new MilkAuth();
 		this.permissions = (permissions) ? permissions : 'write';
-
-		const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
-		const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
-		const API_VERSION = '2';
-		const FORMAT = 'json';
-
-
 		if (!data.a || !data.b) {
 			throw 'Milk Error: Missing data.';
 		}
-
-		browser.storage.local.get(["token", "frob"]).then(
-			(result) => {
-				if(result.frob && result.token) {
-					showSection(addTaskSection);
-				} else {
-					showSection(loginSection);
-				}
-			},
-			(error) => {
-				console.error(`Error while retreiving data from storage ${error}`);
-				showSection(loginSection);
-			});
+		this.data = data;
 	}
 
 	getUserAuthenticated(callback, onError) {
 		browser.storage.local.get(["token", "frob"]).then(callback, onError);
 	}
 
-		/**
-		 * Generates a RTM authentication URL
-		 *
-		 * @return     URL String
-		 */
-		getAuthUrl() {
-			var params = {
-				api_key: data.a,
-				perms: this.permissions
-			};
-			params.frob = this.frob;
-			return AUTH_URL + this.encodeUrlParams(params);
-		}
+	/**
+	 * Generates a RTM authentication URL
+	 *
+	 * @return     URL String
+	 */
+	getAuthUrl() {
+		var params = {
+			api_key: this.data.a,
+			perms: this.permissions
+		};
+		params.frob = this.frob;
+		return AUTH_URL + this.encodeUrlParams(params);
+	}
 
-		// events.on('token.init', () => {
-		// 	this.setTimeline();
-		// });
+	// events.on('token.init', () => {
+	// 	this.setTimeline();
+	// });
 
-		/**
-		 * Gets the timeline ID
-		 *
-		 * @return     Returns the timline ID String
-		 */
-		setTimeline() {
-			milkAuth.createTimeline(this).then((response) => {
-				this.timeline = response.rsp.timeline;
-			}).catch((reason) => {
-				console.warn(reason);
-			});
-		}
+	/**
+	 * Gets the timeline ID
+	 *
+	 * @return     Returns the timline ID String
+	 */
+	setTimeline() {
+		milkAuth.createTimeline(this).then((response) => {
+			this.timeline = response.rsp.timeline;
+		}).catch((reason) => {
+			console.warn(reason);
+		});
+	}
 
 		// setFrob(frob) {
 		// 	storage.frob = frob;
@@ -1117,7 +1102,7 @@ var Milk = class {
 			var paramString = '?',
 				firstParam = true;
 
-			params.api_key = data.a;
+			params.api_key = this.data.a;
 
 			for (var key in params) {
 				if (firstParam) {
@@ -1147,7 +1132,7 @@ var Milk = class {
 			for (var i = 0; i < keys.length; i++) {
 				signature += keys[i] + params[keys[i]];
 			}
-			signature = data.b + signature;
+			signature = this.data.b + signature;
 
 			return `&api_sig=${md5(signature)}`;
 		}
@@ -1158,9 +1143,9 @@ var Milk = class {
 /* global addon:false, document:false, window:false */
 
 //Sections
-	var addTaskSection$1 = document.getElementById('content');
+	var addTaskSection = document.getElementById('content');
 	var addListSection = document.getElementById('add-list');
-	var loginSection$1 = document.getElementById('login');
+	var loginSection = document.getElementById('login');
 	var statusSection = document.getElementById('status');
 
 	//Buttons
@@ -1171,31 +1156,35 @@ var Milk = class {
 	var listRefreshButton = document.getElementById('lists-refresh');
 	var listPlusButton = document.getElementById('lists-plus');
 
+	//Status
+	var statusImg = document.getElementById('status-img');
+	var statusMsg = document.getElementById('status-msg');
 
 
-	let data$1 = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
-  let milk = new Milk(JSON.parse(data$1), 'write');
+
+	let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
+  let milk = new Milk(JSON.parse(data), 'write');
 
 	// Initialization
 	document.addEventListener('DOMContentLoaded', () => {
 		milk.getUserAuthenticated(
 			(result) => {
 				if(result.frob && result.token) {
-					showSection$1(addTaskSection$1);
+					showSection(addTaskSection);
 				} else {
-					showSection$1(loginSection$1);
+					showSection(loginSection);
 				}
 			},
 			(error) => {
 				console.error(`Error while retreiving data from storage ${error}`);
-				showSection$1(loginSection$1);
+				showSection(loginSection);
 			});
 
 			addListSubmitButton.addEventListener('click', () => {
 			}, false);
 
 			addListCancelButton.addEventListener('click', () => {
-				showSection$1(addTaskSection$1);
+				showSection(addTaskSection);
 			}, false);
 
 			addTaskSubmitButton.addEventListener('click', () => {
@@ -1209,36 +1198,64 @@ var Milk = class {
 			}, false);
 
 			listPlusButton.addEventListener('click', () => {
-				showSection$1(addListSection);
+				showSection(addListSection);
 			}, false);
 
 	});
 
-	let showSection$1 = (element) => {
+	let showMessage = (message, icon) => {
+		setTextElement(statusMsg, message);
+		setIconState(statusImg, icon);
+		showSection(statusSection);
+	};
+
+
+	let showSection = (element) => {
 		var sections = document.getElementsByClassName("section");
 		for (let section of sections) {
- 			section.classList.add('hide');
+			section.classList.add('hide');
 		}
 		element.classList.remove('hide');
 	};
 
-	let showMessage = (message, icon) => {
-		submitButton.disabled = disabled;
-		var message = disabled ? 'Checking' : 'Allow access';
-		util.setTextElement(submitButton, message);
-		submitButton.focus();
 
-		showSection$1(statusSection);
+	let setIconState = (icon, iconName) => {
+		icon.setAttribute('src', '../images/' + iconName + '.svg');
 	};
+
+	let setTextElement = (label, text) => {
+		let firstTextElement;
+		let children = label.childNodes;
+		for (let child of children) {
+			if (child.nodeName === '#text') {
+				firstTextElement = child;
+				break;
+			}
+		}
+		if (firstTextElement) {
+			label.replaceChild(document.createTextNode(text), firstTextElement);
+		} else {
+			label.appendChild(document.createTextNode(text));
+		}
+	};
+
+// https://www.rememberthemilk.com/services/auth/?api_key=bf427f2504b074dc361c18d255354649&perms=write&frob=undefined&api_sig=4b2263dd6f2e10889a28217d0cde6714
 
 	let doLogin = () => {
 		showMessage('Requesting permission', 'loading');
-		windows.open({
+		browser.windows.create({
 			url: milk.getAuthUrl(),
-			onClose: () => {
-				milk.fetchToken();
+			type: 'panel'
+		}).then(
+			(newWindow) => {
+				// newWindow.onRemoved.addListener((windowId) => {
+				// 	milk.fetchToken();
+				// });
+			},
+			(error) => {
+				console.log(error);
 			}
-		});
+		);
 		// setTimeout(() => {
 		// 	loginPanel.hide();
 		// }, 1200);
