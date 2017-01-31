@@ -893,35 +893,62 @@ var md5 = function () {
 
 var MilkAuth = class {
 
-  constructor(data) {
-    if (!data.a || !data.b) {
-      throw `Milk Error: Missing data. ${md5("bob")}`;
-    }
-    this.data = data;
-  }
+	constructor() {
+		console.log("MilkAuth");
+	}
 
-  isUserAuthenticated(callback, onError) {
-    browser.storage.local.get(["token", "frob"]).then(callback, onError);
-  }
+	getToken(milk) {
+		return new Promise((resolve, reject) => {
+			milk.get('rtm.auth.getToken', {},
+				resolve,
+				reject);
+		});
+	}
 
+	checkToken(milk) {
+		return new Promise((resolve, reject) => {
+			milk.get('rtm.auth.checkToken', {},
+				resolve,
+				reject);
+		});
+	}
+
+	getFrob(milk) {
+		return new Promise((resolve, reject) => {
+			milk.get('rtm.auth.getFrob', {},
+				resolve,
+				reject);
+		});
+	}
+
+	createTimeline(milk) {
+		return new Promise((resolve, reject) => {
+			milk.get('rtm.timelines.create', {},
+				resolve,
+				reject);
+		});
+	}
 
 };
 
-/* global addon:false, document:false, window:false */
+var Milk = class {
 
-var addTaskSection = document.getElementById('content');
-	var addListSection = document.getElementById('add-list');
-	var loginSection = document.getElementById('login');
-	var statusSection = document.getElementById('status');
+	constructor(data, permissions) {
+		console.log("Milk");
+		this.milkAuth = new MilkAuth();
+		this.permissions = (permissions) ? permissions : 'write';
 
-	// IS THE USER AUTHENTICATED
+		const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
+		const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
+		const API_VERSION = '2';
+		const FORMAT = 'json';
 
-  let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
-  let milkAuth = new MilkAuth(JSON.parse(data));
 
-	// Initialization
-	document.addEventListener('DOMContentLoaded', () => {
-		milkAuth.isUserAuthenticated(
+		if (!data.a || !data.b) {
+			throw 'Milk Error: Missing data.';
+		}
+
+		browser.storage.local.get(["token", "frob"]).then(
 			(result) => {
 				if(result.frob && result.token) {
 					showSection(addTaskSection);
@@ -933,15 +960,291 @@ var addTaskSection = document.getElementById('content');
 				console.error(`Error while retreiving data from storage ${error}`);
 				showSection(loginSection);
 			});
+	}
+
+	getUserAuthenticated(callback, onError) {
+		browser.storage.local.get(["token", "frob"]).then(callback, onError);
+	}
+
+		/**
+		 * Generates a RTM authentication URL
+		 *
+		 * @return     URL String
+		 */
+		getAuthUrl() {
+			var params = {
+				api_key: data.a,
+				perms: this.permissions
+			};
+			params.frob = this.frob;
+			return AUTH_URL + this.encodeUrlParams(params);
+		}
+
+		// events.on('token.init', () => {
+		// 	this.setTimeline();
+		// });
+
+		/**
+		 * Gets the timeline ID
+		 *
+		 * @return     Returns the timline ID String
+		 */
+		setTimeline() {
+			milkAuth.createTimeline(this).then((response) => {
+				this.timeline = response.rsp.timeline;
+			}).catch((reason) => {
+				console.warn(reason);
+			});
+		}
+
+		// setFrob(frob) {
+		// 	storage.frob = frob;
+		// 	this.frob = frob;
+		// }
+		//
+		// hasFrob() {
+		// 	return (this.frob && storage.frob);
+		// }
+
+		/**
+		 * Main method for making API calls
+		 *
+		 * @param method    Specifies what API method to be used
+		 * @param params    Array of API parameters to accompany the method parameter
+		 * @param complete  Callback to fire after the request comes back
+		 * @param error     (Optional) Callback to fire if the request fails
+		 * @return          Returns the reponse from the RTM API
+		 */
+		get(method, params, complete, error) {
+			if (!method) {
+				throw 'Error: API Method must be defined.';
+			}
+
+			if (!params) {
+				throw 'Error: API Params must be defined.';
+			}
+
+			if (!complete) {
+				throw 'Error: API Complete function must be defined.';
+			}
+
+			if (!error) {
+				error = function () {};
+			}
+
+			params.v = API_VERSION;
+			params.format = FORMAT;
+			params.method = method;
+
+			if (this.auth_token) {
+				params.auth_token = this.auth_token;
+			}
+
+			if (this.frob) {
+				params.frob = this.frob;
+			}
+
+			var requestUrl = BASE_URL + this.encodeUrlParams(params);
+
+			new Request({
+				url: requestUrl,
+				overrideMimeType: 'application/json; charset=utf-8',
+				onComplete: (response) => {
+										console.log('*************************************');
+//										console.log(`Request.Url     : ${requestUrl}`);
+										console.log(`Request.Method  : ${method}`);
+										console.log(`Response.Text   : ${response.text}`);
+										console.log(`        .Status : ${response.status}`);
+										console.log(`        .Text   : ${response.statusText}`);
+										console.log('*************************************');
+					if (response.status === 200 && response.json.rsp.stat === 'ok') {
+						complete(response.json);
+					} else {
+						this.handleError(response, error, () => {
+							this.get(method, params, complete, error);
+						});
+					}
+				}
+			}).get();
+		}
+
+		handleError(response, error, retry) {
+			if (response.status === 200) {
+				var rsp = response.json.rsp;
+				if (rsp.err && rsp.err.msg && rsp.err.code) {
+					if (rsp.err.code === '98') {
+						// storage.token = null;
+						this.auth_token = null;
+						this.fetchToken(retry, error);
+						return;
+					} else if (rsp.err.code === '101') {
+						// storage.token = null;
+						this.auth_token = null;
+						// storage.frob = null;
+						this.frob = null;
+					}
+				}
+				error(`Error ${rsp.err.code}: ${rsp.err.msg}`);
+			} else {
+				error(`Network Error:${response.status} ${response.statusText}`);
+			}
+		}
+
+		fetchToken(retry, error) {
+			milkAuth.getToken(this)
+				.then((resp) => {
+					this.auth_token = resp.rsp.auth.token;
+					// storage.token = resp.rsp.auth.token;
+					// events.do('token.init');
+					if (retry) {
+						retry();
+					}
+				}).catch((reason) => {
+					if (error) {
+						error(reason);
+					}
+				});
+		}
+
+		/**
+		 * Private - Encodes request parameters into URL format
+		 *
+		 * @param params    Array of parameters to be URL encoded
+		 * @return          Returns the URL encoded string of parameters
+		 */
+		encodeUrlParams(params) {
+			params = (params) ? params : {};
+			var paramString = '?',
+				firstParam = true;
+
+			params.api_key = data.a;
+
+			for (var key in params) {
+				if (firstParam) {
+					paramString += `${key}=${encodeURIComponent(params[key])}`;
+				} else {
+					paramString += `&${key}=${encodeURIComponent(params[key])}`;
+				}
+				firstParam = false;
+			}
+
+			paramString += this.generateSig(params);
+			return paramString;
+		}
+
+		/**
+		 * Private - Generates a URL encoded authentication signature
+		 *
+		 * @param params    The parameters used to generate the signature
+		 * @return          Returns the URL encoded authentication signature
+		 */
+		generateSig(params) {
+			params = (params) ? params : {};
+			var signature = '',
+				keys = Object.keys(params);
+
+			keys.sort();
+			for (var i = 0; i < keys.length; i++) {
+				signature += keys[i] + params[keys[i]];
+			}
+			signature = data.b + signature;
+
+			return `&api_sig=${md5(signature)}`;
+		}
+
+		// return this;
+};
+
+/* global addon:false, document:false, window:false */
+
+//Sections
+	var addTaskSection$1 = document.getElementById('content');
+	var addListSection = document.getElementById('add-list');
+	var loginSection$1 = document.getElementById('login');
+	var statusSection = document.getElementById('status');
+
+	//Buttons
+	var addListSubmitButton = document.getElementById('add-list-submit');
+	var addListCancelButton = document.getElementById('add-list-cancel');
+	var addTaskSubmitButton = document.getElementById('add-task-submit');
+	var permissionSubmitButton = document.getElementById('permissions-submit');
+	var listRefreshButton = document.getElementById('lists-refresh');
+	var listPlusButton = document.getElementById('lists-plus');
+
+
+
+	let data$1 = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
+  let milk = new Milk(JSON.parse(data$1), 'write');
+
+	// Initialization
+	document.addEventListener('DOMContentLoaded', () => {
+		milk.getUserAuthenticated(
+			(result) => {
+				if(result.frob && result.token) {
+					showSection$1(addTaskSection$1);
+				} else {
+					showSection$1(loginSection$1);
+				}
+			},
+			(error) => {
+				console.error(`Error while retreiving data from storage ${error}`);
+				showSection$1(loginSection$1);
+			});
+
+			addListSubmitButton.addEventListener('click', () => {
+			}, false);
+
+			addListCancelButton.addEventListener('click', () => {
+				showSection$1(addTaskSection$1);
+			}, false);
+
+			addTaskSubmitButton.addEventListener('click', () => {
+			}, false);
+
+			permissionSubmitButton.addEventListener('click', () => {
+				doLogin();
+			}, false);
+
+			listRefreshButton.addEventListener('click', () => {
+			}, false);
+
+			listPlusButton.addEventListener('click', () => {
+				showSection$1(addListSection);
+			}, false);
+
 	});
 
-	let showSection = (element) => {
+	let showSection$1 = (element) => {
 		var sections = document.getElementsByClassName("section");
 		for (let section of sections) {
  			section.classList.add('hide');
 		}
 		element.classList.remove('hide');
 	};
+
+	let showMessage = (message, icon) => {
+		submitButton.disabled = disabled;
+		var message = disabled ? 'Checking' : 'Allow access';
+		util.setTextElement(submitButton, message);
+		submitButton.focus();
+
+		showSection$1(statusSection);
+	};
+
+	let doLogin = () => {
+		showMessage('Requesting permission', 'loading');
+		windows.open({
+			url: milk.getAuthUrl(),
+			onClose: () => {
+				milk.fetchToken();
+			}
+		});
+		// setTimeout(() => {
+		// 	loginPanel.hide();
+		// }, 1200);
+	};
+
+
 
 	// taskElement.addEventListener('keyup', (event) => {
 	// 	if (event.keyCode === 13) {
