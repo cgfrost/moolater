@@ -17,6 +17,10 @@ import Milk from './auth/Milk.js';
 	var listRefreshButton = document.getElementById('lists-refresh');
 	var listPlusButton = document.getElementById('lists-plus');
 
+	//Status
+	var statusImg = document.getElementById('status-img');
+	var statusMsg = document.getElementById('status-msg');
+
 
 
 	// var taskElement = document.getElementById('task');
@@ -79,33 +83,32 @@ import Milk from './auth/Milk.js';
 
 	});
 
+	let showMessage = (message, icon) => {
+		setTextElement(statusMsg, message);
+		setIconState(statusImg, icon);
+		showSection(statusSection);
+	};
+
+
 	let showSection = (element) => {
 		var sections = document.getElementsByClassName("section");
 		for (let section of sections) {
- 			section.classList.add('hide');
+			section.classList.add('hide');
 		}
 		element.classList.remove('hide');
 	};
 
-	let showMessage = (message, icon) => {
-		submitButton.disabled = disabled;
-		var message = disabled ? 'Checking' : 'Allow access' ;
-		util.setTextElement(submitButton, message);
-		submitButton.focus();
-
-		showSection(statusSection);
-	};
 
 	let setIconState = (icon, iconName) => {
-		icon.setAttribute('src', '../icons/' + iconName + '.svg');
+		icon.setAttribute('src', '../images/' + iconName + '.svg');
 	};
 
 	let setTextElement = (label, text) => {
 		let firstTextElement;
 		let children = label.childNodes;
-		for (let i = 0; i < children.length; i++) {
-			if (children[i].nodeName === '#text') {
-				firstTextElement = children[i];
+		for (let child of children) {
+			if (child.nodeName === '#text') {
+				firstTextElement = child;
 				break;
 			}
 		}
@@ -116,14 +119,23 @@ import Milk from './auth/Milk.js';
 		}
 	};
 
+// https://www.rememberthemilk.com/services/auth/?api_key=bf427f2504b074dc361c18d255354649&perms=write&frob=undefined&api_sig=4b2263dd6f2e10889a28217d0cde6714
+
 	let doLogin = () => {
 		showMessage('Requesting permission', 'loading');
-		windows.open({
+		browser.windows.create({
 			url: milk.getAuthUrl(),
-			onClose: () => {
-				milk.fetchToken();
+			type: 'panel'
+		}).then(
+			(newWindow) => {
+				// newWindow.onRemoved.addListener((windowId) => {
+				// 	milk.fetchToken();
+				// });
+			},
+			(error) => {
+				console.log(error);
 			}
-		});
+		);
 		// setTimeout(() => {
 		// 	loginPanel.hide();
 		// }, 1200);
