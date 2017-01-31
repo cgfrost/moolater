@@ -1,71 +1,56 @@
 import md5 from './md5';
 import MilkAuth from './MilkAuth';
 
+const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
+const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
+const API_VERSION = '2';
+const FORMAT = 'json';
+
 export default class {
 
 	constructor(data, permissions) {
-		console.log("Milk");
 		this.milkAuth = new MilkAuth();
 		this.permissions = (permissions) ? permissions : 'write';
-
-		const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
-		const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
-		const API_VERSION = '2';
-		const FORMAT = 'json';
-
-
 		if (!data.a || !data.b) {
 			throw 'Milk Error: Missing data.';
 		}
-
-		browser.storage.local.get(["token", "frob"]).then(
-			(result) => {
-				if(result.frob && result.token) {
-					showSection(addTaskSection);
-				} else {
-					showSection(loginSection);
-				}
-			},
-			(error) => {
-				console.error(`Error while retreiving data from storage ${error}`);
-				showSection(loginSection);
-			});
+		this.data = data;
 	}
 
 	getUserAuthenticated(callback, onError) {
 		browser.storage.local.get(["token", "frob"]).then(callback, onError);
 	}
 
-		/**
-		 * Generates a RTM authentication URL
-		 *
-		 * @return     URL String
-		 */
-		getAuthUrl() {
-			var params = {
-				api_key: data.a,
-				perms: this.permissions
-			};
-			params.frob = this.frob;
-			return AUTH_URL + this.encodeUrlParams(params);
-		}
+	/**
+	 * Generates a RTM authentication URL
+	 *
+	 * @return     URL String
+	 */
+	getAuthUrl() {
+		var params = {
+			api_key: this.data.a,
+			perms: this.permissions
+		};
+		params.frob = this.frob;
+		return AUTH_URL + this.encodeUrlParams(params);
+	}
 
-		// events.on('token.init', () => {
-		// 	this.setTimeline();
-		// });
+	// events.on('token.init', () => {
+	// 	this.setTimeline();
+	// });
 
-		/**
-		 * Gets the timeline ID
-		 *
-		 * @return     Returns the timline ID String
-		 */
-		setTimeline() {
-			milkAuth.createTimeline(this).then((response) => {
-				this.timeline = response.rsp.timeline;
-			}).catch((reason) => {
-				console.warn(reason);
-			});
-		}
+	/**
+	 * Gets the timeline ID
+	 *
+	 * @return     Returns the timline ID String
+	 */
+	setTimeline() {
+		milkAuth.createTimeline(this).then((response) => {
+			this.timeline = response.rsp.timeline;
+		}).catch((reason) => {
+			console.warn(reason);
+		});
+	}
 
 		// setFrob(frob) {
 		// 	storage.frob = frob;
@@ -187,7 +172,7 @@ export default class {
 			var paramString = '?',
 				firstParam = true;
 
-			params.api_key = data.a;
+			params.api_key = this.data.a;
 
 			for (var key in params) {
 				if (firstParam) {
@@ -217,7 +202,7 @@ export default class {
 			for (var i = 0; i < keys.length; i++) {
 				signature += keys[i] + params[keys[i]];
 			}
-			signature = data.b + signature;
+			signature = this.data.b + signature;
 
 			return `&api_sig=${md5(signature)}`;
 		}
