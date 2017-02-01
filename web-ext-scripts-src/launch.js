@@ -38,7 +38,6 @@ import Milk from './auth/Milk.js';
 	// var addlistStatus = document.getElementById('add-list-status');
 
 
-
 	var validationRegex = new RegExp('^https?://');
 
 
@@ -46,41 +45,33 @@ import Milk from './auth/Milk.js';
   let milk = new Milk(JSON.parse(data), 'write');
 
 	// Initialization
-	document.addEventListener('DOMContentLoaded', () => {
-		milk.getUserAuthenticated(
-			(result) => {
-				if(result.frob && result.token) {
-					showSection(addTaskSection);
-				} else {
-					showSection(loginSection);
-				}
-			},
-			(error) => {
-				console.error(`Error while retreiving data from storage ${error}`);
-				showSection(loginSection);
-			});
+	document.addEventListener('DOMContentLoaded', (event) => {
+		if(milk.isUserReady()){
+			showSection(addTaskSection);
+		} else {
+			showSection(loginSection);
+		}
 
-			addListSubmitButton.addEventListener('click', () => {
-			}, false);
+		addListSubmitButton.addEventListener('click', () => {
+		}, false);
 
-			addListCancelButton.addEventListener('click', () => {
-				showSection(addTaskSection);
-			}, false);
+		addListCancelButton.addEventListener('click', () => {
+			showSection(addTaskSection);
+		}, false);
 
-			addTaskSubmitButton.addEventListener('click', () => {
-			}, false);
+		addTaskSubmitButton.addEventListener('click', () => {
+		}, false);
 
-			permissionSubmitButton.addEventListener('click', () => {
-				doLogin();
-			}, false);
+		permissionSubmitButton.addEventListener('click', () => {
+			doLogin();
+		}, false);
 
-			listRefreshButton.addEventListener('click', () => {
-			}, false);
+		listRefreshButton.addEventListener('click', () => {
+		}, false);
 
-			listPlusButton.addEventListener('click', () => {
-				showSection(addListSection);
-			}, false);
-
+		listPlusButton.addEventListener('click', () => {
+			showSection(addListSection);
+		}, false);
 	});
 
 	let showMessage = (message, icon) => {
@@ -119,8 +110,6 @@ import Milk from './auth/Milk.js';
 		}
 	};
 
-// https://www.rememberthemilk.com/services/auth/?api_key=bf427f2504b074dc361c18d255354649&perms=write&frob=undefined&api_sig=4b2263dd6f2e10889a28217d0cde6714
-
 	let doLogin = () => {
 		showMessage('Requesting permission', 'loading');
 		browser.windows.create({
@@ -128,20 +117,21 @@ import Milk from './auth/Milk.js';
 			type: 'panel'
 		}).then(
 			(newWindow) => {
-				// newWindow.onRemoved.addListener((windowId) => {
-				// 	milk.fetchToken();
-				// });
+				console.log(`Created new window ${newWindow.id}`);
+				let windowListener = (windowId) => {
+					console.log(`Window remove event for id ${windowId}`);
+					if (windowId == newWindow.id) {
+						milk.fetchToken();
+						browser.windows.onRemoved.removeListener(windowListener);
+					}
+				};
+				browser.windows.onRemoved.addListener(windowListener);
 			},
 			(error) => {
 				console.log(error);
 			}
 		);
-		// setTimeout(() => {
-		// 	loginPanel.hide();
-		// }, 1200);
 	};
-
-
 
 	// taskElement.addEventListener('keyup', (event) => {
 	// 	if (event.keyCode === 13) {
