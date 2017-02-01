@@ -6,7 +6,7 @@ export default class {
 
 	getToken(milk) {
 		return new Promise((resolve, reject) => {
-			milk.get('rtm.auth.getToken', {},
+			milk.queryRTM('rtm.auth.getToken', {},
 				resolve,
 				reject);
 		});
@@ -14,7 +14,7 @@ export default class {
 
 	checkToken(milk) {
 		return new Promise((resolve, reject) => {
-			milk.get('rtm.auth.checkToken', {},
+			milk.queryRTM('rtm.auth.checkToken', {},
 				resolve,
 				reject);
 		});
@@ -22,7 +22,7 @@ export default class {
 
 	getFrob(milk) {
 		return new Promise((resolve, reject) => {
-			milk.get('rtm.auth.getFrob', {},
+			milk.queryRTM('rtm.auth.getFrob', {},
 				resolve,
 				reject);
 		});
@@ -30,7 +30,7 @@ export default class {
 
 	createTimeline(milk) {
 		return new Promise((resolve, reject) => {
-			milk.get('rtm.timelines.create', {},
+			milk.queryRTM('rtm.timelines.create', {},
 				resolve,
 				reject);
 		});
