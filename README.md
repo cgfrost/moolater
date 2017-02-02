@@ -1,7 +1,7 @@
 # Moo Later &nbsp;&nbsp;[![Build Status](https://travis-ci.org/cgfrost/moolater.svg?branch=master)](https://travis-ci.org/cgfrost/moolater) [![dependencies Status](https://david-dm.org/cgfrost/moolater/status.png?theme=shields.io)](https://david-dm.org/cgfrost/moolater#info=dependencies) [![devDependencies Status](https://david-dm.org/cgfrost/moolater/dev-status.png?theme=shields.io)](https://david-dm.org/cgfrost/moolater#info=devDependencies)
 
 <p align="center">
-  <img src="data/logo/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
+  <img src="web-ext-src/icons/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
 </p>
 
 Firefox extension for quickly saving a webpage as a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar. The title and link of the current page are used to create the new task. Create new lists from MooLater before saving a new task to it. Find it in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/). Using Moo Later is easy: Login, check the details then start adding tasks.
