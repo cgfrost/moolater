@@ -3,3 +3,9 @@
 data.json
 dev-profile
 node_modules
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
