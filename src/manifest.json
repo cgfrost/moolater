@@ -14,7 +14,7 @@
   "applications": {
     "gecko": {
       "id": "moolater@codewax.org",
-      "strict_min_version": "52.0"
+      "strict_min_version": "57.0a1"
     }
   },
 
@@ -23,7 +23,8 @@
     "https://api.rememberthemilk.com/*",
     "activeTab",
     "contextMenus",
-    "storage"
+    "storage",
+    "notifications"
   ],
 
   "browser_action": {
@@ -36,6 +37,16 @@
     "default_title": "Save to Remember The Milk"
   },
 
+  "background": {
+    "scripts": [
+      "background/auth/Md5.js",
+      "background/auth/MilkAuth.js",
+      "background/auth/MilkTasks.js",
+      "background/auth/Milk.js",
+      "background/worker.js"
+    ]
+  },
+
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
@@ -45,6 +56,7 @@
   },
 
   "options_ui": {
+    "browser_style": false,
     "page": "settings/options.html"
   }
 

@@ -1,28 +1,25 @@
-export default class {
+class MilkTasks {
 
-	constructor() {
-		console.log("MilkTasks");
-	}
+    constructor() {
+        let preferences = require('sdk/simple-prefs').prefs;
+    }
 
 	addTask(milk, name, listId) {
 		return new Promise((resolve, reject) => {
-			browser.storage.local.get("moolater-useSmartAdd")
-				.then(result => {
-					milk.queryRTM('rtm.tasks.add', {
-						list_id: listId,
-						name: name,
-						timeline: milk.timeline,
-						parse: result.useSmartAdd ? 1 : 0
-					},
-					resolve,
-					reject);
-				});
+			milk.get('rtm.tasks.add', {
+					list_id: listId,
+					name: name,
+					timeline: milk.timeline,
+					parse: preferences['extensions.moolater.useSmartAdd'] ? 1 : 0
+				},
+				resolve,
+				reject);
 		});
 	}
 
 	addUrlToTask(milk, task, link) {
 		return new Promise((resolve, reject) => {
-			milk.queryRTM('rtm.tasks.setURL', {
+			milk.get('rtm.tasks.setURL', {
 					list_id: task.id,
 					taskseries_id: task.taskseries.id,
 					task_id: task.taskseries.task.id,
@@ -36,7 +33,7 @@ export default class {
 
 	addNoteToTask(milk, task, title, text) {
 		return new Promise((resolve, reject) => {
-			milk.queryRTM('rtm.tasks.notes.add', {
+			milk.get('rtm.tasks.notes.add', {
 					list_id: task.id,
 					taskseries_id: task.taskseries.id,
 					task_id: task.taskseries.task.id,
@@ -51,7 +48,7 @@ export default class {
 
 	getLists(milk) {
 		return new Promise((resolve, reject) => {
-			milk.queryRTM('rtm.lists.getList', {},
+			milk.get('rtm.lists.getList', {},
 				resolve,
 				reject);
 		});
@@ -59,7 +56,7 @@ export default class {
 
 	addList(milk, name) {
 		return new Promise((resolve, reject) => {
-			milk.queryRTM('rtm.lists.add', {
+			milk.get('rtm.lists.add', {
 					name: name,
 					timeline: milk.timeline
 				},

@@ -1,3 +1,3 @@
 #!/bin/bash
-# rollup -w -f iife -o web-ext-src/popup/main.js web-ext-scripts-src/launch.js
+echo "Build zip"
 web-ext --overwrite-dest -s src -a target build

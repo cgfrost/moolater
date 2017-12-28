@@ -1,12 +1,8 @@
-export default class {
-
-	constructor() {
-		console.log("MilkAuth");
-	}
+class MilkAuth {
 
 	getToken(milk) {
 		return new Promise((resolve, reject) => {
-			milk.queryRTM('rtm.auth.getToken', {},
+			milk.get('rtm.auth.getToken', {},
 				resolve,
 				reject);
 		});
@@ -14,7 +10,7 @@ export default class {
 
 	checkToken(milk) {
 		return new Promise((resolve, reject) => {
-			milk.queryRTM('rtm.auth.checkToken', {},
+			milk.get('rtm.auth.checkToken', {},
 				resolve,
 				reject);
 		});
@@ -22,7 +18,7 @@ export default class {
 
 	getFrob(milk) {
 		return new Promise((resolve, reject) => {
-			milk.queryRTM('rtm.auth.getFrob', {},
+			milk.get('rtm.auth.getFrob', {},
 				resolve,
 				reject);
 		});
@@ -30,10 +26,10 @@ export default class {
 
 	createTimeline(milk) {
 		return new Promise((resolve, reject) => {
-			milk.queryRTM('rtm.timelines.create', {},
+			milk.get('rtm.timelines.create', {},
 				resolve,
 				reject);
 		});
 	}
-
 }
+

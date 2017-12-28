@@ -1,26 +1,25 @@
-/* global addon:false, document:false, window:false */
+/* global addon:false, document:false, window:false, browser: false */
 
-import Milk from './auth/Milk.js';
-'use strict';
+(function () {
+    'use strict';
 
 	//Sections
-	var addTaskSection = document.getElementById('content');
-	var addListSection = document.getElementById('add-list');
-	var loginSection = document.getElementById('login');
-	var statusSection = document.getElementById('status');
+	let addTaskSection = document.getElementById('content');
+	let addListSection = document.getElementById('add-list');
+	let loginSection = document.getElementById('login');
+	let statusSection = document.getElementById('status');
 
 	//Buttons
-	var addListSubmitButton = document.getElementById('add-list-submit');
-	var addListCancelButton = document.getElementById('add-list-cancel');
-	var addTaskSubmitButton = document.getElementById('add-task-submit');
-	var permissionSubmitButton = document.getElementById('permissions-submit');
-	var listRefreshButton = document.getElementById('lists-refresh');
-	var listPlusButton = document.getElementById('lists-plus');
+	let addListSubmitButton = document.getElementById('add-list-submit');
+	let addListCancelButton = document.getElementById('add-list-cancel');
+	let addTaskSubmitButton = document.getElementById('add-task-submit');
+	let permissionSubmitButton = document.getElementById('permissions-submit');
+	let listRefreshButton = document.getElementById('lists-refresh');
+	let listPlusButton = document.getElementById('lists-plus');
 
 	//Status
-	var statusImg = document.getElementById('status-img');
-	var statusMsg = document.getElementById('status-msg');
-
+	let statusImg = document.getElementById('status-img');
+	let statusMsg = document.getElementById('status-msg');
 
 
 	// var taskElement = document.getElementById('task');
@@ -38,19 +37,23 @@ import Milk from './auth/Milk.js';
 	// var addlistStatus = document.getElementById('add-list-status');
 
 
-	var validationRegex = new RegExp('^https?://');
+	let validationRegex = new RegExp('^https?://');
 
-
-  let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
-  let milk = new Milk(JSON.parse(data), 'write');
+    let handleError = (error) => {
+        console.log(`Error: ${error}`);
+    };
 
 	// Initialization
 	document.addEventListener('DOMContentLoaded', (event) => {
-		if(milk.isUserReady()){
-			showSection(addTaskSection);
-		} else {
-			showSection(loginSection);
-		}
+
+        browser.runtime.sendMessage("userReady")
+            .then((response) => {
+                if (response){
+                    showSection(addTaskSection);
+                } else {
+                    showSection(loginSection);
+                }
+            }, handleError);
 
 		addListSubmitButton.addEventListener('click', () => {
 		}, false);
@@ -120,7 +123,7 @@ import Milk from './auth/Milk.js';
 				console.log(`Created new window ${newWindow.id}`);
 				let windowListener = (windowId) => {
 					console.log(`Window remove event for id ${windowId}`);
-					if (windowId == newWindow.id) {
+					if (windowId === newWindow.id) {
 						milk.fetchToken();
 						browser.windows.onRemoved.removeListener(windowListener);
 					}
@@ -132,6 +135,8 @@ import Milk from './auth/Milk.js';
 			}
 		);
 	};
+
+}());
 
 	// taskElement.addEventListener('keyup', (event) => {
 	// 	if (event.keyCode === 13) {

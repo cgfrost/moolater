@@ -1,2 +1,3 @@
 #!/bin/bash
-web-ext run
+echo "Running MooLater"
+web-ext run --verbose --browser-console --url https://xkcd.com --source-dir src

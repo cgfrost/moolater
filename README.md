@@ -45,5 +45,12 @@ Once version 1.0.0 is approved I plan on adding the following.
 
 There is no timeline for when these might get done as I work on this in my spare time. It also depends on what bugs people find in 1.0.0.
 
+# Building
+
+```bash
+npm install --global web-ext
+npm install --global rollup
+```
+
 # Attribution
 This product uses the Remember The Milk API but is not endorsed or certified by Remember The Milk.
