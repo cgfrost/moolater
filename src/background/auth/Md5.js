@@ -14,7 +14,7 @@ class Md5 {
 
 	hasherBuilder(Math) {
 
-		var Base = (function () {
+		let Base = (function () {
 			function F() {}
 
 			return {
@@ -29,7 +29,7 @@ class Md5 {
 				 *
 				 * @example
 				 *
-				 *     var MyType = Base.extend({
+				 *     let MyType = Base.extend({
 				 *         field: 'value',
 				 *
 				 *         method: function () {
@@ -39,7 +39,7 @@ class Md5 {
 				extend: function (overrides) {
 					// Spawn
 					F.prototype = this;
-					var subtype = new F();
+					let subtype = new F();
 
 					// Augment
 					if (overrides) {
@@ -72,10 +72,10 @@ class Md5 {
 				 *
 				 * @example
 				 *
-				 *     var instance = MyType.create();
+				 *     let instance = MyType.create();
 				 */
 				create: function () {
-					var instance = this.extend();
+					let instance = this.extend();
 					instance.init.apply(instance, arguments);
 
 					return instance;
@@ -87,7 +87,7 @@ class Md5 {
 				 *
 				 * @example
 				 *
-				 *     var MyType = Base.extend({
+				 *     let MyType = Base.extend({
 				 *         init: function () {
 				 *             // ...
 				 *         }
@@ -107,7 +107,7 @@ class Md5 {
 				 *     });
 				 */
 				mixIn: function (properties) {
-					for (var propertyName in properties) {
+					for (let propertyName in properties) {
 						if (properties.hasOwnProperty(propertyName)) {
 							this[propertyName] = properties[propertyName];
 						}
@@ -126,7 +126,7 @@ class Md5 {
 				 *
 				 * @example
 				 *
-				 *     var clone = instance.clone();
+				 *     let clone = instance.clone();
 				 */
 				clone: function () {
 					return this.init.prototype.extend(this);
@@ -140,7 +140,7 @@ class Md5 {
 		 * @property {Array} words The array of 32-bit words.
 		 * @property {number} sigBytes The number of significant bytes in this word array.
 		 */
-		var WordArray = Base.extend({
+		let WordArray = Base.extend({
 			/**
 			 * Initializes a newly created word array.
 			 *
@@ -149,9 +149,9 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var wordArray = WordArray.create();
-			 *     var wordArray = WordArray.create([0x00010203, 0x04050607]);
-			 *     var wordArray = WordArray.create([0x00010203, 0x04050607], 6);
+			 *     let wordArray = WordArray.create();
+			 *     let wordArray = WordArray.create([0x00010203, 0x04050607]);
+			 *     let wordArray = WordArray.create([0x00010203, 0x04050607], 6);
 			 */
 			init: function (words, sigBytes) {
 				words = this.words = words || [];
@@ -172,9 +172,9 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var string = wordArray + '';
-			 *     var string = wordArray.toString();
-			 *     var string = wordArray.toString(CryptoJS.enc.Utf8);
+			 *     let string = wordArray + '';
+			 *     let string = wordArray.toString();
+			 *     let string = wordArray.toString(CryptoJS.enc.Utf8);
 			 */
 			toString: function (encoder) {
 				return (encoder || Hex).stringify(this);
@@ -193,10 +193,10 @@ class Md5 {
 			 */
 			concat: function (wordArray) {
 				// Shortcuts
-				var thisWords = this.words;
-				var thatWords = wordArray.words;
-				var thisSigBytes = this.sigBytes;
-				var thatSigBytes = wordArray.sigBytes;
+				let thisWords = this.words;
+				let thatWords = wordArray.words;
+				let thisSigBytes = this.sigBytes;
+				let thatSigBytes = wordArray.sigBytes;
 
 				// Clamp excess bits
 				this.clamp();
@@ -204,13 +204,13 @@ class Md5 {
 				// Concat
 				if (thisSigBytes % 4) {
 					// Copy one byte at a time
-					for (var i = 0; i < thatSigBytes; i++) {
-						var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+					for (let i = 0; i < thatSigBytes; i++) {
+						let thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
 						thisWords[(thisSigBytes + i) >>> 2] |= thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
 					}
 				} else if (thatWords.length > 0xffff) {
 					// Copy one word at a time
-					for (var ii = 0; ii < thatSigBytes; ii += 4) {
+					for (let ii = 0; ii < thatSigBytes; ii += 4) {
 						thisWords[(thisSigBytes + ii) >>> 2] = thatWords[ii >>> 2];
 					}
 				} else {
@@ -232,8 +232,8 @@ class Md5 {
 			 */
 			clamp: function () {
 				// Shortcuts
-				var words = this.words;
-				var sigBytes = this.sigBytes;
+				let words = this.words;
+				let sigBytes = this.sigBytes;
 
 				// Clamp
 				words[sigBytes >>> 2] &= 0xffffffff << (32 - (sigBytes % 4) * 8);
@@ -247,10 +247,10 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var clone = wordArray.clone();
+			 *     let clone = wordArray.clone();
 			 */
 			clone: function () {
-				var clone = Base.clone.call(this);
+				let clone = Base.clone.call(this);
 				clone.words = this.words.slice(0);
 
 				return clone;
@@ -267,11 +267,11 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var wordArray = CryptoJS.lib.WordArray.random(16);
+			 *     let wordArray = CryptoJS.lib.WordArray.random(16);
 			 */
 			random: function (nBytes) {
-				var words = [];
-				for (var i = 0; i < nBytes; i += 4) {
+				let words = [];
+				for (let i = 0; i < nBytes; i += 4) {
 					words.push((Math.random() * 0x100000000) | 0);
 				}
 
@@ -282,7 +282,7 @@ class Md5 {
 		/**
 		 * Hex encoding strategy.
 		 */
-		var Hex = {
+		let Hex = {
 			/**
 			 * Converts a word array to a hex string.
 			 *
@@ -294,17 +294,17 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var hexString = Hex.stringify(wordArray);
+			 *     let hexString = Hex.stringify(wordArray);
 			 */
 			stringify: function (wordArray) {
 				// Shortcuts
-				var words = wordArray.words;
-				var sigBytes = wordArray.sigBytes;
+				let words = wordArray.words;
+				let sigBytes = wordArray.sigBytes;
 
 				// Convert
-				var hexChars = [];
-				for (var i = 0; i < sigBytes; i++) {
-					var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+				let hexChars = [];
+				for (let i = 0; i < sigBytes; i++) {
+					let bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
 					hexChars.push((bite >>> 4).toString(16));
 					hexChars.push((bite & 0x0f).toString(16));
 				}
@@ -323,15 +323,15 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var wordArray = Hex.parse(hexString);
+			 *     let wordArray = Hex.parse(hexString);
 			 */
 			parse: function (hexStr) {
 				// Shortcut
-				var hexStrLength = hexStr.length;
+				let hexStrLength = hexStr.length;
 
 				// Convert
-				var words = [];
-				for (var i = 0; i < hexStrLength; i += 2) {
+				let words = [];
+				for (let i = 0; i < hexStrLength; i += 2) {
 					words[i >>> 3] |= parseInt(hexStr.substr(i, 2), 16) << (24 - (i % 8) * 4);
 				}
 
@@ -342,7 +342,7 @@ class Md5 {
 		/**
 		 * Latin1 encoding strategy.
 		 */
-		var Latin1 = {
+		let Latin1 = {
 			/**
 			 * Converts a word array to a Latin1 string.
 			 *
@@ -354,17 +354,17 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var latin1String = Latin1.stringify(wordArray);
+			 *     let latin1String = Latin1.stringify(wordArray);
 			 */
 			stringify: function (wordArray) {
 				// Shortcuts
-				var words = wordArray.words;
-				var sigBytes = wordArray.sigBytes;
+				let words = wordArray.words;
+				let sigBytes = wordArray.sigBytes;
 
 				// Convert
-				var latin1Chars = [];
-				for (var i = 0; i < sigBytes; i++) {
-					var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+				let latin1Chars = [];
+				for (let i = 0; i < sigBytes; i++) {
+					let bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
 					latin1Chars.push(String.fromCharCode(bite));
 				}
 
@@ -382,15 +382,15 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var wordArray = Latin1.parse(latin1String);
+			 *     let wordArray = Latin1.parse(latin1String);
 			 */
 			parse: function (latin1Str) {
 				// Shortcut
-				var latin1StrLength = latin1Str.length;
+				let latin1StrLength = latin1Str.length;
 
 				// Convert
-				var words = [];
-				for (var i = 0; i < latin1StrLength; i++) {
+				let words = [];
+				for (let i = 0; i < latin1StrLength; i++) {
 					words[i >>> 2] |= (latin1Str.charCodeAt(i) & 0xff) << (24 - (i % 4) * 8);
 				}
 
@@ -401,7 +401,7 @@ class Md5 {
 		/**
 		 * UTF-8 encoding strategy.
 		 */
-		var Utf8 = {
+		let Utf8 = {
 			/**
 			 * Converts a word array to a UTF-8 string.
 			 *
@@ -413,7 +413,7 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var utf8String = Utf8.stringify(wordArray);
+			 *     let utf8String = Utf8.stringify(wordArray);
 			 */
 			stringify: function (wordArray) {
 				try {
@@ -434,7 +434,7 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var wordArray = Utf8.parse(utf8String);
+			 *     let wordArray = Utf8.parse(utf8String);
 			 */
 			parse: function (utf8Str) {
 				return Latin1.parse(unescape(encodeURIComponent(utf8Str)));
@@ -448,7 +448,7 @@ class Md5 {
 		 *
 		 * @property {number} _minBufferSize The number of blocks that should be kept unprocessed in the buffer. Default: 0
 		 */
-		var BufferedBlockAlgorithm = Base.extend({
+		let BufferedBlockAlgorithm = Base.extend({
 			/**
 			 * Resets this block algorithm's data buffer to its initial state.
 			 *
@@ -494,19 +494,19 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var processedData = bufferedBlockAlgorithm._process();
-			 *     var processedData = bufferedBlockAlgorithm._process(!!'flush');
+			 *     let processedData = bufferedBlockAlgorithm._process();
+			 *     let processedData = bufferedBlockAlgorithm._process(!!'flush');
 			 */
 			_process: function (doFlush) {
 				// Shortcuts
-				var data = this._data;
-				var dataWords = data.words;
-				var dataSigBytes = data.sigBytes;
-				var blockSize = this.blockSize;
-				var blockSizeBytes = blockSize * 4;
+				let data = this._data;
+				let dataWords = data.words;
+				let dataSigBytes = data.sigBytes;
+				let blockSize = this.blockSize;
+				let blockSizeBytes = blockSize * 4;
 
 				// Count blocks ready
-				var nBlocksReady = dataSigBytes / blockSizeBytes;
+				let nBlocksReady = dataSigBytes / blockSizeBytes;
 				if (doFlush) {
 					// Round up to include partial blocks
 					nBlocksReady = Math.ceil(nBlocksReady);
@@ -517,15 +517,15 @@ class Md5 {
 				}
 
 				// Count words ready
-				var nWordsReady = nBlocksReady * blockSize;
+				let nWordsReady = nBlocksReady * blockSize;
 
 				// Count bytes ready
-				var nBytesReady = Math.min(nWordsReady * 4, dataSigBytes);
+				let nBytesReady = Math.min(nWordsReady * 4, dataSigBytes);
 
 				// Process blocks
-				var processedWords;
+				let processedWords;
 				if (nWordsReady) {
-					for (var offset = 0; offset < nWordsReady; offset += blockSize) {
+					for (let offset = 0; offset < nWordsReady; offset += blockSize) {
 						// Perform concrete-algorithm logic
 						this._doProcessBlock(dataWords, offset);
 					}
@@ -546,10 +546,10 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var clone = bufferedBlockAlgorithm.clone();
+			 *     let clone = bufferedBlockAlgorithm.clone();
 			 */
 			clone: function () {
-				var clone = Base.clone.call(this);
+				let clone = Base.clone.call(this);
 				clone._data = this._data.clone();
 
 				return clone;
@@ -563,7 +563,7 @@ class Md5 {
 		 *
 		 * @property {number} blockSize The number of 32-bit words this hasher operates on. Default: 16 (512 bits)
 		 */
-		var Hasher = BufferedBlockAlgorithm.extend({
+		let Hasher = BufferedBlockAlgorithm.extend({
 			/**
 			 * Configuration options.
 			 */
@@ -576,7 +576,7 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var hasher = CryptoJS.algo.SHA256.create();
+			 *     let hasher = CryptoJS.algo.SHA256.create();
 			 */
 			init: function (cfg) {
 				// Apply config defaults
@@ -634,9 +634,9 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var hash = hasher.finalize();
-			 *     var hash = hasher.finalize('message');
-			 *     var hash = hasher.finalize(wordArray);
+			 *     let hash = hasher.finalize();
+			 *     let hash = hasher.finalize('message');
+			 *     let hash = hasher.finalize(wordArray);
 			 */
 			finalize: function (messageUpdate) {
 				// Final message update
@@ -645,9 +645,7 @@ class Md5 {
 				}
 
 				// Perform concrete-hasher logic
-				var hash = this._doFinalize();
-
-				return hash;
+				return this._doFinalize();
 			},
 
 			blockSize: 512 / 32,
@@ -663,7 +661,7 @@ class Md5 {
 			 *
 			 * @example
 			 *
-			 *     var md5 = Hasher._createFunction(MD5);
+			 *     let md5 = Hasher._createFunction(MD5);
 			 */
 			_createFunction: function (hasher) {
 				return function (message, cfg) {
@@ -678,9 +676,9 @@ class Md5 {
 		 */
 
 		// Compute constants
-		var T = [];
+		let T = [];
 		(function () {
-			for (var i = 0; i < 64; i++) {
+			for (let i = 0; i < 64; i++) {
 				T[i] = (Math.abs(Math.sin(i + 1)) * 0x100000000) | 0;
 			}
 		}());
@@ -688,7 +686,7 @@ class Md5 {
 		/**
 		 * MD5 hash algorithm.
 		 */
-		var MD5 = Hasher.extend({
+		let MD5 = Hasher.extend({
 			_doReset: function () {
 				this._hash = new WordArray.init([
                 	0x67452301, 0xefcdab89,
@@ -698,9 +696,9 @@ class Md5 {
 
 			_doProcessBlock: function (M, offset) {
 				// Swap endian
-				for (var i = 0; i < 16; i++) {
-					var offset_i = offset + i;
-					var M_offset_i = M[offset_i];
+				for (let i = 0; i < 16; i++) {
+					let offset_i = offset + i;
+					let M_offset_i = M[offset_i];
 
 					M[offset_i] = (
 						(((M_offset_i << 8) | (M_offset_i >>> 24)) & 0x00ff00ff) |
@@ -708,29 +706,29 @@ class Md5 {
 					);
 				}
 
-				var H = this._hash.words;
+				let H = this._hash.words;
 
-				var M_offset_0 = M[offset + 0];
-				var M_offset_1 = M[offset + 1];
-				var M_offset_2 = M[offset + 2];
-				var M_offset_3 = M[offset + 3];
-				var M_offset_4 = M[offset + 4];
-				var M_offset_5 = M[offset + 5];
-				var M_offset_6 = M[offset + 6];
-				var M_offset_7 = M[offset + 7];
-				var M_offset_8 = M[offset + 8];
-				var M_offset_9 = M[offset + 9];
-				var M_offset_10 = M[offset + 10];
-				var M_offset_11 = M[offset + 11];
-				var M_offset_12 = M[offset + 12];
-				var M_offset_13 = M[offset + 13];
-				var M_offset_14 = M[offset + 14];
-				var M_offset_15 = M[offset + 15];
+				let M_offset_0 = M[offset + 0];
+				let M_offset_1 = M[offset + 1];
+				let M_offset_2 = M[offset + 2];
+				let M_offset_3 = M[offset + 3];
+				let M_offset_4 = M[offset + 4];
+				let M_offset_5 = M[offset + 5];
+				let M_offset_6 = M[offset + 6];
+				let M_offset_7 = M[offset + 7];
+				let M_offset_8 = M[offset + 8];
+				let M_offset_9 = M[offset + 9];
+				let M_offset_10 = M[offset + 10];
+				let M_offset_11 = M[offset + 11];
+				let M_offset_12 = M[offset + 12];
+				let M_offset_13 = M[offset + 13];
+				let M_offset_14 = M[offset + 14];
+				let M_offset_15 = M[offset + 15];
 
-				var a = H[0];
-				var b = H[1];
-				var c = H[2];
-				var d = H[3];
+				let a = H[0];
+				let b = H[1];
+				let c = H[2];
+				let d = H[3];
 
 				a = FF(a, b, c, d, M_offset_0, 7, T[0]);
 				d = FF(d, a, b, c, M_offset_1, 12, T[1]);
@@ -808,17 +806,17 @@ class Md5 {
 
 			_doFinalize: function () {
 				// Shortcuts
-				var data = this._data;
-				var dataWords = data.words;
+				let data = this._data;
+				let dataWords = data.words;
 
-				var nBitsTotal = this._nDataBytes * 8;
-				var nBitsLeft = data.sigBytes * 8;
+				let nBitsTotal = this._nDataBytes * 8;
+				let nBitsLeft = data.sigBytes * 8;
 
 				// Add padding
 				dataWords[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
 
-				var nBitsTotalH = Math.floor(nBitsTotal / 0x100000000);
-				var nBitsTotalL = nBitsTotal;
+				let nBitsTotalH = Math.floor(nBitsTotal / 0x100000000);
+				let nBitsTotalL = nBitsTotal;
 				dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 15] = (
 					(((nBitsTotalH << 8) | (nBitsTotalH >>> 24)) & 0x00ff00ff) |
 					(((nBitsTotalH << 24) | (nBitsTotalH >>> 8)) & 0xff00ff00)
@@ -834,13 +832,13 @@ class Md5 {
 				this._process();
 
 				// Shortcuts
-				var hash = this._hash;
-				var H = hash.words;
+				let hash = this._hash;
+				let H = hash.words;
 
 				// Swap endian
-				for (var i = 0; i < 4; i++) {
+				for (let i = 0; i < 4; i++) {
 					// Shortcut
-					var H_i = H[i];
+					let H_i = H[i];
 
 					H[i] = (((H_i << 8) | (H_i >>> 24)) & 0x00ff00ff) |
 						(((H_i << 24) | (H_i >>> 8)) & 0xff00ff00);
@@ -849,7 +847,7 @@ class Md5 {
 			},
 
 			clone: function () {
-				var clone = Hasher.clone.call(this);
+				let clone = Hasher.clone.call(this);
 				clone._hash = this._hash.clone();
 
 				return clone;
@@ -857,22 +855,22 @@ class Md5 {
 		});
 
 		function FF(a, b, c, d, x, s, t) {
-			var n = a + ((b & c) | (~b & d)) + x + t;
+			let n = a + ((b & c) | (~b & d)) + x + t;
 			return ((n << s) | (n >>> (32 - s))) + b;
 		}
 
 		function GG(a, b, c, d, x, s, t) {
-			var n = a + ((b & d) | (c & ~d)) + x + t;
+			let n = a + ((b & d) | (c & ~d)) + x + t;
 			return ((n << s) | (n >>> (32 - s))) + b;
 		}
 
 		function HH(a, b, c, d, x, s, t) {
-			var n = a + (b ^ c ^ d) + x + t;
+			let n = a + (b ^ c ^ d) + x + t;
 			return ((n << s) | (n >>> (32 - s))) + b;
 		}
 
 		function II(a, b, c, d, x, s, t) {
-			var n = a + (c ^ (b | ~d)) + x + t;
+			let n = a + (c ^ (b | ~d)) + x + t;
 			return ((n << s) | (n >>> (32 - s))) + b;
 		}
 
@@ -887,8 +885,8 @@ class Md5 {
 		 *
 		 * @example
 		 *
-		 *     var hash = MD5('message');
-		 *     var hash = MD5(wordArray);
+		 *     let hash = MD5('message');
+		 *     let hash = MD5(wordArray);
 		 */
 		return Hasher._createFunction(MD5);
 	};

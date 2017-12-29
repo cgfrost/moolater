@@ -1,3 +1,4 @@
+/* global addon:false, browser: false */
 
 const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
 const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
@@ -9,16 +10,11 @@ class Milk {
 // module.exports = function (data, events, permissions) {
 
     constructor(data, permissions) {
+
         this.data = data;
         this.permissions = (permissions) ? permissions : 'write';
-
-        // let storage = require('sdk/simple-storage').storage,
-        //     self = require('sdk/self'),
-        //     Request = require('sdk/request').Request,
-        //     milkAuth = require(self.data.url('milk/MilkAuth.js')),
-        //     md5 = require(self.data.url('milk/md5')),
-        //     me = this;
-
+        this.hasher = new Md52();
+        this.milkAuth = new MilkAuth();
         let me = this;
 
         if (!data.a || !data.b) {
@@ -26,7 +22,6 @@ class Milk {
         }
 
         let applySettings = (storedSettings) => {
-            console.log(`Applying settings: token=${storedSettings.token} frob=${storedSettings.frob}`);
             if (storedSettings.token) {
                 me.auth_token = storedSettings.token;
             } else {
@@ -36,6 +31,7 @@ class Milk {
                 me.frob = storedSettings.frob;
             } else {
                 me.frob = INVALID;
+                this.ensureFrob();
             }
             console.log(`Applied settings: token=${me.auth_token} frob=${me.frob}`);
         };
@@ -58,7 +54,7 @@ class Milk {
 	/**
 	 * Generates a RTM authentication URL
 	 *
-	 * @return     URL String
+	 * @return {String} to send the user to for authorizing
 	 */
 	getAuthUrl() {
 		let params = {
@@ -72,28 +68,29 @@ class Milk {
 	// events.on('token.init', () => {
 	// 	this.setTimeline();
 	// });
-
-	/**
-	 * Gets the timeline ID
-	 *
-	 * @return     Returns the timline ID String
-	 */
-	setTimeline() {
-		milkAuth.createTimeline(this).then((response) => {
-			this.timeline = response.rsp.timeline;
-		}).catch((reason) => {
-			console.warn(reason);
-		});
-	};
-
-	// setFrob(frob) {
-	// 	storage.frob = frob;
-	// 	me.frob = frob;
+    //
+	// /**
+	//  * Gets the timeline ID
+	//  *
+	//  * @return     Returns the timline ID String
+	//  */
+	// setTimeline() {
+	// 	milkAuth.createTimeline(this).then((response) => {
+	// 		this.timeline = response.rsp.timeline;
+	// 	}).catch((reason) => {
+	// 		console.warn(reason);
+	// 	});
 	// };
 
-	hasFrob() {
-		return (this.frob);
-	};
+	ensureFrob() {
+	    console.log("ensureFrob");
+	    if (this.frob === INVALID) {
+            this.milkAuth.getFrob(this).then((response) => {
+                this.frob = response.rsp.frob;
+                browser.storage.local.set({token: this.auth_token, frob: this.frob});
+            });
+        }
+    }
 
 	/**
 	 * Main method for making API calls
@@ -125,41 +122,60 @@ class Milk {
 		params.format = FORMAT;
 		params.method = method;
 
-		if (this.auth_token) {
+		if (this.auth_token !== INVALID) {
 			params.auth_token = this.auth_token;
 		}
 
-		if (this.frob) {
+		if (this.frob !== INVALID) {
 			params.frob = this.frob;
 		}
 
-		var requestUrl = BASE_URL + this.encodeUrlParams(params);
+		let requestUrl = BASE_URL + this.encodeUrlParams(params);
 
-		new Request({
-			url: requestUrl,
-			overrideMimeType: 'application/json; charset=utf-8',
-			onComplete: (response) => {
-									console.log('*************************************');
-									console.log(`Request.Url     : ${requestUrl}`);
-									console.log(`Request.Method  : ${method}`);
-									console.log(`Response.Text   : ${response.text}`);
-									console.log(`        .Status : ${response.status}`);
-									console.log(`        .Text   : ${response.statusText}`);
-									console.log('*************************************');
-				if (response.status === 200 && response.json.rsp.stat === 'ok') {
-					complete(response.json);
-				} else {
-					this.handleError(response, error, () => {
-						this.get(method, params, complete, error);
-					});
-				}
-			}
-		}).get();
+        //overrideMimeType: 'application/json; charset=utf-8',
+
+        let myHeaders = new Headers([['Content-Type', 'application/json; charset=utf-8']]);
+        let fetchInit = {method: 'GET', headers: myHeaders};
+		fetch(requestUrl, fetchInit).then((response) => {
+
+		    response.text().then((text) => {
+		        console.log('*************************************');
+		        console.log(`Request.Url     : ${requestUrl}`);
+		        console.log(`Request.Method  : ${method}`);
+		        console.log(`Response.Text   : ${text}`);
+		        console.log(`        .Status : ${response.status}`);
+		        console.log(`        .SText  : ${response.statusText}`);
+		        console.log('*************************************');
+
+		        if (response.status === 200) {
+		            let jsonData = JSON.parse(text);
+		            if (jsonData.rsp.stat === 'ok') {
+		                    complete(jsonData);
+		            } else {
+		                this.handleError(response, error, () => {
+		                    this.get(method, params, complete, error);
+		                });
+		            }
+		        } else {
+		            this.handleError(response, error, () => {
+		                this.get(method, params, complete, error);
+		            });
+		        }
+            });
+		});
+
+		// new Request({
+		// 	url: requestUrl,
+		// 	overrideMimeType: 'application/json; charset=utf-8',
+		// 	onComplete: (response) => {
+        //
+		// 	}
+		// }).get();
 	};
 
 	handleError(response, error, retry) {
 		if (response.status === 200) {
-			var rsp = response.json.rsp;
+			let rsp = response.json.rsp;
 			if (rsp.err && rsp.err.msg && rsp.err.code) {
 				if (rsp.err.code === '98') {
 					// storage.token = null;
@@ -182,7 +198,7 @@ class Milk {
 	};
 
 	fetchToken(retry, error) {
-		milkAuth.getToken(this)
+		this.milkAuth.getToken(this)
 			.then((resp) => {
 				this.auth_token = resp.rsp.auth.token;
 				// storage.token = resp.rsp.auth.token;
@@ -202,12 +218,12 @@ class Milk {
 	 * Private - Encodes request parameters into URL format
 	 *
 	 * @param params    Array of parameters to be URL encoded
-	 * @return          Returns the URL encoded string of parameters
+	 * @return {string} Returns the URL encoded string of parameters
 	 */
 	encodeUrlParams(params) {
 		params = (params) ? params : {};
-		var paramString = '?',
-			firstParam = true;
+		let paramString = '?';
+        let firstParam = true;
 
 		params.api_key = this.data.a;
 
@@ -228,20 +244,20 @@ class Milk {
 	 * Private - Generates a URL encoded authentication signature
 	 *
 	 * @param params    The parameters used to generate the signature
-	 * @return          Returns the URL encoded authentication signature
+	 * @return {string} Returns the URL encoded authentication signature
 	 */
 	generateSig(params) {
 		params = (params) ? params : {};
-		var signature = '',
-			keys = Object.keys(params);
+		let signature = '';
+		let keys = Object.keys(params);
 
 		keys.sort();
-		for (var i = 0; i < keys.length; i++) {
+		for (let i = 0; i < keys.length; i++) {
 			signature += keys[i] + params[keys[i]];
 		}
 		signature = this.data.b + signature;
 
-		return `&api_sig=${md5(signature)}`;
+		return `&api_sig=${this.hasher.md5(signature)}`;
 	};
 
 }

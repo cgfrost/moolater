@@ -39,12 +39,12 @@
 
 	let validationRegex = new RegExp('^https?://');
 
-    let handleError = (error) => {
+	function handleError(error) {
         console.log(`Error: ${error}`);
-    };
+    }
 
 	// Initialization
-	document.addEventListener('DOMContentLoaded', (event) => {
+	document.addEventListener('DOMContentLoaded', () => {
 
         browser.runtime.sendMessage("userReady")
             .then((response) => {
@@ -66,7 +66,8 @@
 		}, false);
 
 		permissionSubmitButton.addEventListener('click', () => {
-			doLogin();
+            showMessage('Requesting permission', 'loading');
+            browser.runtime.sendMessage("authorise");
 		}, false);
 
 		listRefreshButton.addEventListener('click', () => {
@@ -83,9 +84,8 @@
 		showSection(statusSection);
 	};
 
-
 	let showSection = (element) => {
-		var sections = document.getElementsByClassName("section");
+		let sections = document.getElementsByClassName("section");
 		for (let section of sections) {
 			section.classList.add('hide');
 		}
@@ -111,29 +111,6 @@
 		} else {
 			label.appendChild(document.createTextNode(text));
 		}
-	};
-
-	let doLogin = () => {
-		showMessage('Requesting permission', 'loading');
-		browser.windows.create({
-			url: milk.getAuthUrl(),
-			type: 'panel'
-		}).then(
-			(newWindow) => {
-				console.log(`Created new window ${newWindow.id}`);
-				let windowListener = (windowId) => {
-					console.log(`Window remove event for id ${windowId}`);
-					if (windowId === newWindow.id) {
-						milk.fetchToken();
-						browser.windows.onRemoved.removeListener(windowListener);
-					}
-				};
-				browser.windows.onRemoved.addListener(windowListener);
-			},
-			(error) => {
-				console.log(error);
-			}
-		);
 	};
 
 }());
