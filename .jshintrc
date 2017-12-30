@@ -1,0 +1,17 @@
+{
+    "undef": true,
+    "unused": true,
+    "curly": true,
+    "freeze": true,
+    "futurehostile": true,
+	"eqeqeq": true,
+    "devel": false,
+	"esnext": true,
+    "latedef": "nofunc",
+    "globals": {
+        "exports": true,
+        "require": true,
+		"module": true,
+		"console": true
+    }
+}

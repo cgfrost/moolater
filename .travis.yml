@@ -1,0 +1,15 @@
+language: node_js
+env:
+  global:
+    - JPM_FIREFOX_BINARY=$TRAVIS_BUILD_DIR/firefox/firefox
+    - DISPLAY=:99.0
+    - XVFBARGS=":99 -screen 0 1280x1024x24 -ac"
+addons:
+  firefox: "57.0"
+before_script:
+  - start-stop-daemon --start --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- $XVFBARGS
+  - tar xvjf /tmp/firefox-*.tar.bz2 -C $TRAVIS_BUILD_DIR/
+  - npm install --global web-ext
+  - env
+script:
+  - test.sh
