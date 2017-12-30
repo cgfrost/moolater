@@ -8,36 +8,17 @@ const INVALID = 'INVALID';
 
 class Milk {
 
-    constructor(data, permissions) {
-
-        this.data = data;
-        this.permissions = (permissions) ? permissions : 'write';
-        this.hasher = new Hash();
-        this.milkAuth = new MilkAuth();
-        let me = this;
-
+    constructor(data, permissions, frob, token) {
         if (!data.a || !data.b) {
             throw 'Milk Error: Missing data.';
         }
-
-        let applySettings = (storedSettings) => {
-            if (storedSettings.token) {
-                me.auth_token = storedSettings.token;
-            } else {
-                me.auth_token = INVALID;
-            }
-            if (storedSettings.frob) {
-                me.frob = storedSettings.frob;
-            } else {
-                me.frob = INVALID;
-            }
-            console.log(`Applied settings: token=${me.auth_token} frob=${me.frob}`);
-            this.ensureFrob();
-        };
-
-        browser.storage.local.get().then(applySettings, (e) => {
-            console.log(`Error getting settings ${e}`);
-        });
+        this.data = data;
+        this.permissions = (permissions) ? permissions : 'write';
+        this.hasher = new Hash();
+        this.milkAction = new MilkAction();
+        this.auth_token = token;
+        this.frob = frob;
+        this.ensureFrob();
     }
 
     /**
@@ -80,7 +61,7 @@ class Milk {
 
 	ensureFrob() {
 	    if (this.frob === INVALID) {
-            this.milkAuth.getFrob(this).then((response) => {
+            this.milkAction.getFrob(this).then((response) => {
                 console.log(`Setting frob to ${response.rsp.frob}`);
                 this.frob = response.rsp.frob;
                 browser.storage.local.set({token: this.auth_token, frob: this.frob});
@@ -148,12 +129,12 @@ class Milk {
 		            if (jsonData.rsp.stat === 'ok') {
 		                    complete(jsonData);
 		            } else {
-		                this.handleError(response, error, () => {
+		                this.handleError(response, jsonData.rsp, error, () => {
 		                    this.get(method, params, complete, error);
 		                });
 		            }
 		        } else {
-		            this.handleError(response, error, () => {
+		            this.handleError(response, undefined, error, () => {
 		                this.get(method, params, complete, error);
 		            });
 		        }
@@ -161,17 +142,16 @@ class Milk {
 		});
 	};
 
-	handleError(response, error, retry) {
+	handleError(response, jsonData, error, retry) {
 		if (response.status === 200) {
-			let rsp = response.json.rsp;
-			if (rsp.err && rsp.err.msg && rsp.err.code) {
-				if (rsp.err.code === '98') {
+			if (jsonData.err && jsonData.err.msg && jsonData.err.code) {
+				if (jsonData.err.code === '98') {
 					this.auth_token = null;
                     browser.storage.local.set({token: null, frob: this.frob}).then(() => {
                         this.fetchToken(retry, error);
                     });
 					return;
-				} else if (rsp.err.code === '101') {
+				} else if (jsonData.err.code === '101') {
 					this.auth_token = null;
 					this.frob = null;
 					browser.storage.local.set({token: null, frob: null}).then(() => {
@@ -179,14 +159,14 @@ class Milk {
                     });
 				}
 			}
-			error(`Error ${rsp.err.code}: ${rsp.err.msg}`);
+			error(`Error ${jsonData.err.code}: ${jsonData.err.msg}`);
 		} else {
 			error(`Network Error:${response.status} ${response.statusText}`);
 		}
 	};
 
 	fetchToken(retry, error) {
-		this.milkAuth.getToken(this)
+		this.milkAction.getToken(this)
 			.then((resp) => {
 				this.auth_token = resp.rsp.auth.token;
                 browser.storage.local.set({token: resp.rsp.auth.token, frob: this.frob});
