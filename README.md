@@ -4,6 +4,8 @@
 [![dependencies Status](https://david-dm.org/cgfrost/moolater/status.png?theme=shields.io)](https://david-dm.org/cgfrost/moolater#info=dependencies) [![devDependencies Status](https://david-dm.org/cgfrost/moolater/dev-status.png?theme=shields.io)](https://david-dm.org/cgfrost/moolater#info=devDependencies)
 --->
 
+VERSION 2 OF MOOLATER WITH SUPPORT FOR THE NEWER VERSIONS OF FIREFOX WILL BE RELEASED SOON.
+
 <p align="center">
   <img src="src/icons/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
 </p>
