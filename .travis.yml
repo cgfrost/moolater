@@ -1,4 +1,6 @@
 language: node_js
+node_js:
+  - "lts/*"
 env:
   global:
     - JPM_FIREFOX_BINARY=$TRAVIS_BUILD_DIR/firefox/firefox
@@ -12,4 +14,4 @@ before_script:
   - npm install --global web-ext
   - env
 script:
-  - test.sh
+  - ./test.sh
