@@ -1,4 +1,4 @@
-/* global addon:false, browser: false */
+/* global browser: false */
 
 const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
 const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';

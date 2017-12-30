@@ -79,16 +79,16 @@ class Hash {
         c = this.ii(c, d, a, b, k[2], 15, 718787259);
         b = this.ii(b, c, d, a, k[9], 21, -343485551);
 
-        x[0] = Md52.add32(a, x[0]);
-        x[1] = Md52.add32(b, x[1]);
-        x[2] = Md52.add32(c, x[2]);
-        x[3] = Md52.add32(d, x[3]);
+        x[0] = Hash.add32(a, x[0]);
+        x[1] = Hash.add32(b, x[1]);
+        x[2] = Hash.add32(c, x[2]);
+        x[3] = Hash.add32(d, x[3]);
 
     }
 
     cmn(q, a, b, x, s, t) {
-        a = Md52.add32(Md52.add32(a, q), Md52.add32(x, t));
-        return Md52.add32((a << s) | (a >>> (32 - s)), b);
+        a = Hash.add32(Hash.add32(a, q), Hash.add32(x, t));
+        return Hash.add32((a << s) | (a >>> (32 - s)), b);
     }
 
     ff(a, b, c, d, x, s, t) {

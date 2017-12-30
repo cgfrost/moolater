@@ -1,4 +1,4 @@
-/* global addon:false, tabs:false, window:false, browser:false */
+/* global tabs:false, window:false, browser:false */
 
 (function () {
     'use strict';
@@ -63,6 +63,7 @@
 		}, false);
 
 		addTaskSubmitButton.addEventListener('click', () => {
+            showMessage('Sending task to RTM', 'loading');
 		}, false);
 
 		permissionSubmitButton.addEventListener('click', () => {
