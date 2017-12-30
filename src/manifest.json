@@ -39,7 +39,7 @@
 
   "background": {
     "scripts": [
-      "background/auth/Md52.js",
+      "background/auth/Hash.js",
       "background/auth/MilkAuth.js",
       "background/auth/MilkTasks.js",
       "background/auth/Milk.js",
