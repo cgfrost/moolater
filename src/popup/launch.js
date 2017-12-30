@@ -26,7 +26,7 @@
     // var taskLabel = document.getElementById('task-label');
     let linkElement = document.getElementById('link');
     // var linkLabel = document.getElementById('link-label');
-    // var listsElement = document.getElementById('lists');
+    var listsElement = document.getElementById('lists');
     //
     // var selectedElement = document.getElementById('selected-text');
     // var selectedLabel = document.getElementById('selected-text-label');
@@ -40,7 +40,7 @@
 	let validationRegex = new RegExp('^https?://');
 
 	function handleError(error) {
-        console.log(`Error: ${error}`);
+        console.log(`Launch error: ${error}`);
     }
 
 	// Initialization
@@ -72,6 +72,18 @@
 		}, false);
 
 		listRefreshButton.addEventListener('click', () => {
+            setIconState(listRefreshButton.firstElementChild, 'loading');
+            browser.runtime.sendMessage("refreshLists").then((lists) => {
+                setIconState(listRefreshButton.firstElementChild, 'done');
+                setTimeout(() => {
+                    setIconState(listRefreshButton.firstElementChild, 'refresh');
+                }, 1000);
+            }).catch((error) => {
+                setIconState(listRefreshButton.firstElementChild, 'error');
+                setTimeout(() => {
+                    setIconState(listRefreshButton.firstElementChild, 'refresh');
+                }, 1000);
+            });
 		}, false);
 
 		listPlusButton.addEventListener('click', () => {
@@ -114,41 +126,58 @@
 	};
 
     let showAddTask = () => {
-        browser.tabs.query({active: true}).then((activeTabs) => {
-            // util.setTextElement(taskLabel, 'Task:');
-            // util.setTextElement(linkLabel, 'Link:');
-            taskElement.value = activeTabs[0].title;
-            linkElement.value = activeTabs[0].url;
-            taskElement.focus();
-            showSection(addTaskSection);
-        });
+        browser.storage.local.get().then((settings) => {
+            browser.tabs.query({active: true}).then((activeTabs) => {
+                browser.runtime.sendMessage("lists").then((lists) => {
+
+                    // util.setTextElement(taskLabel, 'Task:');
+                    // util.setTextElement(linkLabel, 'Link:');
+                    let link =  activeTabs[0].url;
+                    if (link.startsWith('about:')) {
+                        link = '';
+                    }
+                    taskElement.value = settings.useTitle ? activeTabs[0].title : '';
+                    linkElement.value = settings.useLink ? link : '';
+                    taskElement.focus();
+                    updateLists(lists, settings.defaultList || "Read Later");
+                    showSection(addTaskSection);
+
+                }, handleError);
+            }, handleError);
+        }, handleError);
     };
 
-    // addon.port.on('update-add-list', () => {
-    //     addListForm.classList.add('hide');
-    //     addlistElement.value = '';
-    // });
-    //
-    // addon.port.on('update-lists', (lists, defaultList) => {
-    //     while (listsElement.firstChild) {
-    //         listsElement.removeChild(listsElement.firstChild);
-    //     }
-    //     var defaultFound = false;
-    //     for (var i = 0; i < lists.length; i++) {
-    //         if (lists[i].
-    //                 smart === '0') {
-    //             var selected = defaultList === lists[i].name;
-    //             if (selected) {
-    //                 defaultFound = true;
-    //             }
-    //             var newOption = createOptionElement(lists[i].id, lists[i].name, selected);
-    //             listsElement.appendChild(newOption);
-    //         }
-    //     }
-    //     if (!defaultFound) {
-    //         listsElement.selectedIndex = "0";
-    //     }
-    // });
+    let updateLists = (lists, defaultList) => {
+        while (listsElement.firstChild) {
+            listsElement.removeChild(listsElement.firstChild);
+        }
+        let defaultFound = false;
+        for (let i = 0; i < lists.length; i++) {
+            if (lists[i].smart === '0') {
+                let selected = defaultList === lists[i].name;
+                if (selected) {
+                    defaultFound = true;
+                }
+                let newOption = createOptionElement(lists[i].id, lists[i].name, selected);
+                listsElement.appendChild(newOption);
+            }
+        }
+        if (!defaultFound) {
+            listsElement.selectedIndex = "0";
+        }
+    };
+
+    let createOptionElement = (id, name, selected) => {
+        let option = document.createElement('option');
+        option.value = id;
+        let label = document.createTextNode(name);
+        option.appendChild(label);
+        if (selected) {
+            option.setAttribute('selected', 'selected');
+        }
+        return option;
+    };
+
 }());
 
 	// taskElement.addEventListener('keyup', (event) => {

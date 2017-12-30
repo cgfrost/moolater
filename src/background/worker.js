@@ -25,6 +25,10 @@
         }, handleError);
     }
 
+    function updateLists() {
+        return(['Inbox','Read Later']);
+    }
+
     function handleMessage(request, sender, sendResponse) {
         console.log(`Message from the popup script: ${request}`);
         switch(request) {
@@ -33,6 +37,12 @@
                 break;
             case "authorise":
                 authorise();
+                break;
+            case "lists":
+                sendResponse(['Inbox','Read Later']);
+                break;
+            case "refreshLists":
+                sendResponse(updateLists());
                 break;
             default:
                 console.log(`Unrecognised message with query "${request}"`);
