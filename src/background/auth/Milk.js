@@ -7,13 +7,12 @@ const FORMAT = 'json';
 const INVALID = 'INVALID';
 
 class Milk {
-// module.exports = function (data, events, permissions) {
 
     constructor(data, permissions) {
 
         this.data = data;
         this.permissions = (permissions) ? permissions : 'write';
-        this.hasher = new Md52();
+        this.hasher = new Hash();
         this.milkAuth = new MilkAuth();
         let me = this;
 
@@ -31,9 +30,9 @@ class Milk {
                 me.frob = storedSettings.frob;
             } else {
                 me.frob = INVALID;
-                this.ensureFrob();
             }
             console.log(`Applied settings: token=${me.auth_token} frob=${me.frob}`);
+            this.ensureFrob();
         };
 
         browser.storage.local.get().then(applySettings, (e) => {
@@ -65,9 +64,6 @@ class Milk {
 		return AUTH_URL + this.encodeUrlParams(params);
 	};
 
-	// events.on('token.init', () => {
-	// 	this.setTimeline();
-	// });
     //
 	// /**
 	//  * Gets the timeline ID
@@ -83,9 +79,9 @@ class Milk {
 	// };
 
 	ensureFrob() {
-	    console.log("ensureFrob");
 	    if (this.frob === INVALID) {
             this.milkAuth.getFrob(this).then((response) => {
+                console.log(`Setting frob to ${response.rsp.frob}`);
                 this.frob = response.rsp.frob;
                 browser.storage.local.set({token: this.auth_token, frob: this.frob});
             });
@@ -99,7 +95,7 @@ class Milk {
 	 * @param params    Array of API parameters to accompany the method parameter
 	 * @param complete  Callback to fire after the request comes back
 	 * @param error     (Optional) Callback to fire if the request fails
-	 * @return          Returns the reponse from the RTM API
+	 * @return          Returns the response from the RTM API
 	 */
 	get(method, params, complete, error) {
 		if (!method) {
@@ -163,14 +159,6 @@ class Milk {
 		        }
             });
 		});
-
-		// new Request({
-		// 	url: requestUrl,
-		// 	overrideMimeType: 'application/json; charset=utf-8',
-		// 	onComplete: (response) => {
-        //
-		// 	}
-		// }).get();
 	};
 
 	handleError(response, error, retry) {
@@ -178,17 +166,17 @@ class Milk {
 			let rsp = response.json.rsp;
 			if (rsp.err && rsp.err.msg && rsp.err.code) {
 				if (rsp.err.code === '98') {
-					// storage.token = null;
 					this.auth_token = null;
-					this.fetchToken(retry, error);
-                    browser.storage.local.set({token: null, frob: this.frob});
+                    browser.storage.local.set({token: null, frob: this.frob}).then(() => {
+                        this.fetchToken(retry, error);
+                    });
 					return;
 				} else if (rsp.err.code === '101') {
-					// storage.token = null;
 					this.auth_token = null;
-					// storage.frob = null;
 					this.frob = null;
-					browser.storage.local.set({token: null, frob: null});
+					browser.storage.local.set({token: null, frob: null}).then(() => {
+                        this.ensureFrob();
+                    });
 				}
 			}
 			error(`Error ${rsp.err.code}: ${rsp.err.msg}`);
@@ -201,9 +189,7 @@ class Milk {
 		this.milkAuth.getToken(this)
 			.then((resp) => {
 				this.auth_token = resp.rsp.auth.token;
-				// storage.token = resp.rsp.auth.token;
                 browser.storage.local.set({token: resp.rsp.auth.token, frob: this.frob});
-				events.do('token.init');
 				if (retry) {
 					retry();
 				}

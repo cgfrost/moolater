@@ -5,7 +5,7 @@
 --->
 
 <p align="center">
-  <img src="web-ext-src/icons/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
+  <img src="src/icons/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
 </p>
 
 Firefox extension for quickly saving a webpage as a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar. The title and link of the current page are used to create the new task. Create new lists from MooLater before saving a new task to it. Find it in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/). Using Moo Later is easy: Login, check the details then start adding tasks.
@@ -49,8 +49,12 @@ There is no timeline for when these might get done as I work on this in my spare
 
 ```bash
 npm install --global web-ext
-npm install --global rollup
+web-ext --overwrite-dest -s src -a target build
 ```
+
+# Running locally
+
+The `run.sh` script can be used to create a development instance of Firefox with MooLater installed. This does not depend on it having been build, it will use the src files as is.
 
 # Attribution
 This product uses the Remember The Milk API but is not endorsed or certified by Remember The Milk.

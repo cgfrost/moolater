@@ -12,9 +12,8 @@
 
     function authorise() {
         let authUrl = milk.getAuthUrl();
-        console.log(`Got auth url of ${authUrl}`);
         browser.windows.create({url: authUrl, type: 'panel'}).then((newWindow) => {
-            console.log(`Created new window ${newWindow.id}`);
+            console.log(`Created new window "${newWindow.id}" at ${authUrl}`);
             let windowListener = (windowId) => {
                 console.log(`Window remove event for id ${windowId}`);
                 if (windowId === newWindow.id) {
@@ -27,7 +26,6 @@
     }
 
     function handleMessage(request, sender, sendResponse) {
-
         console.log(`Message from the popup script: ${request}`);
         switch(request) {
             case "userReady":

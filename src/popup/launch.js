@@ -1,40 +1,40 @@
-/* global addon:false, document:false, window:false, browser: false */
+/* global addon:false, tabs:false, window:false, browser:false */
 
 (function () {
     'use strict';
 
-	//Sections
-	let addTaskSection = document.getElementById('content');
-	let addListSection = document.getElementById('add-list');
-	let loginSection = document.getElementById('login');
-	let statusSection = document.getElementById('status');
+    //Sections
+    let addTaskSection = document.getElementById('content');
+    let addListSection = document.getElementById('add-list');
+    let loginSection = document.getElementById('login');
+    let statusSection = document.getElementById('status');
 
-	//Buttons
-	let addListSubmitButton = document.getElementById('add-list-submit');
-	let addListCancelButton = document.getElementById('add-list-cancel');
-	let addTaskSubmitButton = document.getElementById('add-task-submit');
-	let permissionSubmitButton = document.getElementById('permissions-submit');
-	let listRefreshButton = document.getElementById('lists-refresh');
-	let listPlusButton = document.getElementById('lists-plus');
+    //Buttons
+    let addListSubmitButton = document.getElementById('add-list-submit');
+    let addListCancelButton = document.getElementById('add-list-cancel');
+    let addTaskSubmitButton = document.getElementById('add-task-submit');
+    let permissionSubmitButton = document.getElementById('permissions-submit');
+    let listRefreshButton = document.getElementById('lists-refresh');
+    let listPlusButton = document.getElementById('lists-plus');
 
-	//Status
-	let statusImg = document.getElementById('status-img');
-	let statusMsg = document.getElementById('status-msg');
+    //Status
+    let statusImg = document.getElementById('status-img');
+    let statusMsg = document.getElementById('status-msg');
 
 
-	// var taskElement = document.getElementById('task');
-	// var taskLabel = document.getElementById('task-label');
-	// var linkElement = document.getElementById('link');
-	// var linkLabel = document.getElementById('link-label');
-	// var listsElement = document.getElementById('lists');
-	//
-	// var selectedElement = document.getElementById('selected-text');
-	// var selectedLabel = document.getElementById('selected-text-label');
-	//
-	//
-	// var addlistElement = document.getElementById('list');
-	// var addlistLabel = document.getElementById('list-label');
-	// var addlistStatus = document.getElementById('add-list-status');
+    let taskElement = document.getElementById('task');
+    // var taskLabel = document.getElementById('task-label');
+    let linkElement = document.getElementById('link');
+    // var linkLabel = document.getElementById('link-label');
+    // var listsElement = document.getElementById('lists');
+    //
+    // var selectedElement = document.getElementById('selected-text');
+    // var selectedLabel = document.getElementById('selected-text-label');
+    //
+    //
+    // var addlistElement = document.getElementById('list');
+    // var addlistLabel = document.getElementById('list-label');
+    // var addlistStatus = document.getElementById('add-list-status');
 
 
 	let validationRegex = new RegExp('^https?://');
@@ -49,7 +49,7 @@
         browser.runtime.sendMessage("userReady")
             .then((response) => {
                 if (response){
-                    showSection(addTaskSection);
+                    showAddTask();
                 } else {
                     showSection(loginSection);
                 }
@@ -92,7 +92,6 @@
 		element.classList.remove('hide');
 	};
 
-
 	let setIconState = (icon, iconName) => {
 		icon.setAttribute('src', '../images/' + iconName + '.svg');
 	};
@@ -113,6 +112,42 @@
 		}
 	};
 
+    let showAddTask = () => {
+        browser.tabs.query({active: true}).then((activeTabs) => {
+            // util.setTextElement(taskLabel, 'Task:');
+            // util.setTextElement(linkLabel, 'Link:');
+            taskElement.value = activeTabs[0].title;
+            linkElement.value = activeTabs[0].url;
+            taskElement.focus();
+            showSection(addTaskSection);
+        });
+    };
+
+    // addon.port.on('update-add-list', () => {
+    //     addListForm.classList.add('hide');
+    //     addlistElement.value = '';
+    // });
+    //
+    // addon.port.on('update-lists', (lists, defaultList) => {
+    //     while (listsElement.firstChild) {
+    //         listsElement.removeChild(listsElement.firstChild);
+    //     }
+    //     var defaultFound = false;
+    //     for (var i = 0; i < lists.length; i++) {
+    //         if (lists[i].
+    //                 smart === '0') {
+    //             var selected = defaultList === lists[i].name;
+    //             if (selected) {
+    //                 defaultFound = true;
+    //             }
+    //             var newOption = createOptionElement(lists[i].id, lists[i].name, selected);
+    //             listsElement.appendChild(newOption);
+    //         }
+    //     }
+    //     if (!defaultFound) {
+    //         listsElement.selectedIndex = "0";
+    //     }
+    // });
 }());
 
 	// taskElement.addEventListener('keyup', (event) => {
