@@ -14,6 +14,11 @@ body {
 	display: none !important;
 }
 
+.section {
+    min-width: 350px;
+    max-width: 500px;
+}
+
 p.title {
 	padding: 15px 15px 10px 15px;
 	margin-bottom: 15px;

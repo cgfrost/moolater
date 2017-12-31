@@ -18,6 +18,7 @@ class Milk {
         this.milkAction = new MilkAction();
         this.auth_token = token;
         this.frob = frob;
+        this.timeline = undefined;
         this.ensureFrob();
     }
 
@@ -27,6 +28,7 @@ class Milk {
      * @returns {boolean} true if the frob and token are set
      */
     isUserReady() {
+        console.log(`User ready, frob: ${this.frob}, token: ${this.auth_token}`);
         return this.frob !== INVALID && this.auth_token !== INVALID;
     }
 
@@ -38,25 +40,24 @@ class Milk {
 	getAuthUrl() {
 		let params = {
 			api_key: this.data.a,
-			perms: this.permissions
+			perms: this.permissions,
+            frob: this.frob
 		};
-		params.frob = this.frob;
 		return AUTH_URL + this.encodeUrlParams(params);
 	};
 
-    //
-	// /**
-	//  * Gets the timeline ID
-	//  *
-	//  * @return     Returns the timline ID String
-	//  */
-	// setTimeline() {
-	// 	milkAuth.createTimeline(this).then((response) => {
-	// 		this.timeline = response.rsp.timeline;
-	// 	}).catch((reason) => {
-	// 		console.warn(reason);
-	// 	});
-	// };
+	/**
+	 * Gets the timeline ID
+	 *
+	 * @return     Returns the timline ID String
+	 */
+	setTimeline() {
+		this.milkAction.createTimeline(this).then((response) => {
+			this.timeline = response.rsp.timeline;
+		}).catch((reason) => {
+			console.warn(reason);
+		});
+	};
 
 	ensureFrob() {
 	    if (this.frob === INVALID) {
@@ -81,15 +82,12 @@ class Milk {
 		if (!method) {
 			throw 'Error: API Method must be defined.';
 		}
-
 		if (!params) {
 			throw 'Error: API Params must be defined.';
 		}
-
 		if (!complete) {
 			throw 'Error: API Complete function must be defined.';
 		}
-
 		if (!error) {
 			error = function () {};
 		}
@@ -145,15 +143,15 @@ class Milk {
 		if (response.status === 200) {
 			if (jsonData.err && jsonData.err.msg && jsonData.err.code) {
 				if (jsonData.err.code === '98') {
-					this.auth_token = null;
-                    browser.storage.local.set({token: null, frob: this.frob}).then(() => {
+					this.auth_token = INVALID;
+                    browser.storage.local.set({token: INVALID, frob: this.frob}).then(() => {
                         this.fetchToken(retry, error);
                     });
 					return;
 				} else if (jsonData.err.code === '101') {
-					this.auth_token = null;
-					this.frob = null;
-					browser.storage.local.set({token: null, frob: null}).then(() => {
+					this.auth_token = INVALID;
+					this.frob = INVALID;
+					browser.storage.local.set({token: INVALID, frob: INVALID}).then(() => {
                         this.ensureFrob();
                     });
 				}
@@ -165,18 +163,18 @@ class Milk {
 	};
 
 	fetchToken(retry, error) {
-		this.milkAction.getToken(this)
-			.then((resp) => {
-				this.auth_token = resp.rsp.auth.token;
-                browser.storage.local.set({token: resp.rsp.auth.token, frob: this.frob});
-				if (retry) {
-					retry();
-				}
-			}).catch((reason) => {
-				if (error) {
-					error(reason);
-				}
-			});
+		this.milkAction.getToken(this).then((resp) => {
+		    this.auth_token = resp.rsp.auth.token;
+		    this.setTimeline();
+		    browser.storage.local.set({token: resp.rsp.auth.token, frob: this.frob});
+		    if (retry) {
+		        retry();
+		    }
+		}).catch((reason) => {
+		    if (error) {
+		        error(reason);
+		    }
+		});
 	};
 
 	/**

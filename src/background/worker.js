@@ -29,6 +29,7 @@
             console.log(`User auth: frob=${validSettings.frob} token=${validSettings.token}`);
             if (milk.isUserReady()) {
                 refreshLists(false);
+                milk.setTimeline();
             }
 
             browser.storage.local.set(validSettings).then(() => {
@@ -47,7 +48,8 @@
                     milk.fetchToken(() => {
                         if (milk.isUserReady()) {
                             refreshLists(false);
-                        }                    });
+                        }
+                    });
                     browser.windows.onRemoved.removeListener(windowListener);
                 }
             };
@@ -57,6 +59,18 @@
 
     function addTask(name, link, useSelection, selection, listId) {
         console.log(`Adding task: ${name}, ${link}, ${useSelection}, ${selection}, ${listId}`);
+        milkAction.addTask(milk, name, listId).then((resp) => {
+            let task = resp.rsp.list;
+            let addLinkPromise = link === '' ? true : milkAction.addUrlToTask(milk, task, link);
+            let addNotePromise = useSelection ? milkAction.addNoteToTask(milk, task, 'Selected Text', selection) : true;
+            Promise.all([addLinkPromise, addNotePromise]).then(() => {
+                browser.runtime.sendMessage({action: 'taskAdded'});
+            }).catch((reason) => {
+                browser.runtime.sendMessage({action: 'taskAddedError', reason: reason});
+            });
+        }).catch((reason) => {
+            browser.runtime.sendMessage({action: 'taskAddedError', reason: reason});
+        });
     }
 
     function refreshLists(updatePopup) {
@@ -84,6 +98,21 @@
 
     function addList(listName) {
         console.log(`Adding list: ${listName}`);
+        milkAction.addList(milk, listName).then((resp) => {
+            lists.push(resp.rsp.list);
+            let listsRefreshedArguments = {
+                action: 'listsRefreshed',
+                lists: lists
+            };
+            browser.runtime.sendMessage(listsRefreshedArguments);
+        }).catch((error) => {
+            let listsRefreshedArguments = {
+                action: 'listsRefreshedError',
+                lists: lists,
+                error: error
+            };
+            browser.runtime.sendMessage(listsRefreshedArguments);
+        });
     }
 
     function handleMessage(message, sender, sendResponse) {
@@ -108,7 +137,7 @@
                 addList(message.listName);
                 break;
             default:
-                console.log(`Unrecognised message with query "${request}"`);
+                console.log(`Unrecognised message with query "${message.action}"`);
         }
     }
 
