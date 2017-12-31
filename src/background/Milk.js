@@ -27,7 +27,6 @@ class Milk {
      * @returns {boolean} true if the frob and token are set
      */
     isUserReady() {
-        console.log(`User ready: token=${this.auth_token} frob=${this.frob}`);
         return this.frob !== INVALID && this.auth_token !== INVALID;
     }
 

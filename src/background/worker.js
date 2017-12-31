@@ -26,12 +26,13 @@
             let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
             milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token);
 
+            console.log(`User auth: frob=${validSettings.frob} token=${validSettings.token}`);
             if (milk.isUserReady()) {
-                refreshLists();
+                refreshLists(false);
             }
 
             browser.storage.local.set(validSettings).then(() => {
-                console.log(`Storage initialized, frob: ${validSettings.frob} token: ${validSettings.token}`);
+                console.log(`Storage initialized`);
             }, handleError);
         }, handleError);
     }
@@ -43,7 +44,10 @@
             let windowListener = (windowId) => {
                 console.log(`Window remove event for id ${windowId}`);
                 if (windowId === newWindow.id) {
-                    milk.fetchToken();
+                    milk.fetchToken(() => {
+                        if (milk.isUserReady()) {
+                            refreshLists(false);
+                        }                    });
                     browser.windows.onRemoved.removeListener(windowListener);
                 }
             };
@@ -55,12 +59,27 @@
         console.log(`Adding task: ${name}, ${link}, ${useSelection}, ${selection}, ${listId}`);
     }
 
-    function refreshLists() {
+    function refreshLists(updatePopup) {
         milkAction.getLists(milk).then((resp) => {
             lists = resp.rsp.lists.list;
-
-            // Send a message to the popup.
+            let listsRefreshedArguments = {
+                action: 'listsRefreshed',
+                lists: lists
+            };
+            if (updatePopup) {
+                browser.runtime.sendMessage(listsRefreshedArguments);
+            }
+        }).catch((error) => {
+            let listsRefreshedArguments = {
+                action: 'listsRefreshedError',
+                lists: lists,
+                error: error
+            };
+            if (updatePopup) {
+                browser.runtime.sendMessage(listsRefreshedArguments);
+            }
         });
+
     }
 
     function addList(listName) {
@@ -68,7 +87,7 @@
     }
 
     function handleMessage(message, sender, sendResponse) {
-        console.log(`Message from the popup script: ${message}`);
+        console.log(`Message received in the background script: ${message.action} - ${sender.id}`);
         switch(message.action) {
             case "userReady":
                 sendResponse(milk.isUserReady());
@@ -83,7 +102,7 @@
                 sendResponse(lists);
                 break;
             case "refreshLists":
-                refreshLists();
+                refreshLists(true);
                 break;
             case "addList":
                 addList(message.listName);

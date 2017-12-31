@@ -23,11 +23,12 @@
 
     // Form Elements
     let taskElement = document.getElementById('task');
-    // var taskLabel = document.getElementById('task-label');
+    let taskLabel = document.getElementById('task-label');
     let linkElement = document.getElementById('link');
-    // var linkLabel = document.getElementById('link-label');
+    let linkLabel = document.getElementById('link-label');
     let listsElement = document.getElementById('lists');
-    //
+
+
     let selectedElement = document.getElementById('selected-text');
     // var selectedLabel = document.getElementById('selected-text-label');
     //
@@ -108,15 +109,7 @@
 
 		listRefreshButton.addEventListener('click', () => {
             setIconState(listRefreshButton.firstElementChild, 'loading');
-            browser.runtime.sendMessage("refreshLists").then((lists) => {
-                browser.storage.local.get().then((settings) => {
-                    updateLists(lists, settings.defaultList || "Read Later");
-                    setIconState(listRefreshButton.firstElementChild, 'done');
-                    setTimeout(() => {
-                        setIconState(listRefreshButton.firstElementChild, 'refresh');
-                    }, 1000);
-                });
-            }).catch((error) => {
+            browser.runtime.sendMessage({action: "refreshLists"}).catch((error) => {
                 setIconState(listRefreshButton.firstElementChild, 'error');
                 setTimeout(() => {
                     setIconState(listRefreshButton.firstElementChild, 'refresh');
@@ -132,6 +125,40 @@
 		}, false);
 
 	});
+
+	function handleMessage(message, sender, sendResponse) {
+        console.log(`Message received in the popup script: ${message.action} - ${sender.id}`);
+        switch(message.action) {
+            case "listsRefreshed":
+                browser.storage.local.get('defaultList').then((defaultList) => {
+                    browser.runtime.sendMessage({action: "lists"}).then((lists) => {
+                        updateLists(lists, defaultList);
+                        setIconState(listRefreshButton.firstElementChild, 'done');
+                        setTimeout(() => {
+                            setIconState(listRefreshButton.firstElementChild, 'refresh');
+                        }, 1000);
+                    });
+                });
+                break;
+            case "listsRefreshedError":
+                browser.storage.local.get('defaultList').then((defaultList) => {
+                    browser.runtime.sendMessage({action: "lists"}).then((lists) => {
+                        updateLists(lists, defaultList);
+                        setIconState(listRefreshButton.firstElementChild, 'error');
+                        setTimeout(() => {
+                            setIconState(listRefreshButton.firstElementChild, 'refresh');
+                            }, 1000);
+                    });
+                });
+                break;
+            case "taskAdded":
+                break;
+            case "listAdded":
+                break;
+            default:
+                console.log(`Unrecognised message with query "${request}"`);
+        }
+    }
 
 	let showMessage = (message, icon) => {
 		setTextElement(statusMsg, message);
@@ -170,7 +197,7 @@
     let showAddTask = () => {
         browser.storage.local.get().then((settings) => {
             browser.tabs.query({active: true}).then((activeTabs) => {
-                browser.runtime.sendMessage("lists").then((lists) => {
+                browser.runtime.sendMessage({action: "lists"}).then((lists) => {
                     setTextElement(taskLabel, 'Task:');
                     setTextElement(linkLabel, 'Link:');
                     let link =  activeTabs[0].url;
@@ -188,14 +215,13 @@
     };
 
     let updateLists = (lists, defaultList) => {
-        console.log(`update lists: ${lists.length} received. ${lists[0].smart}, ${lists[1].smart} - ${defaultList}`);
+        console.log(`update lists, count: ${lists.length} - default: ${defaultList}`);
         while (listsElement.firstChild) {
             listsElement.removeChild(listsElement.firstChild);
         }
         let defaultFound = false;
         for (let i = 0; i < lists.length; i++) {
             if (lists[i].smart == '0') {
-                console.log(`Smart: ${lists[i].name}`);
                 let selected = defaultList === lists[i].name;
                 if (selected) {
                     defaultFound = true;
@@ -220,6 +246,8 @@
         return option;
     };
 
+    browser.runtime.onMessage.addListener(handleMessage);
+
 }());
 
 	// taskElement.addEventListener('keyup', (event) => {
@@ -233,73 +261,3 @@
 	// 		submitButton.focus();
 	// 	}
 	// }, false);
-
-	// refreshButton.addEventListener('click', () => {
-	// }, false);
-	//
-	// plusButton.addEventListener('click', () => {
-	// 	ml.util.setTextElement(addlistLabel, 'New List:');
-	// 	addlistElement.value = '';
-	// 	addListSubmitButton.disabled = false;
-	// 	addListCancelButton.disabled = false;
-	// 	contentElement.classList.add('hide');
-	// 	addListForm.classList.remove('hide');
-	// 	addlistElement.focus();
-	// });
-	//
-	// addListCancelButton.addEventListener('click', () => {
-	// 	hideAddList();
-	// });
-	//
-	// var hideAddList = () => {
-	// 	addListForm.classList.add('hide');
-	// 	contentElement.classList.remove('hide');
-	// };
-
-	// addListSubmitButton.addEventListener('click', () => {
-	// 	var formValid = true;
-	// 	if (addlistElement.value !== '') {
-	// 		ml.util.setTextElement(addlistLabel, 'New List:');
-	// 	} else {
-	// 		ml.util.setTextElement(addlistLabel, 'New List: List name can\'t be empty.');
-	// 		formValid = false;
-	// 	}
-	// 	if (formValid) {
-	// 		addListSubmitButton.disabled = true;
-	// 		addListCancelButton.disabled = true;
-	// 		// addon.port.emit('add-list', addlistElement.value);
-	// 	}
-	// });
-	//
-	// submitButton.addEventListener('click', () => {
-	// 	var formValid = true;
-	// 	if (taskElement.value !== '') {
-	// 		ml.util.setTextElement(taskLabel, 'Task:');
-	// 	} else {
-	// 		ml.util.setTextElement(taskLabel, 'Task: Task name can\'t be empty.');
-	// 		formValid = false;
-	// 	}
-	// 	if (linkElement.value === '' || validationRegex.test(linkElement.value)) {
-	// 		ml.util.setTextElement(linkLabel, 'Link:');
-	// 	} else {
-	// 		ml.util.setTextElement(linkLabel, 'Link: Links must start with \'http://\' or \'https://\'.');
-	// 		formValid = false;
-	// 	}
-	// 	if (formValid) {
-	// 		// addon.port.emit('add-task', taskElement.value, linkElement.value, selectedElement.checked, selectedElement.value, listsElement.value);
-	// 	}
-	// }, false);
-
-	// submitPermissionButton.addEventListener('click', () => {
-	// }, false);
-	//
-	// var createOptionElement = (id, name, selected) => {
-	// 	var option = document.createElement('option');
-	// 	option.value = id;
-	// 	var label = document.createTextNode(name);
-	// 	option.appendChild(label);
-	// 	if (selected) {
-	// 		option.setAttribute('selected', 'selected');
-	// 	}
-	// 	return option;
-	// };
