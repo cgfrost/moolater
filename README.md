@@ -24,8 +24,7 @@ If you have a bug please raise it here on GitHub but for discussion and ideas he
 
 # Hotkeys
 
-* On Windows/Linux `Control + Shift + M` will open Moo Later.
-* On Mac `Command + Shift + M` will open Moo Later.
+* On Linux/Mac/Windows `Alt + M` will open MooLater.
 
 # Settings
 

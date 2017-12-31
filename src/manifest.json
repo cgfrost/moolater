@@ -49,8 +49,9 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+M"
-      }
+        "default": "Alt+M"
+      },
+      "description": "Open MooLater"
     }
   },
 

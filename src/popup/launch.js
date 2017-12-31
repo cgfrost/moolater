@@ -34,7 +34,7 @@
     //
     let addListElement = document.getElementById('list');
     let addListLabel = document.getElementById('list-label');
-    // var addlistStatus = document.getElementById('add-list-status');
+    let addlistStatus = document.getElementById('add-list-status');
 
 	let validationRegex = new RegExp('^https?://');
 
@@ -44,6 +44,24 @@
 
 	// Initialization
 	document.addEventListener('DOMContentLoaded', () => {
+
+        taskElement.addEventListener('keyup', (event) => {
+        	if (event.keyCode === 13) {
+        		linkElement.focus();
+        	}
+        }, false);
+
+        linkElement.addEventListener('keyup', (event) => {
+        	if (event.keyCode === 13) {
+                addTaskSubmitButton.focus();
+        	}
+        }, false);
+
+        addListElement.addEventListener('keyup', (event) => {
+            if (event.keyCode === 13) {
+                addListSubmitButton.focus();
+            }
+        }, false);
 
         browser.runtime.sendMessage({action: "userReady"}).then((response) => {
             if (response){
@@ -55,6 +73,7 @@
 
 		addListSubmitButton.addEventListener('click', () => {
             if (addListElement.value !== '') {
+                setIconState(addlistStatus.firstElementChild, 'loading');
                 setTextElement(addListLabel, 'New List:');
                 addListSubmitButton.disabled = true;
                 addListCancelButton.disabled = true;
@@ -64,6 +83,10 @@
                 };
                 browser.runtime.sendMessage(addListArguments).then(() => {
                     showSection(addTaskSection);
+                    setIconState(addlistStatus.firstElementChild, 'blank');
+                }, () => {
+                    showSection(addTaskSection);
+                    setIconState(addlistStatus.firstElementChild, 'blank');
                 });
             } else {
                 setTextElement(addListLabel, 'New List: List name can\'t be empty.');
@@ -147,16 +170,18 @@
                         setIconState(listRefreshButton.firstElementChild, 'error');
                         setTimeout(() => {
                             setIconState(listRefreshButton.firstElementChild, 'refresh');
-                            }, 1000);
+                        }, 1000);
                     });
                 });
                 break;
             case "taskAdded":
+                showMessage('Task added', 'done');
                 break;
-            case "listAdded":
+            case "taskAddedError":
+                showMessage(`Failed: ${message.reason}`, 'error');
                 break;
             default:
-                console.log(`Unrecognised message with query "${request}"`);
+                console.log(`Unrecognised message with query "${message.action}"`);
         }
     }
 
@@ -215,13 +240,12 @@
     };
 
     let updateLists = (lists, defaultList) => {
-        console.log(`update lists, count: ${lists.length} - default: ${defaultList}`);
         while (listsElement.firstChild) {
             listsElement.removeChild(listsElement.firstChild);
         }
         let defaultFound = false;
         for (let i = 0; i < lists.length; i++) {
-            if (lists[i].smart == '0') {
+            if (lists[i].smart === '0') {
                 let selected = defaultList === lists[i].name;
                 if (selected) {
                     defaultFound = true;
@@ -250,14 +274,3 @@
 
 }());
 
-	// taskElement.addEventListener('keyup', (event) => {
-	// 	if (event.keyCode === 13) {
-	// 		linkElement.focus();
-	// 	}
-	// }, false);
-	//
-	// linkElement.addEventListener('keyup', (event) => {
-	// 	if (event.keyCode === 13) {
-	// 		submitButton.focus();
-	// 	}
-	// }, false);
