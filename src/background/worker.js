@@ -28,25 +28,55 @@
             let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
             milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token);
 
+            if (validSettings.showContextMenu) {
+                addContextMenu();
+            }
+
             if (milk.isUserReady()) {
                 refreshLists(false);
                 milk.setTimeline();
             }
 
             browser.storage.local.set(validSettings).then(() => {
+                browser.storage.onChanged.addListener((changes, area) => {
+                    if (area === 'local' && changes.showContextMenu) {
+                        if (changes.showContextMenu.newValue) {
+                            addContextMenu();
+                        } else {
+                            removeContextMenu();
+                        }
+                    }
+                });
                 console.log(`Storage initialized`);
             }, handleError);
         }, handleError);
     }
 
-    function initMenus() {
+    // Context Menus
+
+    function addContextMenu() {
         browser.menus.create({
             id: 'moolater',
             type: 'normal',
             title: 'MooLater',
             contexts: ['all']
+        }, () => {
+            browser.menus.onClicked.addListener(contextMenuListener);
         });
     }
+
+    function removeContextMenu() {
+        if (browser.menus.onClicked.hasListener(contextMenuListener)) {
+            browser.menus.onClicked.removeListener(contextMenuListener)
+        }
+        browser.menus.removeAll();
+    }
+
+    function contextMenuListener() {
+        browser.browserAction.openPopup();
+    }
+
+    // Actions
 
     function authorise() {
         let authUrl = milk.getAuthUrl();
@@ -125,6 +155,8 @@
         });
     }
 
+    // Message handler
+
     function handleMessage(message, sender, sendResponse) {
         console.log(`Message received in the background script: ${message.action} - ${sender.id}`);
         switch(message.action) {
@@ -152,10 +184,6 @@
     }
 
     initOptions();
-    initMenus();
     browser.runtime.onMessage.addListener(handleMessage);
-    browser.menus.onClicked.addListener(() => {
-        browser.browserAction.openPopup();
-    });
 
 }());

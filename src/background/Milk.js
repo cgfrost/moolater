@@ -51,11 +51,16 @@ class Milk {
 	 *
 	 * @return     Returns the timline ID String
 	 */
-	setTimeline() {
+	setTimeline(retry, error) {
 		this.milkAction.createTimeline(this).then((response) => {
 			this.timeline = response.rsp.timeline;
+			if (retry) {
+                retry();
+            }
 		}).catch((reason) => {
-			console.warn(reason);
+		    if (error) {
+		        error(reason);
+            }
 		});
 	};
 
@@ -105,9 +110,6 @@ class Milk {
 		}
 
 		let requestUrl = BASE_URL + this.encodeUrlParams(params);
-
-        //overrideMimeType: 'application/json; charset=utf-8',
-
         let myHeaders = new Headers([['Content-Type', 'application/json; charset=utf-8']]);
         let fetchInit = {method: 'GET', headers: myHeaders};
 		fetch(requestUrl, fetchInit).then((response) => {
@@ -154,6 +156,8 @@ class Milk {
 					browser.storage.local.set({token: INVALID, frob: INVALID}).then(() => {
                         this.ensureFrob();
                     });
+				} else if (jsonData.err.code === '300') { // Timeline is invalid
+                    this.setTimeline(retry, error);
 				}
 			}
 			error(`Error ${jsonData.err.code}: ${jsonData.err.msg}`);
