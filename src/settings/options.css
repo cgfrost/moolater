@@ -1,6 +1,6 @@
 body {
     font-family: sans-serif;
-    color: #333333;
+    color: #111111;
     font-size: 0.85em;
 }
 
@@ -33,11 +33,10 @@ body, form {
 }
 
 #submit {
-    margin-left: auto;
-    margin-right: auto;
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
     margin-top: 20px;
     width: 100px;
-    text-align: center;
 }
 
 #submit button {
@@ -45,7 +44,7 @@ body, form {
     border-radius: 2px;
     border: 1px solid #B4B4B4;
     background-color: transparent;
-    font-size: 1.06em;
+    font-size: 1.3em;
 }
 
 #submit button:hover {

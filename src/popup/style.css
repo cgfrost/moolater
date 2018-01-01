@@ -19,14 +19,18 @@ body {
     max-width: 450px;
 }
 
+header {
+    margin-bottom: 15px;
+    font-size: 2.1em;
+    font-weight: bold;
+    text-align: center;
+    background-color: #005DC2;
+    color: white;
+}
+
 p.title {
-	padding: 15px 15px 10px 15px;
-	margin-bottom: 15px;
-	text-align: center;
-	font-size: 2.1em;
-	font-weight: bold;
-	background-color: #005DC2;
-	color: white;
+    padding: 15px 0 15px 1.8em;
+    display: inline-block;
 }
 
 p.msg {
@@ -107,7 +111,15 @@ button.icon, div.icon {
 	vertical-align: middle;
 }
 
-button.icon img {
+button.header-icon {
+    margin: 5px 5px 0 0;
+	border-radius: 5px;
+	background-color: #005DC2;
+	vertical-align: middle;
+    float: right;
+}
+
+button.icon img, button.header-icon img {
 	height: 1.7em;
 	width: 1.7em;
 }
@@ -125,7 +137,7 @@ div#add-list-status img{
 	margin: auto;
 }
 
-button.icon:hover {
+button.icon:hover, button.header-icon:hover {
 	cursor: pointer;
 }
 

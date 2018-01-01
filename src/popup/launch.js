@@ -16,6 +16,7 @@
     let permissionSubmitButton = document.getElementById('permissions-submit');
     let listRefreshButton = document.getElementById('lists-refresh');
     let listPlusButton = document.getElementById('lists-plus');
+    let optionsButton = document.getElementById('options');
 
     // Status
     let statusImg = document.getElementById('status-img');
@@ -60,6 +61,12 @@
             if (event.keyCode === 13) {
                 addListSubmitButton.focus();
             }
+        }, false);
+
+        optionsButton.addEventListener('click', () => {
+            browser.runtime.openOptionsPage().then(() => {
+                window.close();
+            });
         }, false);
 
         browser.runtime.sendMessage({action: "userReady"}).then((response) => {

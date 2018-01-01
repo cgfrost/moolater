@@ -4,8 +4,6 @@
 [![dependencies Status](https://david-dm.org/cgfrost/moolater/status.png?theme=shields.io)](https://david-dm.org/cgfrost/moolater#info=dependencies) [![devDependencies Status](https://david-dm.org/cgfrost/moolater/dev-status.png?theme=shields.io)](https://david-dm.org/cgfrost/moolater#info=devDependencies)
 --->
 
-VERSION 2 OF MOOLATER WITH SUPPORT FOR THE NEWER VERSIONS OF FIREFOX WILL BE RELEASED SOON.
-
 <p align="center">
   <img src="src/icons/icon-128.png?raw=true" alt="Moo Later Logo" height="64" width="64"/>
 </p>
@@ -19,6 +17,8 @@ Firefox extension for quickly saving a webpage as a task to [Remember The Milk](
 </p>
 
 # Comments
+
+Version 2 of Moo Later is a complete rewrite that supports Firefox version 57 and above. For versions of Firefox before this please stay with Moo Later 1.2.
 
 If you have a bug please raise it here on GitHub but for discussion and ideas head on over to the Remember the Milk [Forums](https://www.rememberthemilk.com/forums/tips/20401/). You can also leave a review on the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/) page.
 
@@ -36,15 +36,6 @@ This extension can be configured through the Firefox Add-ons preferences page. T
 * Use Smart Add - Should the new tasks title be processed by Remember the Milk [Smart Add](https://www.rememberthemilk.com/help/?ctx=basics.smartadd.whatis). Default is checked.
  
 When entering a new task the Address must be a valid URL that starts with `http://` or `https://`. To save a task with no Address the link field can be left empty. 
-
-# Future Features
-
-Once version 1.0.0 is approved I plan on adding the following.
-
-* Remorse option to remove the previously added task.
-* Firefox Android, see what's involved and if it's actually useful.
-
-There is no timeline for when these might get done as I work on this in my spare time. It also depends on what bugs people find in 1.0.0.
 
 # Building
 

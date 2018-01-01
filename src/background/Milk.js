@@ -15,7 +15,7 @@ class Milk {
         this.data = data;
         this.permissions = (permissions) ? permissions : 'write';
         this.hasher = new Hash();
-        this.milkAction = new MilkAction();
+        this.milkAuth = new MilkAuth();
         this.auth_token = token;
         this.frob = frob;
         this.timeline = undefined;
@@ -28,7 +28,7 @@ class Milk {
      * @returns {boolean} true if the frob and token are set
      */
     isUserReady() {
-        console.log(`User ready, frob: ${this.frob}, token: ${this.auth_token}`);
+        // console.log(`User ready, frob: ${this.frob}, token: ${this.auth_token}`);
         return this.frob !== INVALID && this.auth_token !== INVALID;
     }
 
@@ -49,10 +49,10 @@ class Milk {
 	/**
 	 * Gets the timeline ID
 	 *
-	 * @return     Returns the timline ID String
+	 * @return     Returns the timeline ID String
 	 */
 	setTimeline(retry, error) {
-		this.milkAction.createTimeline(this).then((response) => {
+		this.milkAuth.createTimeline(this).then((response) => {
 			this.timeline = response.rsp.timeline;
 			if (retry) {
                 retry();
@@ -66,7 +66,7 @@ class Milk {
 
 	ensureFrob() {
 	    if (this.frob === INVALID) {
-            this.milkAction.getFrob(this).then((response) => {
+            this.milkAuth.getFrob(this).then((response) => {
                 console.log(`Setting frob to ${response.rsp.frob}`);
                 this.frob = response.rsp.frob;
                 browser.storage.local.set({token: this.auth_token, frob: this.frob});
@@ -113,16 +113,14 @@ class Milk {
         let myHeaders = new Headers([['Content-Type', 'application/json; charset=utf-8']]);
         let fetchInit = {method: 'GET', headers: myHeaders};
 		fetch(requestUrl, fetchInit).then((response) => {
-
 		    response.text().then((text) => {
-		        console.log('*************************************');
-		        console.log(`Request.Url     : ${requestUrl}`);
-		        console.log(`Request.Method  : ${method}`);
-		        console.log(`Response.Text   : ${text}`);
-		        console.log(`        .Status : ${response.status}`);
-		        console.log(`        .SText  : ${response.statusText}`);
-		        console.log('*************************************');
-
+		        // console.log('*************************************');
+		        // console.log(`Request.Url     : ${requestUrl}`);
+		        // console.log(`Request.Method  : ${method}`);
+		        // console.log(`Response.Text   : ${text}`);
+		        // console.log(`        .Status : ${response.status}`);
+		        // console.log(`        .SText  : ${response.statusText}`);
+		        // console.log('*************************************');
 		        if (response.status === 200) {
 		            let jsonData = JSON.parse(text);
 		            if (jsonData.rsp.stat === 'ok') {
@@ -167,7 +165,7 @@ class Milk {
 	};
 
 	fetchToken(retry, error) {
-		this.milkAction.getToken(this).then((resp) => {
+		this.milkAuth.getToken(this).then((resp) => {
 		    this.auth_token = resp.rsp.auth.token;
 		    this.setTimeline();
 		    browser.storage.local.set({token: resp.rsp.auth.token, frob: this.frob});

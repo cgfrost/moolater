@@ -39,7 +39,7 @@
 
             browser.storage.local.set(validSettings).then(() => {
                 browser.storage.onChanged.addListener((changes, area) => {
-                    if (area === 'local' && changes.showContextMenu) {
+                    if (area === 'local' && changes.showContextMenu && changes.showContextMenu.oldValue !== changes.showContextMenu.newValue) {
                         if (changes.showContextMenu.newValue) {
                             addContextMenu();
                         } else {
@@ -81,7 +81,7 @@
     function authorise() {
         let authUrl = milk.getAuthUrl();
         browser.windows.create({url: authUrl, type: 'panel'}).then((newWindow) => {
-            console.log(`Created new window "${newWindow.id}" at ${authUrl}`);
+            // console.log(`Created new window "${newWindow.id}" at ${authUrl}`);
             let windowListener = (windowId) => {
                 console.log(`Window remove event for id ${windowId}`);
                 if (windowId === newWindow.id) {
@@ -133,7 +133,6 @@
                 browser.runtime.sendMessage(listsRefreshedArguments);
             }
         });
-
     }
 
     function addList(listName) {
