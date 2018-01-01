@@ -3,6 +3,8 @@
 (function () {
     'use strict';
 
+    console.log('============================= MOOLATER =============================');
+
     let milk = undefined;
     let milkAction = new MilkAction();
     let lists = [];
@@ -26,7 +28,6 @@
             let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
             milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token);
 
-            console.log(`User auth: frob=${validSettings.frob} token=${validSettings.token}`);
             if (milk.isUserReady()) {
                 refreshLists(false);
                 milk.setTimeline();
@@ -36,6 +37,15 @@
                 console.log(`Storage initialized`);
             }, handleError);
         }, handleError);
+    }
+
+    function initMenus() {
+        browser.menus.create({
+            id: 'moolater',
+            type: 'normal',
+            title: 'MooLater',
+            contexts: ['all']
+        });
     }
 
     function authorise() {
@@ -142,6 +152,10 @@
     }
 
     initOptions();
+    initMenus();
     browser.runtime.onMessage.addListener(handleMessage);
+    browser.menus.onClicked.addListener(() => {
+        browser.browserAction.openPopup();
+    });
 
 }());

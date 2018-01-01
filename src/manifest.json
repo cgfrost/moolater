@@ -22,8 +22,8 @@
     "https://www.rememberthemilk.com/*",
     "https://api.rememberthemilk.com/*",
     "activeTab",
-    "contextMenus",
     "storage",
+    "menus",
     "notifications"
   ],
 

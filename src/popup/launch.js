@@ -21,20 +21,19 @@
     let statusImg = document.getElementById('status-img');
     let statusMsg = document.getElementById('status-msg');
 
-    // Form Elements
+    // Add Task Form Elements
     let taskElement = document.getElementById('task');
     let taskLabel = document.getElementById('task-label');
     let linkElement = document.getElementById('link');
     let linkLabel = document.getElementById('link-label');
     let listsElement = document.getElementById('lists');
-
-
     let selectedElement = document.getElementById('selected-text');
-    // var selectedLabel = document.getElementById('selected-text-label');
-    //
+    let selectedLabel = document.getElementById('selected-text-label');
+
+    // Add List Form Elements
     let addListElement = document.getElementById('list');
     let addListLabel = document.getElementById('list-label');
-    let addlistStatus = document.getElementById('add-list-status');
+    let addListStatus = document.getElementById('add-list-status');
 
 	let validationRegex = new RegExp('^https?://');
 
@@ -73,7 +72,7 @@
 
 		addListSubmitButton.addEventListener('click', () => {
             if (addListElement.value !== '') {
-                setIconState(addlistStatus.firstElementChild, 'loading');
+                setIconState(addListStatus.firstElementChild, 'loading');
                 setTextElement(addListLabel, 'New List:');
                 addListSubmitButton.disabled = true;
                 addListCancelButton.disabled = true;
@@ -83,10 +82,10 @@
                 };
                 browser.runtime.sendMessage(addListArguments).then(() => {
                     showSection(addTaskSection);
-                    setIconState(addlistStatus.firstElementChild, 'blank');
+                    setIconState(addListStatus.firstElementChild, 'blank');
                 }, () => {
                     showSection(addTaskSection);
-                    setIconState(addlistStatus.firstElementChild, 'blank');
+                    setIconState(addListStatus.firstElementChild, 'blank');
                 });
             } else {
                 setTextElement(addListLabel, 'New List: List name can\'t be empty.');
@@ -176,9 +175,15 @@
                 break;
             case "taskAdded":
                 showMessage('Task added', 'done');
+                setTimeout(() => {
+                    window.close();
+                }, 1000);
                 break;
             case "taskAddedError":
                 showMessage(`Failed: ${message.reason}`, 'error');
+                setTimeout(() => {
+                    window.close();
+                }, 1000);
                 break;
             default:
                 console.log(`Unrecognised message with query "${message.action}"`);
@@ -223,20 +228,38 @@
         browser.storage.local.get().then((settings) => {
             browser.tabs.query({active: true}).then((activeTabs) => {
                 browser.runtime.sendMessage({action: "lists"}).then((lists) => {
-                    setTextElement(taskLabel, 'Task:');
-                    setTextElement(linkLabel, 'Link:');
                     let link =  activeTabs[0].url;
                     if (link.startsWith('about:')) {
-                        link = '';
+                        populateAddTask(settings, '', activeTabs[0], lists, undefined);
+                    } else {
+                        let code = 'window.getSelection().toString()';
+                        browser.tabs.executeScript(activeTabs[0].id, {code: code}).then((selection) => {
+                            populateAddTask(settings, link, activeTabs[0], lists, `${selection}`);
+                        }, (error) => {
+                            populateAddTask(settings, link, activeTabs[0], lists, undefined);
+                            console.log(`Got selected text error '${error}'`);
+                        });
                     }
-                    taskElement.value = settings.useTitle ? activeTabs[0].title : '';
-                    linkElement.value = settings.useLink ? link : '';
-                    taskElement.focus();
-                    updateLists(lists, settings.defaultList || "Read Later");
+                    updateLists(lists, settings.defaultList);
                     showSection(addTaskSection);
                 }, handleError);
             }, handleError);
         }, handleError);
+    };
+
+    let populateAddTask = (settings, link, activeTab, lists, selectedText) => {
+        setTextElement(taskLabel, 'Task:');
+        setTextElement(linkLabel, 'Link:');
+        taskElement.value = settings.useTitle ? activeTab.title : '';
+        linkElement.value = settings.useLink ? link : '';
+        taskElement.focus();
+        if (selectedText && selectedText.length > 0) {
+            selectedElement.checked = true;
+            selectedElement.value = selectedText;
+            selectedLabel.classList.remove('hide');
+        } else {
+            selectedLabel.classList.add('hide');
+        }
     };
 
     let updateLists = (lists, defaultList) => {
