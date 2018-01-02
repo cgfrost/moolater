@@ -8,7 +8,7 @@ const INVALID = 'INVALID';
 
 class Milk {
 
-    constructor(data, permissions, frob, token) {
+    constructor(data, permissions, frob, token, debug) {
         if (!data.a || !data.b) {
             throw 'Milk Error: Missing data.';
         }
@@ -19,7 +19,7 @@ class Milk {
         this.auth_token = token;
         this.frob = frob;
         this.timeline = undefined;
-        this.ensureFrob();
+        this.ensureFrob(debug);
     }
 
     /**
@@ -27,8 +27,10 @@ class Milk {
      *
      * @returns {boolean} true if the frob and token are set
      */
-    isUserReady() {
-        // console.log(`User ready, frob: ${this.frob}, token: ${this.auth_token}`);
+    isUserReady(debug) {
+    	if (debug) {
+            console.log(`User ready, frob: ${this.frob}, token: ${this.auth_token}`);
+        }
         return this.frob !== INVALID && this.auth_token !== INVALID;
     }
 
@@ -64,10 +66,12 @@ class Milk {
 		});
 	};
 
-	ensureFrob() {
+	ensureFrob(debug) {
 	    if (this.frob === INVALID) {
             this.milkAuth.getFrob(this).then((response) => {
-                console.log(`Setting frob to ${response.rsp.frob}`);
+                if (debug) {
+                    console.log(`Setting frob to ${response.rsp.frob}`);
+                }
                 this.frob = response.rsp.frob;
                 browser.storage.local.set({token: this.auth_token, frob: this.frob});
             });
@@ -78,12 +82,13 @@ class Milk {
 	 * Main method for making API calls
 	 *
 	 * @param method    Specifies what API method to be used
+     * @param debug     {boolean} Produce debug logging or not
 	 * @param params    Array of API parameters to accompany the method parameter
 	 * @param complete  Callback to fire after the request comes back
 	 * @param error     (Optional) Callback to fire if the request fails
 	 * @return          Returns the response from the RTM API
 	 */
-	get(method, params, complete, error) {
+	get(method, debug, params, complete, error) {
 		if (!method) {
 			throw 'Error: API Method must be defined.';
 		}
@@ -114,13 +119,17 @@ class Milk {
         let fetchInit = {method: 'GET', headers: myHeaders};
 		fetch(requestUrl, fetchInit).then((response) => {
 		    response.text().then((text) => {
-		        // console.log('*************************************');
-		        // console.log(`Request.Url     : ${requestUrl}`);
-		        // console.log(`Request.Method  : ${method}`);
-		        // console.log(`Response.Text   : ${text}`);
-		        // console.log(`        .Status : ${response.status}`);
-		        // console.log(`        .SText  : ${response.statusText}`);
-		        // console.log('*************************************');
+
+		        if (debug) {
+                    console.log('*************************************');
+                    console.log(`Request.Url     : ${requestUrl}`);
+                    console.log(`Request.Method  : ${method}`);
+                    console.log(`Response.Text   : ${text}`);
+                    console.log(`        .Status : ${response.status}`);
+                    console.log(`        .SText  : ${response.statusText}`);
+                    console.log('*************************************');
+                }
+
 		        if (response.status === 200) {
 		            let jsonData = JSON.parse(text);
 		            if (jsonData.rsp.stat === 'ok') {
@@ -152,7 +161,7 @@ class Milk {
 					this.auth_token = INVALID;
 					this.frob = INVALID;
 					browser.storage.local.set({token: INVALID, frob: INVALID}).then(() => {
-                        this.ensureFrob();
+                        this.ensureFrob(false);
                     });
 				} else if (jsonData.err.code === '300') { // Timeline is invalid
                     this.setTimeline(retry, error);
@@ -168,10 +177,11 @@ class Milk {
 		this.milkAuth.getToken(this).then((resp) => {
 		    this.auth_token = resp.rsp.auth.token;
 		    this.setTimeline();
-		    browser.storage.local.set({token: resp.rsp.auth.token, frob: this.frob});
-		    if (retry) {
-		        retry();
-		    }
+		    browser.storage.local.set({token: resp.rsp.auth.token, frob: this.frob}).then(() => {
+                if (retry) {
+                    retry();
+                }
+            });
 		}).catch((reason) => {
 		    if (error) {
 		        error(reason);

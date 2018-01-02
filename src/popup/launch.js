@@ -38,10 +38,6 @@
 
 	let validationRegex = new RegExp('^https?://');
 
-	function handleError(error) {
-        console.log(`Launch error: ${error}`);
-    }
-
 	// Initialization
 	document.addEventListener('DOMContentLoaded', () => {
 
@@ -75,7 +71,7 @@
             } else {
                 showSection(loginSection);
             }
-        }, handleError);
+        }).catch(handleFatalError);
 
 		addListSubmitButton.addEventListener('click', () => {
             if (addListElement.value !== '') {
@@ -88,11 +84,11 @@
                     listName: addListElement.value
                 };
                 browser.runtime.sendMessage(addListArguments).then(() => {
-                    showSection(addTaskSection);
-                    setIconState(addListStatus.firstElementChild, 'blank');
-                }, () => {
-                    showSection(addTaskSection);
-                    setIconState(addListStatus.firstElementChild, 'blank');
+                    setTimeout(() => {
+                        showSection(addTaskSection);
+                    }, 750);
+                }).catch((error) => {
+                    handleFatalError(error, showAddTask);
                 });
             } else {
                 setTextElement(addListLabel, 'New List: List name can\'t be empty.');
@@ -127,18 +123,18 @@
                     selection: selectedElement.value,
                     listId: listsElement.value
                 };
-                browser.runtime.sendMessage(addTaskArguments);
+                browser.runtime.sendMessage(addTaskArguments).catch(handleFatalError);
             }
 		}, false);
 
 		permissionSubmitButton.addEventListener('click', () => {
             showMessage('Requesting permission', 'loading');
-            browser.runtime.sendMessage({action: "authorise"});
+            browser.runtime.sendMessage({action: "authorise"}).catch(handleFatalError);
 		}, false);
 
 		listRefreshButton.addEventListener('click', () => {
             setIconState(listRefreshButton.firstElementChild, 'loading');
-            browser.runtime.sendMessage({action: "refreshLists"}).catch((error) => {
+            browser.runtime.sendMessage({action: "refreshLists"}).catch(() => {
                 setIconState(listRefreshButton.firstElementChild, 'error');
                 setTimeout(() => {
                     setIconState(listRefreshButton.firstElementChild, 'refresh');
@@ -148,15 +144,32 @@
 
 		listPlusButton.addEventListener('click', () => {
             setTextElement(addListLabel, 'New List:');
+            setIconState(addListStatus.firstElementChild, 'blank');
             addListSubmitButton.disabled = false;
             addListCancelButton.disabled = false;
+            addListElement.value = '';
 			showSection(addListSection);
 		}, false);
 
 	});
 
-	function handleMessage(message, sender, sendResponse) {
-        console.log(`Message received in the popup script: ${message.action} - ${sender.id}`);
+    function handleFatalError(error, altAction) {
+        let errorMessage = error.message ? error.message : error.toString();
+        console.warn(`Moo Later fatal error: ${errorMessage}`);
+        showMessage(`Failed: ${errorMessage}`, 'error');
+        setTimeout(() => {
+            if (altAction) {
+                altAction();
+            } else {
+                window.close();
+            }
+        }, 1000);
+    }
+
+    function handleMessage(message, sender) {
+        if (message.debug) {
+            console.log(`Message received in the popup script: ${message.action} - ${sender.id}`);
+        }
         switch(message.action) {
             case "listsRefreshed":
                 browser.storage.local.get('defaultList').then((defaultList) => {
@@ -167,18 +180,10 @@
                             setIconState(listRefreshButton.firstElementChild, 'refresh');
                         }, 1000);
                     });
-                });
+                }).catch(handleFatalError);
                 break;
             case "listsRefreshedError":
-                browser.storage.local.get('defaultList').then((defaultList) => {
-                    browser.runtime.sendMessage({action: "lists"}).then((lists) => {
-                        updateLists(lists, defaultList);
-                        setIconState(listRefreshButton.firstElementChild, 'error');
-                        setTimeout(() => {
-                            setIconState(listRefreshButton.firstElementChild, 'refresh');
-                        }, 1000);
-                    });
-                });
+                handleFatalError(message.reason, showAddTask());
                 break;
             case "taskAdded":
                 showMessage('Task added', 'done');
@@ -187,10 +192,7 @@
                 }, 1000);
                 break;
             case "taskAddedError":
-                showMessage(`Failed: ${message.reason}`, 'error');
-                setTimeout(() => {
-                    window.close();
-                }, 1000);
+                handleFatalError(message.reason);
                 break;
             default:
                 console.log(`Unrecognised message with query "${message.action}"`);
@@ -249,9 +251,9 @@
                     }
                     updateLists(lists, settings.defaultList);
                     showSection(addTaskSection);
-                }, handleError);
-            }, handleError);
-        }, handleError);
+                });
+            });
+        }).catch(handleFatalError);
     };
 
     let populateAddTask = (settings, link, activeTab, lists, selectedText) => {

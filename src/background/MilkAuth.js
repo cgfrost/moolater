@@ -2,7 +2,7 @@ class MilkAuth {
 
     getToken(milk) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.auth.getToken', {},
+            milk.get('rtm.auth.getToken', false, {},
                      resolve,
                      reject);
         });
@@ -10,7 +10,7 @@ class MilkAuth {
 
     checkToken(milk) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.auth.checkToken', {},
+            milk.get('rtm.auth.checkToken', false, {},
                      resolve,
                      reject);
         });
@@ -18,7 +18,7 @@ class MilkAuth {
 
     getFrob(milk) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.auth.getFrob', {},
+            milk.get('rtm.auth.getFrob', false, {},
                      resolve,
                      reject);
         });
@@ -26,11 +26,10 @@ class MilkAuth {
 
     createTimeline(milk) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.timelines.create', {},
+            milk.get('rtm.timelines.create', false, {},
                      resolve,
                      reject);
         });
     }
 
 }
-

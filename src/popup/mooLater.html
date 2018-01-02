@@ -7,58 +7,55 @@
 </head>
 
 <body>
-    <header>
-    <p class="title">Moo Later</p>
-    <button class="header-icon" id="options" type="button">
-        <img src="../images/gear-white.svg" />
-    </button>
-    </header>
+    <header><p class="title">Moo Later</p></header>
 
-	<form id="content" class="section">
-		<label id="task-label" class="multi-label">Task:
-			<input type="text" id="task" class="multi-input">
-		</label>
-		<label id="link-label" class="multi-label">Link:
-			<input type="url" id="link" class="multi-input">
-		</label>
-		<label id="selected-text-label" class="line-label hide">Add highlighted text:
-			<input type="checkbox" id="selected-text" class="line-input">
-		</label>
-		<label class="line-label">List:
-			<select required id="lists" class="line-input"></select>
-			<button class="icon" id="lists-refresh" type="button"><img src="../images/refresh.svg" /></button>
-			<button class="icon" id="lists-plus" type="button"><img src="../images/plus.svg" /></button>
-		</label>
-		<p class="controls">
-			<button id="add-task-submit" type="button">Add Task</button>
-		</p>
-	</form>
+    <form id="content" class="section">
+    	<label id="task-label" class="multi-label">Task:
+    		<input type="text" id="task" class="multi-input">
+    	</label>
+    	<label id="link-label" class="multi-label">Link:
+    		<input type="url" id="link" class="multi-input">
+    	</label>
+    	<label id="selected-text-label" class="line-label hide">Add highlighted text:
+    		<input type="checkbox" id="selected-text" class="line-input">
+    	</label>
+    	<label class="line-label">List:
+    		<select required id="lists" class="line-input"></select>
+    		<button class="icon" id="lists-refresh" type="button"><img src="../images/refresh.svg" /></button>
+    		<button class="icon" id="lists-plus" type="button"><img src="../images/plus.svg" /></button>
+    	</label>
+    	<p class="controls">
+    		<button id="add-task-submit" type="button">Add Task</button>
+    	</p>
+    </form>
 
-	<form id="add-list" class="section hide">
-		<label id="list-label" class="multi-label">New List:
-			<input type="text" id="list" class="multi-input">
-		</label>
-		<p class="controls">
-			<button id="add-list-submit" type="button">Add List</button>
-			<button id="add-list-cancel" type="button">Cancel</button>
-		</p>
-		<div class="icon" id="add-list-status"><img src="../images/blank.svg" /></div>
-	</form>
+    <form id="add-list" class="section hide">
+        <label id="list-label" class="multi-label">New List:
+            <input type="text" id="list" class="multi-input">
+        </label>
+        <p class="controls">
+            <button id="add-list-submit" type="button">Add List</button>
+            <button id="add-list-cancel" type="button">Cancel</button>
+        </p>
+        <div class="icon" id="add-list-status"><img src="../images/blank.svg" /></div>
+    </form>
 
-	<div id="login" class="section hide">
-		<p class="msg">Moo Later needs permission to access your Remember The Milk account.</p>
-		<p class="controls">
-			<button id="permissions-submit" type="submit">Allow Access</button>
-		</p>
-		<p class="footnote">Moo Later won't store your password and you can revoke access at any time from Remember The Milk.</p>
-	</div>
+    <div id="login" class="section hide">
+        <p class="msg">Moo Later needs permission to access your Remember The Milk account.</p>
+        <p class="controls">
+            <button id="permissions-submit" type="submit">Allow Access</button>
+        </p>
+        <p class="footnote">Moo Later won't store your password and you can revoke access at any time from Remember The Milk.</p>
+    </div>
 
-	<div id="status" class="section hide">
-		<p class="msg" id="status-msg"></p>
-		<img class="msg" id="status-img" src="../images/done.svg" />
-	</div>
+    <div id="status" class="section hide">
+        <p class="msg" id="status-msg"></p>
+        <img class="msg" id="status-img" src="../images/done.svg" />
+    </div>
 
-	<script src="launch.js" type="text/javascript" charset="utf-8"></script>
+    <button class="footer-icon" id="options" type="button"><img src="../images/gear.svg" /></button>
+
+    <script src="launch.js" type="text/javascript" charset="utf-8"></script>
 
 </body>
 

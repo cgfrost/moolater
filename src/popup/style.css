@@ -29,7 +29,7 @@ header {
 }
 
 p.title {
-    padding: 15px 0 15px 1.8em;
+    padding: 15px 0 15px 0;
     display: inline-block;
 }
 
@@ -101,7 +101,8 @@ form .line-input {
 }
 
 div#add-list-status {
-	margin-top: 25px;
+	margin-top: 30px;
+    margin-bottom: 16px;
 	text-align: center;
 }
 
@@ -111,15 +112,15 @@ button.icon, div.icon {
 	vertical-align: middle;
 }
 
-button.header-icon {
-    margin: 5px 5px 0 0;
+button.footer-icon {
+    margin: 0 5px 5px 0;
 	border-radius: 5px;
-	background-color: #005DC2;
+	background-color: #FFFFFF;
 	vertical-align: middle;
     float: right;
 }
 
-button.icon img, button.header-icon img {
+button.icon img, button.footer-icon img {
 	height: 1.7em;
 	width: 1.7em;
 }
@@ -131,13 +132,14 @@ div#add-list-status img{
 
 #status-img {
 	display: block;
-	padding-top: 25px;
+	padding-top: 23px;
+	padding-bottom: 20px;
 	width: 180px;
 	height: 180px;
 	margin: auto;
 }
 
-button.icon:hover, button.header-icon:hover {
+button.icon:hover, button.footer-icon:hover {
 	cursor: pointer;
 }
 

@@ -1,9 +1,9 @@
 class MilkAction {
 
-    addTask(milk, name, listId) {
+    addTask(milk, debug, name, listId) {
         return new Promise((resolve, reject) => {
             browser.storage.local.get('useSmartAdd').then((useSmartAdd) => {
-                milk.get('rtm.tasks.add', {
+                milk.get('rtm.tasks.add', debug, {
                              list_id: listId,
                              name: name,
                              timeline: milk.timeline,
@@ -15,9 +15,9 @@ class MilkAction {
         });
     }
 
-    addUrlToTask(milk, task, link) {
+    addUrlToTask(milk, debug, task, link) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.tasks.setURL', {
+            milk.get('rtm.tasks.setURL', debug, {
                          list_id: task.id,
                          taskseries_id: task.taskseries.id,
                          task_id: task.taskseries.task.id,
@@ -29,9 +29,9 @@ class MilkAction {
         });
     }
 
-    addNoteToTask(milk, task, title, text) {
+    addNoteToTask(milk, debug, task, title, text) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.tasks.notes.add', {
+            milk.get('rtm.tasks.notes.add', debug, {
                          list_id: task.id,
                          taskseries_id: task.taskseries.id,
                          task_id: task.taskseries.task.id,
@@ -44,17 +44,17 @@ class MilkAction {
         });
     }
 
-    getLists(milk) {
+    getLists(milk, debug) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.lists.getList', {},
+            milk.get('rtm.lists.getList', debug, {},
                      resolve,
                      reject);
         });
     }
 
-    addList(milk, name) {
+    addList(milk, debug, name) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.lists.add', {
+            milk.get('rtm.lists.add', debug, {
                          name: name,
                          timeline: milk.timeline
                      },

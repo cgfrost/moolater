@@ -8,9 +8,17 @@
     let milk = undefined;
     let milkAction = new MilkAction();
     let lists = [];
+    let debugMode = false;
 
     function handleError(error) {
-        console.log(`Error: ${error}`);
+        let errorMessage = error.message ? error.message : error.toString();
+        console.warn(`Moo Later, background error: ${errorMessage}`);
+    }
+
+    function log(message) {
+        if (debugMode) {
+            console.log(message);
+        }
     }
 
     function initOptions() {
@@ -26,13 +34,13 @@
             };
 
             let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
-            milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token);
+            milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token, debugMode);
 
             if (validSettings.showContextMenu) {
                 addContextMenu();
             }
 
-            if (milk.isUserReady()) {
+            if (milk.isUserReady(debugMode)) {
                 refreshLists(false);
                 milk.setTimeline();
             }
@@ -47,9 +55,9 @@
                         }
                     }
                 });
-                console.log(`Storage initialized`);
-            }, handleError);
-        }, handleError);
+                log(`Storage initialized`);
+            });
+        }).catch(handleError);
     }
 
     // Context Menus
@@ -81,15 +89,15 @@
     function authorise() {
         let authUrl = milk.getAuthUrl();
         browser.windows.create({url: authUrl, type: 'panel'}).then((newWindow) => {
-            // console.log(`Created new window "${newWindow.id}" at ${authUrl}`);
+            log(`Created new window "${newWindow.id}" at ${authUrl}`);
             let windowListener = (windowId) => {
-                console.log(`Window remove event for id ${windowId}`);
+                log(`Window remove event for id ${windowId}`);
                 if (windowId === newWindow.id) {
                     milk.fetchToken(() => {
-                        if (milk.isUserReady()) {
+                        if (milk.isUserReady(debugMode)) {
                             refreshLists(false);
                         }
-                    });
+                    }, handleError);
                     browser.windows.onRemoved.removeListener(windowListener);
                 }
             };
@@ -98,26 +106,28 @@
     }
 
     function addTask(name, link, useSelection, selection, listId) {
-        console.log(`Adding task: ${name}, ${link}, ${useSelection}, ${selection}, ${listId}`);
-        milkAction.addTask(milk, name, listId).then((resp) => {
+        log(`Adding task: ${name}, ${link}, ${useSelection}, ${selection}, ${listId}`);
+        milkAction.addTask(milk, debugMode, name, listId).then((resp) => {
             let task = resp.rsp.list;
-            let addLinkPromise = link === '' ? true : milkAction.addUrlToTask(milk, task, link);
-            let addNotePromise = useSelection ? milkAction.addNoteToTask(milk, task, 'Selected Text', selection) : true;
+            let addLinkPromise = link === '' ? true : milkAction.addUrlToTask(milk, debugMode, task, link);
+            let addNotePromise = useSelection ? milkAction.addNoteToTask(milk, debugMode, task, 'Selected text from the webpage:', selection) : true;
             Promise.all([addLinkPromise, addNotePromise]).then(() => {
-                browser.runtime.sendMessage({action: 'taskAdded'});
+                browser.runtime.sendMessage({action: 'taskAdded', debug: debugMode});
             }).catch((reason) => {
-                browser.runtime.sendMessage({action: 'taskAddedError', reason: reason});
+                browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: reason});
             });
         }).catch((reason) => {
-            browser.runtime.sendMessage({action: 'taskAddedError', reason: reason});
+            browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: reason});
         });
     }
 
     function refreshLists(updatePopup) {
-        milkAction.getLists(milk).then((resp) => {
+        log(`Refresh lists, will update popup: ${updatePopup}`);
+        milkAction.getLists(milk, debugMode).then((resp) => {
             lists = resp.rsp.lists.list;
             let listsRefreshedArguments = {
                 action: 'listsRefreshed',
+                debug: debugMode,
                 lists: lists
             };
             if (updatePopup) {
@@ -126,8 +136,9 @@
         }).catch((error) => {
             let listsRefreshedArguments = {
                 action: 'listsRefreshedError',
+                debug: debugMode,
                 lists: lists,
-                error: error
+                reason: error
             };
             if (updatePopup) {
                 browser.runtime.sendMessage(listsRefreshedArguments);
@@ -136,19 +147,21 @@
     }
 
     function addList(listName) {
-        console.log(`Adding list: ${listName}`);
-        milkAction.addList(milk, listName).then((resp) => {
+        log(`Adding list: ${listName}`);
+        milkAction.addList(milk, debugMode, listName).then((resp) => {
             lists.push(resp.rsp.list);
             let listsRefreshedArguments = {
                 action: 'listsRefreshed',
+                debug: debugMode,
                 lists: lists
             };
             browser.runtime.sendMessage(listsRefreshedArguments);
         }).catch((error) => {
             let listsRefreshedArguments = {
                 action: 'listsRefreshedError',
+                debug: debugMode,
                 lists: lists,
-                error: error
+                reason: error
             };
             browser.runtime.sendMessage(listsRefreshedArguments);
         });
@@ -157,10 +170,10 @@
     // Message handler
 
     function handleMessage(message, sender, sendResponse) {
-        console.log(`Message received in the background script: ${message.action} - ${sender.id}`);
+        log(`Message received in the background script: ${message.action} - ${sender.id}`);
         switch(message.action) {
             case "userReady":
-                sendResponse(milk.isUserReady());
+                sendResponse(milk.isUserReady(debugMode));
                 break;
             case "authorise":
                 authorise();
@@ -178,11 +191,15 @@
                 addList(message.listName);
                 break;
             default:
-                console.log(`Unrecognised message with query "${message.action}"`);
+                handleError(`Unrecognised message with query "${message.action}"`);
         }
     }
 
     initOptions();
+    browser.runtime.onInstalled.addListener((details) => {
+        debugMode = details.temporary;
+        log(`Temporary installation: ${details.temporary}`);
+    });
     browser.runtime.onMessage.addListener(handleMessage);
 
 }());
