@@ -2,7 +2,7 @@
   "description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give Moo Later permission to use your Remember the Milk account the first time you try to save a task.",
   "manifest_version": 2,
   "name": "MooLater",
-  "version": "2.2",
+  "version": "2.3",
   "homepage_url": "http://chrisfrost.com/moolater",
   "icons": {
     "18": "icons/icon-18.png",
