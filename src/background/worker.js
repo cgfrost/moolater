@@ -15,6 +15,10 @@
         console.warn(`Moo Later, background error: ${errorMessage}`);
     }
 
+    function handleMessageError(error) {
+        log(`Error sending to popup ${error.message}`);
+    }
+
     function log(message) {
         if (debugMode) {
             console.log(message);
@@ -108,16 +112,16 @@
     function addTask(name, link, useSelection, selection, listId) {
         log(`Adding task: ${name}, ${link}, ${useSelection}, ${selection}, ${listId}`);
         milkAction.addTask(milk, debugMode, name, listId).then((resp) => {
-            let task = resp.rsp.list;
-            let addLinkPromise = link === '' ? true : milkAction.addUrlToTask(milk, debugMode, task, link);
-            let addNotePromise = useSelection ? milkAction.addNoteToTask(milk, debugMode, task, 'Selected text from the webpage:', selection) : true;
+            let list = resp.rsp.list;
+            let addLinkPromise = link === '' ? true : milkAction.addUrlToTask(milk, debugMode, list, link);
+            let addNotePromise = useSelection ? milkAction.addNoteToTask(milk, debugMode, list, 'Selected text from the webpage:', selection) : true;
             Promise.all([addLinkPromise, addNotePromise]).then(() => {
-                browser.runtime.sendMessage({action: 'taskAdded', debug: debugMode});
+                browser.runtime.sendMessage({action: 'taskAdded', debug: debugMode}).then(null, handleMessageError);
             }).catch((error) => {
-                browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message});
+                browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message}).then(null, handleMessageError);
             });
         }).catch((error) => {
-            browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message});
+            browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message}).then(null, handleMessageError);
         });
     }
 
@@ -130,9 +134,7 @@
                 debug: debugMode,
                 lists: lists
             };
-            browser.runtime.sendMessage(listsRefreshedArguments).then(null, (error) => {
-                log(`Error sending to popup ${error.message}`);
-            });
+            browser.runtime.sendMessage(listsRefreshedArguments).then(null, handleMessageError);
         }).catch((error) => {
             let listsRefreshedArguments = {
                 action: 'listsRefreshedError',
@@ -140,9 +142,7 @@
                 lists: lists,
                 reason: error.message
             };
-            browser.runtime.sendMessage(listsRefreshedArguments).then(null, (error) => {
-                log(`Error sending to popup ${error.message}`);
-            });
+            browser.runtime.sendMessage(listsRefreshedArguments).then(null, handleMessageError);
         });
     }
 
@@ -155,9 +155,7 @@
                 debug: debugMode,
                 lists: lists
             };
-            browser.runtime.sendMessage(listsRefreshedArguments).then(null, (error) => {
-                log(`Error sending to popup ${error.message}`);
-            });
+            browser.runtime.sendMessage(listsRefreshedArguments).then(null, handleMessageError);
         }).catch((error) => {
             let listsRefreshedArguments = {
                 action: 'listsRefreshedError',
@@ -165,9 +163,7 @@
                 lists: lists,
                 reason: error
             };
-            browser.runtime.sendMessage(listsRefreshedArguments).then(null, (error) => {
-                log(`Error sending to popup ${error.message}`);
-            });
+            browser.runtime.sendMessage(listsRefreshedArguments).then(null, handleMessageError);
         });
     }
 

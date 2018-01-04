@@ -15,14 +15,14 @@ class MilkAction {
         });
     }
 
-    addUrlToTask(milk, debug, task, link) {
+    addUrlToTask(milk, debug, list, link) {
 
-        let taskseries = task.taskseries.id ? task.taskseries : task.taskseries[0];
+        let taskseries = list.taskseries.id ? list.taskseries : list.taskseries[0];
         let task_id = taskseries.task.id ? taskseries.task.id : taskseries.task[0].id;
 
         return new Promise((resolve, reject) => {
             milk.get('rtm.tasks.setURL', debug, {
-                         list_id: task.id,
+                         list_id: list.id,
                          taskseries_id: taskseries.id,
                          task_id: task_id,
                          url: link,
@@ -33,14 +33,14 @@ class MilkAction {
         });
     }
 
-    addNoteToTask(milk, debug, task, title, text) {
+    addNoteToTask(milk, debug, list, title, text) {
         return new Promise((resolve, reject) => {
 
-            let taskseries = task.taskseries.id ? task.taskseries : task.taskseries[0];
+            let taskseries = list.taskseries.id ? list.taskseries : list.taskseries[0];
             let task_id = taskseries.task.id ? taskseries.task.id : taskseries.task[0].id;
 
             milk.get('rtm.tasks.notes.add', debug, {
-                         list_id: task.id,
+                         list_id: list.id,
                          taskseries_id: taskseries.id,
                          task_id: task_id,
                          timeline: milk.timeline,
