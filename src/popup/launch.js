@@ -156,14 +156,7 @@
     function handleFatalError(error, altAction) {
         let errorMessage = error.message ? error.message : error.toString();
         console.warn(`Moo Later fatal error: ${errorMessage}`);
-        showMessage(`Failed: ${errorMessage}`, 'error');
-        setTimeout(() => {
-            if (altAction) {
-                altAction();
-            } else {
-                window.close();
-            }
-        }, 1000);
+        showMessageThen(`Failed: ${errorMessage}`, 'error', altAction);
     }
 
     function handleMessage(message, sender) {
@@ -173,31 +166,43 @@
         switch(message.action) {
             case "listsRefreshed":
                 browser.storage.local.get('defaultList').then((defaultList) => {
-                    browser.runtime.sendMessage({action: "lists"}).then((lists) => {
-                        updateLists(lists, defaultList);
-                        setIconState(listRefreshButton.firstElementChild, 'done');
-                        setTimeout(() => {
-                            setIconState(listRefreshButton.firstElementChild, 'refresh');
-                        }, 1000);
-                    });
+                    updateLists(message.lists, defaultList);
+                    setIconState(listRefreshButton.firstElementChild, 'done');
+                    setTimeout(() => {
+                        setIconState(listRefreshButton.firstElementChild, 'refresh');
+                    }, 1000);
                 }).catch(handleFatalError);
                 break;
             case "listsRefreshedError":
-                handleFatalError(message.reason, showAddTask());
+                browser.storage.local.get('defaultList').then((defaultList) => {
+                    updateLists(message.lists, defaultList);
+                    setIconState(listRefreshButton.firstElementChild, 'error');
+                    setTimeout(() => {
+                        setIconState(listRefreshButton.firstElementChild, 'refresh');
+                    }, 1000);
+                }).catch(handleFatalError);
                 break;
             case "taskAdded":
-                showMessage('Task added', 'done');
-                setTimeout(() => {
-                    window.close();
-                }, 1000);
+                showMessageThen('Task added', 'done');
                 break;
             case "taskAddedError":
-                handleFatalError(message.reason);
+                showMessageThen(`Error: ${message.reason}`, 'error');
                 break;
             default:
                 console.log(`Unrecognised message with query "${message.action}"`);
         }
     }
+
+    let showMessageThen = (message, icon, then) => {
+        showMessage(message, icon);
+        setTimeout(() => {
+            if (then) {
+                then();
+            } else {
+                window.close();
+            }
+        }, 1000);
+    };
 
 	let showMessage = (message, icon) => {
 		setTextElement(statusMsg, message);

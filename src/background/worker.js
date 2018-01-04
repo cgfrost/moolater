@@ -41,7 +41,7 @@
             }
 
             if (milk.isUserReady(debugMode)) {
-                refreshLists(false);
+                refreshLists();
                 milk.setTimeline();
             }
 
@@ -95,7 +95,7 @@
                 if (windowId === newWindow.id) {
                     milk.fetchToken(() => {
                         if (milk.isUserReady(debugMode)) {
-                            refreshLists(false);
+                            refreshLists();
                         }
                     }, handleError);
                     browser.windows.onRemoved.removeListener(windowListener);
@@ -113,16 +113,16 @@
             let addNotePromise = useSelection ? milkAction.addNoteToTask(milk, debugMode, task, 'Selected text from the webpage:', selection) : true;
             Promise.all([addLinkPromise, addNotePromise]).then(() => {
                 browser.runtime.sendMessage({action: 'taskAdded', debug: debugMode});
-            }).catch((reason) => {
-                browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: reason});
+            }).catch((error) => {
+                browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message});
             });
-        }).catch((reason) => {
-            browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: reason});
+        }).catch((error) => {
+            browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message});
         });
     }
 
-    function refreshLists(updatePopup) {
-        log(`Refresh lists, will update popup: ${updatePopup}`);
+    function refreshLists() {
+        log("Refresh lists");
         milkAction.getLists(milk, debugMode).then((resp) => {
             lists = resp.rsp.lists.list;
             let listsRefreshedArguments = {
@@ -130,19 +130,19 @@
                 debug: debugMode,
                 lists: lists
             };
-            if (updatePopup) {
-                browser.runtime.sendMessage(listsRefreshedArguments);
-            }
+            browser.runtime.sendMessage(listsRefreshedArguments).then(null, (error) => {
+                log(`Error sending to popup ${error.message}`);
+            });
         }).catch((error) => {
             let listsRefreshedArguments = {
                 action: 'listsRefreshedError',
                 debug: debugMode,
                 lists: lists,
-                reason: error
+                reason: error.message
             };
-            if (updatePopup) {
-                browser.runtime.sendMessage(listsRefreshedArguments);
-            }
+            browser.runtime.sendMessage(listsRefreshedArguments).then(null, (error) => {
+                log(`Error sending to popup ${error.message}`);
+            });
         });
     }
 
@@ -155,7 +155,9 @@
                 debug: debugMode,
                 lists: lists
             };
-            browser.runtime.sendMessage(listsRefreshedArguments);
+            browser.runtime.sendMessage(listsRefreshedArguments).then(null, (error) => {
+                log(`Error sending to popup ${error.message}`);
+            });
         }).catch((error) => {
             let listsRefreshedArguments = {
                 action: 'listsRefreshedError',
@@ -163,7 +165,9 @@
                 lists: lists,
                 reason: error
             };
-            browser.runtime.sendMessage(listsRefreshedArguments);
+            browser.runtime.sendMessage(listsRefreshedArguments).then(null, (error) => {
+                log(`Error sending to popup ${error.message}`);
+            });
         });
     }
 
@@ -185,7 +189,7 @@
                 sendResponse(lists);
                 break;
             case "refreshLists":
-                refreshLists(true);
+                refreshLists();
                 break;
             case "addList":
                 addList(message.listName);
