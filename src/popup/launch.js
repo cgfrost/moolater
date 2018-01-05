@@ -38,6 +38,18 @@
 
 	let validationRegex = new RegExp('^https?://');
 
+    function handleFatalError(error, altAction) {
+        let errorMessage = error.message ? error.message : error.toString();
+        console.warn(`Moo Later fatal error: ${errorMessage}`);
+        showMessageThen(`Failed: ${errorMessage}`, 'error', altAction);
+    }
+
+    function log(message, debugMode) {
+        if (debugMode) {
+            console.log(message);
+        }
+    }
+
 	// Initialization
 	document.addEventListener('DOMContentLoaded', () => {
 
@@ -99,7 +111,7 @@
 			showSection(addTaskSection);
 		}, false);
 
-		addTaskSubmitButton.addEventListener('click', () => {
+        addTaskSubmitButton.addEventListener('click', () => {
             let formValid = true;
             if (taskElement.value !== '') {
                 setTextElement(taskLabel, 'Task:');
@@ -153,20 +165,12 @@
 
 	});
 
-    function handleFatalError(error, altAction) {
-        let errorMessage = error.message ? error.message : error.toString();
-        console.warn(`Moo Later fatal error: ${errorMessage}`);
-        showMessageThen(`Failed: ${errorMessage}`, 'error', altAction);
-    }
-
     function handleMessage(message, sender) {
-        if (message.debug) {
-            console.log(`Message received in the popup script: ${message.action} - ${sender.id}`);
-        }
+        log(`Message received in the popup script: ${message.action} - ${sender.id}`, message.debug);
         switch(message.action) {
             case "listsRefreshed":
-                browser.storage.local.get('defaultList').then((defaultList) => {
-                    updateLists(message.lists, defaultList);
+                browser.storage.local.get('defaultList').then((setting) => {
+                    updateLists(message.lists, setting.defaultList, message.debug);
                     setIconState(listRefreshButton.firstElementChild, 'done');
                     setTimeout(() => {
                         setIconState(listRefreshButton.firstElementChild, 'refresh');
@@ -174,8 +178,8 @@
                 }).catch(handleFatalError);
                 break;
             case "listsRefreshedError":
-                browser.storage.local.get('defaultList').then((defaultList) => {
-                    updateLists(message.lists, defaultList);
+                browser.storage.local.get('defaultList').then((setting) => {
+                    updateLists(message.lists, setting.defaultList, message.debug);
                     setIconState(listRefreshButton.firstElementChild, 'error');
                     setTimeout(() => {
                         setIconState(listRefreshButton.firstElementChild, 'refresh');
@@ -276,7 +280,8 @@
         }
     };
 
-    let updateLists = (lists, defaultList) => {
+    let updateLists = (lists, defaultList, debug) => {
+        log(`Updating the lists, default: ${defaultList}`, debug);
         while (listsElement.firstChild) {
             listsElement.removeChild(listsElement.firstChild);
         }

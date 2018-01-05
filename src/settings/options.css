@@ -33,10 +33,7 @@ body, form {
 }
 
 #submit {
-    /*margin-left: auto;*/
-    /*margin-right: auto;*/
     margin-top: 20px;
-    width: 100px;
 }
 
 #submit button {
@@ -49,4 +46,12 @@ body, form {
 
 #submit button:hover {
     background-color: #E6E6E6;
+}
+
+#submit img {
+    margin-left: 20px;
+    height: 2.5em;
+    width: 2.5em;
+    vertical-align: middle;
+    padding: 0 0 5px 0;
 }

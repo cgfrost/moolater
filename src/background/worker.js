@@ -116,12 +116,12 @@
             let addLinkPromise = link === '' ? true : milkAction.addUrlToTask(milk, debugMode, list, link);
             let addNotePromise = useSelection ? milkAction.addNoteToTask(milk, debugMode, list, 'Selected text from the webpage:', selection) : true;
             Promise.all([addLinkPromise, addNotePromise]).then(() => {
-                browser.runtime.sendMessage({action: 'taskAdded', debug: debugMode}).then(null, handleMessageError);
+                browser.runtime.sendMessage({action: 'taskAdded', debug: debugMode}).catch(handleMessageError);
             }).catch((error) => {
-                browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message}).then(null, handleMessageError);
+                browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message}).catch(handleMessageError);
             });
         }).catch((error) => {
-            browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message}).then(null, handleMessageError);
+            browser.runtime.sendMessage({action: 'taskAddedError', debug: debugMode, reason: error.message}).catch(handleMessageError);
         });
     }
 
@@ -134,7 +134,7 @@
                 debug: debugMode,
                 lists: lists
             };
-            browser.runtime.sendMessage(listsRefreshedArguments).then(null, handleMessageError);
+            browser.runtime.sendMessage(listsRefreshedArguments).catch(handleMessageError);
         }).catch((error) => {
             let listsRefreshedArguments = {
                 action: 'listsRefreshedError',
@@ -142,7 +142,7 @@
                 lists: lists,
                 reason: error.message
             };
-            browser.runtime.sendMessage(listsRefreshedArguments).then(null, handleMessageError);
+            browser.runtime.sendMessage(listsRefreshedArguments).catch(handleMessageError);
         });
     }
 
@@ -155,7 +155,7 @@
                 debug: debugMode,
                 lists: lists
             };
-            browser.runtime.sendMessage(listsRefreshedArguments).then(null, handleMessageError);
+            browser.runtime.sendMessage(listsRefreshedArguments).catch(handleMessageError);
         }).catch((error) => {
             let listsRefreshedArguments = {
                 action: 'listsRefreshedError',
@@ -163,7 +163,7 @@
                 lists: lists,
                 reason: error
             };
-            browser.runtime.sendMessage(listsRefreshedArguments).then(null, handleMessageError);
+            browser.runtime.sendMessage(listsRefreshedArguments).catch(handleMessageError);
         });
     }
 
