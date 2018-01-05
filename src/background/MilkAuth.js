@@ -1,32 +1,24 @@
 class MilkAuth {
 
-    getToken(milk) {
+    getToken(milk, debug) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.auth.getToken', false, {},
+            milk.get('rtm.auth.getToken', debug, {},
                      resolve,
                      reject);
         });
     }
 
-    checkToken(milk) {
+    getFrob(milk, debug) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.auth.checkToken', false, {},
+            milk.get('rtm.auth.getFrob', debug, {},
                      resolve,
                      reject);
         });
     }
 
-    getFrob(milk) {
+    createTimeline(milk, debug) {
         return new Promise((resolve, reject) => {
-            milk.get('rtm.auth.getFrob', false, {},
-                     resolve,
-                     reject);
-        });
-    }
-
-    createTimeline(milk) {
-        return new Promise((resolve, reject) => {
-            milk.get('rtm.timelines.create', false, {},
+            milk.get('rtm.timelines.create', debug, {},
                      resolve,
                      reject);
         });

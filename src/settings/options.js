@@ -29,6 +29,7 @@
         browser.storage.local.set(settings).then(() => {
             flashIconState(statusIcon, 'done');
         }).catch((error) => {
+            console.log(`Settings error: ${error.message}`);
             flashIconState(statusIcon, 'error');
         });
     }
@@ -36,7 +37,7 @@
     function restoreOptions() {
         setIconState(statusIcon, 'blank');
         browser.storage.local.get().then((settings) => {
-            document.querySelector("#moolater-defaultList").value = settings.defaultList || "Read Later";
+            document.querySelector("#moolater-defaultList").value = settings.defaultList || "Inbox";
             document.querySelector("#moolater-useTitle").checked = settings.useTitle || true;
             document.querySelector("#moolater-useLink").checked = settings.useLink || true;
             document.querySelector("#moolater-useSmartAdd").checked = settings.useSmartAdd || true;

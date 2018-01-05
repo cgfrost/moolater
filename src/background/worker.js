@@ -46,7 +46,7 @@
 
             if (milk.isUserReady(debugMode)) {
                 refreshLists();
-                milk.setTimeline();
+                milk.setTimeline(debugMode);
             }
 
             browser.storage.local.set(validSettings).then(() => {
@@ -100,8 +100,9 @@
                     milk.fetchToken(() => {
                         if (milk.isUserReady(debugMode)) {
                             refreshLists();
+                            milk.setTimeline(debugMode);
                         }
-                    }, handleError);
+                    }, handleError, debugMode);
                     browser.windows.onRemoved.removeListener(windowListener);
                 }
             };
