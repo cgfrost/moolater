@@ -37,6 +37,7 @@
     let addListStatus = document.getElementById('add-list-status');
 
 	let validationRegex = new RegExp('^https?://');
+	let activeTimeout = undefined;
 
     function handleFatalError(error, altAction) {
         let errorMessage = error.message ? error.message : error.toString();
@@ -98,7 +99,7 @@
                 browser.runtime.sendMessage(addListArguments).then(() => {
                     setTimeout(() => {
                         showSection(addTaskSection);
-                    }, 750);
+                    }, 500);
                 }).catch((error) => {
                     handleFatalError(error, showAddTask);
                 });
@@ -126,7 +127,10 @@
                 formValid = false;
             }
             if (formValid) {
-                showMessage('Sending task to RTM', 'loading');
+                showMessage('Sending the task to RTM', 'loading');
+                activeTimeout = setTimeout(() => {
+                    showMessage('Still sending the task to RTM...', 'loading');
+                }, 2000);
                 let addTaskArguments = {
                     action: 'addTask',
                     name: taskElement.value,
@@ -209,6 +213,7 @@
     };
 
 	let showMessage = (message, icon) => {
+	    activeTimeout = undefined;
 		setTextElement(statusMsg, message);
 		setIconState(statusImg, icon);
 		showSection(statusSection);
