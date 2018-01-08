@@ -3,6 +3,10 @@
 (function () {
     'use strict';
 
+    const ANDROID = 'android';
+    let validationRegex = new RegExp('^https?://');
+    let activeTimeout = undefined;
+
     // Sections
     let addTaskSection = document.getElementById('content');
     let addListSection = document.getElementById('add-list');
@@ -19,8 +23,8 @@
     let optionsButton = document.getElementById('options');
 
     // Status
-    let statusImg = document.getElementById('status-img');
     let statusMsg = document.getElementById('status-msg');
+    let statusImg = document.getElementById('status-img');
 
     // Add Task Form Elements
     let taskElement = document.getElementById('task');
@@ -36,9 +40,6 @@
     let addListLabel = document.getElementById('list-label');
     let addListStatus = document.getElementById('add-list-status');
 
-	let validationRegex = new RegExp('^https?://');
-	let activeTimeout = undefined;
-
     function handleFatalError(error, altAction) {
         let errorMessage = error.message ? error.message : error.toString();
         console.warn(`Moo Later fatal error: ${errorMessage}`);
@@ -53,6 +54,18 @@
 
 	// Initialization
 	document.addEventListener('DOMContentLoaded', () => {
+
+        browser.runtime.getPlatformInfo().then((info) => {
+            if(ANDROID === info.os) {
+                document.body.style.fontSize = '2.3em';
+                document.body.style.width = '100%';
+                let icons = document.querySelectorAll("button.icon img");
+                for (let i = 0; i < icons.length; i++) {
+                    icons[i].style.width = '4em';
+                    icons[i].style.height = '4em';
+                }
+            }
+        });
 
         taskElement.addEventListener('keyup', (event) => {
         	if (event.keyCode === 13) {
@@ -115,7 +128,7 @@
         addTaskSubmitButton.addEventListener('click', () => {
             let formValid = true;
             if (taskElement.value !== '') {
-                setTextElement(taskLabel, 'Task:');
+                setTextElement(taskLabel, 'Task name:');
             } else {
                 setTextElement(taskLabel, 'Task: Task name can\'t be empty.');
                 formValid = false;
@@ -130,7 +143,7 @@
                 showMessage('Sending the task to RTM', 'loading');
                 activeTimeout = setTimeout(() => {
                     showMessage('Still sending the task to RTM...', 'loading');
-                }, 2000);
+                }, 3000);
                 let addTaskArguments = {
                     action: 'addTask',
                     name: taskElement.value,
@@ -213,7 +226,10 @@
     };
 
 	let showMessage = (message, icon) => {
-	    activeTimeout = undefined;
+	    if (activeTimeout) {
+            clearTimeout(activeTimeout);
+            activeTimeout = undefined;
+        }
 		setTextElement(statusMsg, message);
 		setIconState(statusImg, icon);
 		showSection(statusSection);
@@ -251,15 +267,16 @@
         browser.storage.local.get().then((settings) => {
             browser.tabs.query({active: true}).then((activeTabs) => {
                 browser.runtime.sendMessage({action: "lists"}).then((lists) => {
+                    document.getElementById('title').textContent = `Tabs: ${activeTabs.length} Lists: ${lists.length}`;
                     let link =  activeTabs[0].url;
                     if (link.startsWith('about:')) {
-                        populateAddTask(settings, '', activeTabs[0], lists, undefined);
+                        populateAddTask(settings, '', activeTabs[0], undefined);
                     } else {
                         let code = 'window.getSelection().toString()';
                         browser.tabs.executeScript(activeTabs[0].id, {code: code}).then((selection) => {
-                            populateAddTask(settings, link, activeTabs[0], lists, `${selection}`);
+                            populateAddTask(settings, link, activeTabs[0], `${selection}`);
                         }, (error) => {
-                            populateAddTask(settings, link, activeTabs[0], lists, undefined);
+                            populateAddTask(settings, link, activeTabs[0], undefined);
                             console.log(`Got selected text error '${error}'`);
                         });
                     }
@@ -270,8 +287,8 @@
         }).catch(handleFatalError);
     };
 
-    let populateAddTask = (settings, link, activeTab, lists, selectedText) => {
-        setTextElement(taskLabel, 'Task:');
+    let populateAddTask = (settings, link, activeTab, selectedText) => {
+        setTextElement(taskLabel, 'Task name:');
         setTextElement(linkLabel, 'Link:');
         taskElement.value = settings.useTitle ? activeTab.title : '';
         linkElement.value = settings.useLink ? link : '';

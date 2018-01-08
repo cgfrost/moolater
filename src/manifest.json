@@ -23,8 +23,7 @@
     "https://api.rememberthemilk.com/*",
     "activeTab",
     "storage",
-    "menus",
-    "notifications"
+    "menus"
   ],
 
   "browser_action": {
@@ -34,7 +33,7 @@
       "36": "icons/icon-36.png"
     },
     "default_popup": "popup/mooLater.html",
-    "default_title": "Save to Remember The Milk"
+    "default_title": "Moo Later"
   },
 
   "background": {

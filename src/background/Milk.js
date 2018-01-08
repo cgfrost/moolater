@@ -123,13 +123,13 @@ class Milk {
 		fetch(requestUrl, fetchInit).then((response) => {
 		    response.text().then((text) => {
 
-		        console.log('*************************************', debug);
-		        console.log(`Request.Url     : ${requestUrl}`, debug);
-		        console.log(`Request.Method  : ${method}`, debug);
-		        console.log(`Response.Text   : ${text}`, debug);
-		        console.log(`        .Status : ${response.status}`, debug);
-		        console.log(`        .SText  : ${response.statusText}`, debug);
-		        console.log('*************************************', debug);
+		        Milk.log('*************************************', debug);
+                Milk.log(`Request.Url     : ${requestUrl}`, debug);
+                Milk.log(`Request.Method  : ${method}`, debug);
+                Milk.log(`Response.Text   : ${text}`, debug);
+                Milk.log(`        .Status : ${response.status}`, debug);
+                Milk.log(`        .SText  : ${response.statusText}`, debug);
+                Milk.log('*************************************', debug);
 
 		        if (response.status === 200) {
 		            let jsonData = JSON.parse(text);

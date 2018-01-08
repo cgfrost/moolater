@@ -7,20 +7,16 @@ html, body, p, span, input, form, img, button {
 body {
 	background-color: #FFFFFF;
 	font-family: sans-serif;
-	font-size: 12px;
+	font-size: 0.8em;
+    width: 450px;
 }
 
 .hide {
 	display: none !important;
 }
 
-.section {
-    min-width: 350px;
-    max-width: 450px;
-}
-
 header {
-    margin-bottom: 15px;
+    margin-bottom: 1em;
     font-size: 2.1em;
     font-weight: bold;
     text-align: center;
@@ -28,16 +24,24 @@ header {
     color: white;
 }
 
-p.title {
+p#title {
     padding: 15px 0 15px 0;
     display: inline-block;
 }
 
 p.msg {
-	padding: 15px 15px 10px;
+	padding: 5px 15px 10px;
 	text-align: center;
 	font-size: 1.3em;
 	color: #333333;
+}
+
+p.footnote {
+    padding: 20px 15px 5px;
+    text-align: left;
+    font-size: 0.9em;
+    color: #777777;
+    line-height: 1.4em;
 }
 
 p.controls {
@@ -66,87 +70,67 @@ p.controls button:disabled {
 	cursor: wait;
 }
 
-form .multi-label {
-	font-size: 1.2em;
-	display: block;
-	padding: 15px 15px 5px;
+form .multi-label, form .line-label {
+    font-size: 1.3em;
+    display: block;
+    padding: 0.8em 15px 0.8em 15px;
+    margin: 0;
+}
+
+form .multi-input, form .line-input {
+    font-size: 1em;
 }
 
 form .multi-input {
-	font-size: 1em;
-	padding: 5px;
-	margin: 5px 0 0 0;
-	width: 310px;
-	background-color: #EEEEEE;
-	border-radius: 5px;
-	display: block;
-}
-
-form .line-label {
-	padding: 5px 0 0 0;
-	margin: 15px 15px 15px;
-	font-size: 1.2em;
-	display: block;
-}
-
-form #selected-text {
-	margin-bottom: 3px;
+    padding: 5px;
+    margin: 5px 0 0 0;
+    background-color: #EEEEEE;
+    border-radius: 5px;
+    display: block;
+    box-sizing: border-box;
+    width: 100%
 }
 
 form .line-input {
-	font-size: 1em;
 	padding: 0;
-	margin: 0 5px 0 5px;
+	margin: 0 5px 3px 5px;
 	vertical-align: middle;
 }
 
-div#add-list-status {
-	margin-top: 30px;
-    margin-bottom: 16px;
-	text-align: center;
-}
+/* Button and status icons */
 
-button.icon, div.icon {
-	border-radius: 5px;
+button.icon {
 	background-color: #FFFFFF;
 	vertical-align: middle;
+    margin: 0 4px;
 }
 
-button.footer-icon {
-    margin: 0 5px 5px 0;
-	border-radius: 5px;
-	background-color: #FFFFFF;
-	vertical-align: middle;
+button.icon img {
+    height: 1.8em;
+    width: 1.8em;
+}
+
+button#options {
+    margin-bottom: 3px;
     float: right;
 }
 
-button.icon img, button.footer-icon img {
-	height: 1.7em;
-	width: 1.7em;
+div#add-list-status img {
+    display: block;
+    padding: 16px 0;
+	height: 8.7em;
+	width: 8.7em;
+    margin: auto;
 }
 
-div#add-list-status img{
-	height: 7em;
-	width: 7em;
-}
-
-#status-img {
+div#status img {
 	display: block;
-	padding-top: 23px;
-	padding-bottom: 20px;
-	width: 180px;
-	height: 180px;
+	padding: 23px 0 20px;
+	width: 15em;
+	height: 15em;
 	margin: auto;
 }
 
-button.icon:hover, button.footer-icon:hover {
+button.icon:hover {
 	cursor: pointer;
-}
-
-p.footnote {
-	padding: 20px 15px 10px;
-	text-align: left;
-	font-size: 0.9em;
-	color: #777777;
-	line-height: 13px;
 }

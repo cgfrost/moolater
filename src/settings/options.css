@@ -1,7 +1,7 @@
 body {
     font-family: sans-serif;
     color: #111111;
-    font-size: 0.85em;
+    font-size: 1em;
 }
 
 body, form {
@@ -18,8 +18,7 @@ body, form {
 
 .option label {
     display: inline-block;
-    width: 34%;
-    max-width: 400px;
+    width: 14em;
 }
 
 .option input {
@@ -33,7 +32,7 @@ body, form {
 }
 
 #submit {
-    margin-top: 20px;
+    margin: 20px 10px 20px 10px;
 }
 
 #submit button {
@@ -41,7 +40,7 @@ body, form {
     border-radius: 2px;
     border: 1px solid #B4B4B4;
     background-color: transparent;
-    font-size: 1.3em;
+    font-size: 1.2em;
 }
 
 #submit button:hover {

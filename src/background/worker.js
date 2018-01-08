@@ -5,10 +5,18 @@
 
     console.log('============================= MOOLATER =============================');
 
+    const ANDROID = 'android';
+    let isMobile = false;
     let milk = undefined;
     let milkAction = new MilkAction();
     let lists = [];
     let debugMode = false;
+
+    browser.runtime.getPlatformInfo().then((info) => {
+        if(ANDROID === info.os) {
+            isMobile = true;
+        }
+    });
 
     function handleError(error) {
         let errorMessage = error.message ? error.message : error.toString();
@@ -92,22 +100,39 @@
 
     function authorise() {
         let authUrl = milk.getAuthUrl();
-        browser.windows.create({url: authUrl, type: 'panel'}).then((newWindow) => {
-            log(`Created new window "${newWindow.id}" at ${authUrl}`);
-            let windowListener = (windowId) => {
-                log(`Window remove event for id ${windowId}`);
-                if (windowId === newWindow.id) {
-                    milk.fetchToken(() => {
-                        if (milk.isUserReady(debugMode)) {
-                            refreshLists();
-                            milk.setTimeline(debugMode);
-                        }
-                    }, handleError, debugMode);
-                    browser.windows.onRemoved.removeListener(windowListener);
-                }
-            };
-            browser.windows.onRemoved.addListener(windowListener);
-        }).catch(handleError);
+        if (isMobile) {
+            browser.tabs.create({url: authUrl, active: true}).then((newTab) => {
+                log(`Created new tab "${newTab.id}" at ${authUrl}`);
+                let tabCloseListener = (tabId) => {
+                    log(`Tab remove event for id ${tabId}`);
+                    if (tabId === newTab.id) {
+                        milk.fetchToken(() => {
+                            if (milk.isUserReady(debugMode)) {
+                                refreshLists();
+                            }
+                        }, handleError, debugMode);
+                        browser.tabs.onRemoved.removeListener(tabCloseListener);
+                    }
+                };
+                browser.tabs.onRemoved.addListener(tabCloseListener);
+            }).catch(handleError);
+        } else {
+            browser.windows.create({url: authUrl, type: 'panel'}).then((newWindow) => {
+                log(`Created new window "${newWindow.id}" at ${authUrl}`);
+                let windowCloseListener = (windowId) => {
+                    log(`Window remove event for id ${windowId}`);
+                    if (windowId === newWindow.id) {
+                        milk.fetchToken(() => {
+                            if (milk.isUserReady(debugMode)) {
+                                refreshLists();
+                            }
+                        }, handleError, debugMode);
+                        browser.windows.onRemoved.removeListener(windowCloseListener);
+                    }
+                };
+                browser.windows.onRemoved.addListener(windowCloseListener);
+            }).catch(handleError);
+        }
     }
 
     function addTask(name, link, useSelection, selection, listId) {

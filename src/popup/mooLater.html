@@ -7,10 +7,10 @@
 </head>
 
 <body>
-    <header><p class="title">Moo Later</p></header>
+    <header><p id="title">Moo Later</p></header>
 
     <form id="content" class="section">
-    	<label id="task-label" class="multi-label">Task:
+    	<label id="task-label" class="multi-label">Task name:
     		<input type="text" id="task" class="multi-input">
     	</label>
     	<label id="link-label" class="multi-label">Link:
@@ -37,7 +37,7 @@
             <button id="add-list-submit" type="button">Add List</button>
             <button id="add-list-cancel" type="button">Cancel</button>
         </p>
-        <div class="icon" id="add-list-status"><img src="../images/blank.svg" /></div>
+        <div id="add-list-status"><img src="../images/blank.svg" /></div>
     </form>
 
     <div id="login" class="section hide">
@@ -53,7 +53,7 @@
         <img class="msg" id="status-img" src="../images/done.svg" />
     </div>
 
-    <button class="footer-icon" id="options" type="button"><img src="../images/gear.svg" /></button>
+    <button class="icon" id="options" type="button"><img src="../images/gear.svg" /></button>
 
     <script src="launch.js" type="text/javascript" charset="utf-8"></script>
 
