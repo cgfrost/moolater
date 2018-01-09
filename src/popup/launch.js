@@ -62,8 +62,8 @@
                 document.body.style.width = '100%';
                 let icons = document.querySelectorAll("button.icon img");
                 for (let i = 0; i < icons.length; i++) {
-                    icons[i].style.width = '5.2em';
-                    icons[i].style.height = '5.2em';
+                    icons[i].style.width = '5.4em';
+                    icons[i].style.height = '5.4em';
                 }
             }
         });
@@ -268,20 +268,16 @@
         browser.storage.local.get().then((settings) => {
             browser.tabs.query({active: true}).then((activeTabs) => {
                 browser.runtime.sendMessage({action: "lists"}).then((lists) => {
-                    let newTitle = `${activeTabs.length} tabs`;
-                    for (let i = 0; i < activeTabs.length; i++) {
-                        newTitle = `${newTitle} : ${activeTabs[i].id}-${activeTabs[i].title}-${activeTabs[i].discarded}-${activeTabs[i].lastAccessed}`;
-                    }
-                    document.getElementById('title').textContent = newTitle;
-                    let link =  activeTabs[0].url;
+                    let activeTab = getActiveTab(activeTabs);
+                    let link =  activeTab.url;
                     if (link.startsWith('about:')) {
-                        populateAddTask(settings, '', activeTabs[0], undefined);
+                        populateAddTask(settings, '', activeTab, undefined);
                     } else {
                         let code = 'window.getSelection().toString()';
-                        browser.tabs.executeScript(activeTabs[0].id, {code: code}).then((selection) => {
-                            populateAddTask(settings, link, activeTabs[0], `${selection}`);
+                        browser.tabs.executeScript(activeTab.id, {code: code}).then((selection) => {
+                            populateAddTask(settings, link, activeTab, `${selection}`);
                         }, (error) => {
-                            populateAddTask(settings, link, activeTabs[0], undefined);
+                            populateAddTask(settings, link, activeTab, undefined);
                             console.log(`Got selected text error '${error}'`);
                         });
                     }
@@ -292,11 +288,27 @@
         }).catch(handleFatalError);
     };
 
+    let getActiveTab = (tabs) => {
+        if (tabs.length === 0) {
+            handleFatalError('No open tab found.');
+        }
+        if (tabs.length === 1) {
+            return tabs[0];
+        }
+        let tabToSend = tabs[0];
+        for (let i = 1; i < tabs.length; i++) {
+            if (tabs[i].lastAccessed >= tabToSend.lastAccessed) {
+                tabToSend = tabs[i];
+            }
+        }
+        return tabToSend;
+    };
+
     let populateAddTask = (settings, link, activeTab, selectedText) => {
         setTextElement(taskLabel, 'Task name:');
         setTextElement(linkLabel, 'Link:');
-        taskElement.value = settings.useTitle ? activeTab.title : '';
-        linkElement.value = settings.useLink ? link : '';
+        taskElement.value = settings.useTitle === true ? activeTab.title : '';
+        linkElement.value = settings.useLink === true ? link : '';
         taskElement.focus();
         if (selectedText && selectedText.length > 0) {
             selectedElement.checked = true;

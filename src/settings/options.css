@@ -10,6 +10,10 @@ body, form {
     margin: 0;
 }
 
+.hide {
+    display: none !important;
+}
+
 .option {
     padding: 10px 0 10px 6px;
     display: block;

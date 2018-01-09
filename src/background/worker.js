@@ -12,12 +12,6 @@
     let lists = [];
     let debugMode = false;
 
-    browser.runtime.getPlatformInfo().then((info) => {
-        if(ANDROID === info.os) {
-            isMobile = true;
-        }
-    });
-
     function handleError(error) {
         let errorMessage = error.message ? error.message : error.toString();
         console.warn(`Moo Later, background error: ${errorMessage}`);
@@ -35,44 +29,57 @@
 
     function initOptions() {
         browser.storage.local.get().then((settings) => {
+
+            let booleanOption = (option) => {
+                return option === undefined ? true : option === true;
+            };
+
             let validSettings = {
-                defaultList: settings.defaultList || "Inbox",
-                useTitle: settings.useTitle || true,
-                useLink: settings.useLink || true,
-                useSmartAdd: settings.useSmartAdd || true,
-                showContextMenu: settings.showContextMenu || true,
+                defaultList: settings.defaultList || "Read Later",
+                useTitle: booleanOption(settings.useTitle),
+                useLink: booleanOption(settings.useLink),
+                useSmartAdd: booleanOption(settings.useSmartAdd),
+                showContextMenu: booleanOption(settings.showContextMenu),
                 frob: settings.frob || 'INVALID',
                 token: settings.token || 'INVALID'
             };
 
-            let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
-            milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token, debugMode);
+            browser.runtime.getPlatformInfo().then((info) => {
+                if(ANDROID === info.os) {
+                    isMobile = true;
+                }
 
-            if (validSettings.showContextMenu) {
-                addContextMenu();
-            }
+                let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
+                milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token, debugMode);
 
-            if (milk.isUserReady(debugMode)) {
-                refreshLists();
-                milk.setTimeline(debugMode);
-            }
+                if (!isMobile && validSettings.showContextMenu) {
+                    addContextMenu();
+                }
 
-            browser.storage.local.set(validSettings).then(() => {
-                browser.storage.onChanged.addListener((changes, area) => {
-                    if (area === 'local' && changes.showContextMenu && changes.showContextMenu.oldValue !== changes.showContextMenu.newValue) {
-                        if (changes.showContextMenu.newValue) {
-                            addContextMenu();
-                        } else {
-                            removeContextMenu();
-                        }
+                if (milk.isUserReady(debugMode)) {
+                    refreshLists();
+                    milk.setTimeline(debugMode);
+                }
+
+                browser.storage.local.set(validSettings).then(() => {
+                    if(!isMobile) {
+                        browser.storage.onChanged.addListener((changes, area) => {
+                            if (area === 'local' && changes.showContextMenu && changes.showContextMenu.oldValue !== changes.showContextMenu.newValue) {
+                                if (changes.showContextMenu.newValue) {
+                                    addContextMenu();
+                                } else {
+                                    removeContextMenu();
+                                }
+                            }
+                        });
                     }
+                    log(`Storage initialized`);
                 });
-                log(`Storage initialized`);
             });
         }).catch(handleError);
     }
 
-    // Context Menus
+    // Context Menus - not supported on Android
 
     function addContextMenu() {
         browser.menus.create({

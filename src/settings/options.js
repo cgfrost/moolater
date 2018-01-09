@@ -3,6 +3,7 @@
 (function () {
     'use strict';
 
+    const ANDROID = 'android';
     let statusIcon = document.getElementById('status-img');
 
     function flashIconState(icon, iconName) {
@@ -20,11 +21,11 @@
         e.preventDefault();
         setIconState(statusIcon, 'loading');
         let settings = {
-            defaultList: document.querySelector("#moolater-defaultList").value,
-            useTitle: document.querySelector("#moolater-useTitle").checked,
-            useLink: document.querySelector("#moolater-useLink").checked,
-            useSmartAdd: document.querySelector("#moolater-useSmartAdd").checked,
-            showContextMenu: document.querySelector("#moolater-showContextMenu").checked
+            defaultList: document.getElementById('moolater-defaultList').value,
+            useTitle: document.getElementById('moolater-useTitle').checked,
+            useLink: document.getElementById('moolater-useLink').checked,
+            useSmartAdd: document.getElementById('moolater-useSmartAdd').checked,
+            showContextMenu: document.getElementById('moolater-showContextMenu').checked
         };
         browser.storage.local.set(settings).then(() => {
             flashIconState(statusIcon, 'done');
@@ -34,20 +35,31 @@
         });
     }
 
-    function restoreOptions() {
+    function setup() {
         setIconState(statusIcon, 'blank');
+
+        let booleanOption = (option) => {
+            return option === undefined ? true : option === true;
+        };
+
+        browser.runtime.getPlatformInfo().then((info) => {
+            if (ANDROID === info.os) {
+                document.getElementById('desktop-only').classList.add('hide');
+            }
+        });
+
         browser.storage.local.get().then((settings) => {
-            document.querySelector("#moolater-defaultList").value = settings.defaultList || "Inbox";
-            document.querySelector("#moolater-useTitle").checked = settings.useTitle || true;
-            document.querySelector("#moolater-useLink").checked = settings.useLink || true;
-            document.querySelector("#moolater-useSmartAdd").checked = settings.useSmartAdd || true;
-            document.querySelector("#moolater-showContextMenu").checked = settings.showContextMenu || true;
+            document.getElementById('moolater-defaultList').value = settings.defaultList || 'Read Later';
+            document.getElementById('moolater-useTitle').checked = booleanOption(settings.useTitle);
+            document.getElementById('moolater-useLink').checked = booleanOption(settings.useLink);
+            document.getElementById('moolater-useSmartAdd').checked = booleanOption(settings.useSmartAdd);
+            document.getElementById('moolater-showContextMenu').checked = booleanOption(settings.showContextMenu);
         }).catch((error) => {
             console.log(`Settings error: ${error.message}`);
         });
     }
 
-    document.addEventListener("DOMContentLoaded", restoreOptions);
-    document.querySelector("form").addEventListener("submit", saveOptions);
+    document.addEventListener('DOMContentLoaded', setup);
+    document.querySelector('form').addEventListener('submit', saveOptions);
 
 }());
