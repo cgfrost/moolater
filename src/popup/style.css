@@ -115,7 +115,7 @@ button#options {
     float: right;
 }
 
-div#add-list-status img {
+img#add-list-status-img {
     display: block;
     padding: 16px 0;
 	height: 8.7em;
@@ -123,7 +123,7 @@ div#add-list-status img {
     margin: auto;
 }
 
-div#status img {
+img#status-img {
 	display: block;
 	padding: 23px 0 20px;
 	width: 15em;

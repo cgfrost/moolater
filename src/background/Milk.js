@@ -76,7 +76,7 @@ class Milk {
             this.milkAuth.getFrob(this, debug).then((response) => {
                 Milk.log(`Setting frob to ${response.rsp.frob}`, debug);
                 this.frob = response.rsp.frob;
-                browser.storage.local.set({token: this.auth_token, frob: this.frob});
+                browser.storage.local.set({frob: response.rsp.frob});
             });
         }
     }
@@ -154,7 +154,7 @@ class Milk {
 			if (jsonData.err && jsonData.err.msg && jsonData.err.code) {
 				if (jsonData.err.code === '98') {
 					this.auth_token = INVALID;
-                    browser.storage.local.set({token: INVALID, frob: this.frob}).then(() => {
+                    browser.storage.local.set({token: INVALID}).then(() => {
                         this.fetchToken(retry, error, debug);
                     });
 					return;
@@ -179,7 +179,7 @@ class Milk {
 		this.milkAuth.getToken(this, debug).then((resp) => {
 		    this.auth_token = resp.rsp.auth.token;
 		    this.setTimeline(debug, retry, error);
-		    browser.storage.local.set({token: resp.rsp.auth.token, frob: this.frob});
+		    browser.storage.local.set({token: resp.rsp.auth.token});
 		}).catch((reason) => {
 		    if (error) {
                 Milk.log(`Error fetching new token ${reason.message}`, debug);

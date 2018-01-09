@@ -19,6 +19,7 @@
     let addTaskSubmitButton = document.getElementById('add-task-submit');
     let permissionSubmitButton = document.getElementById('permissions-submit');
     let listRefreshButton = document.getElementById('lists-refresh');
+    let listRefreshButtonImg = listRefreshButton.firstElementChild;
     let listPlusButton = document.getElementById('lists-plus');
     let optionsButton = document.getElementById('options');
 
@@ -38,7 +39,7 @@
     // Add List Form Elements
     let addListElement = document.getElementById('list');
     let addListLabel = document.getElementById('list-label');
-    let addListStatus = document.getElementById('add-list-status');
+    let addListStatusImg = document.getElementById('add-list-status-img');
 
     function handleFatalError(error, altAction) {
         let errorMessage = error.message ? error.message : error.toString();
@@ -57,12 +58,12 @@
 
         browser.runtime.getPlatformInfo().then((info) => {
             if(ANDROID === info.os) {
-                document.body.style.fontSize = '2.3em';
+                document.body.style.fontSize = '2.4em';
                 document.body.style.width = '100%';
                 let icons = document.querySelectorAll("button.icon img");
                 for (let i = 0; i < icons.length; i++) {
-                    icons[i].style.width = '4em';
-                    icons[i].style.height = '4em';
+                    icons[i].style.width = '5.2em';
+                    icons[i].style.height = '5.2em';
                 }
             }
         });
@@ -101,7 +102,7 @@
 
 		addListSubmitButton.addEventListener('click', () => {
             if (addListElement.value !== '') {
-                setIconState(addListStatus.firstElementChild, 'loading');
+                setIconState(addListStatusImg, 'loading');
                 setTextElement(addListLabel, 'New List:');
                 addListSubmitButton.disabled = true;
                 addListCancelButton.disabled = true;
@@ -162,18 +163,18 @@
 		}, false);
 
 		listRefreshButton.addEventListener('click', () => {
-            setIconState(listRefreshButton.firstElementChild, 'loading');
+            setIconState(listRefreshButtonImg, 'loading');
             browser.runtime.sendMessage({action: "refreshLists"}).catch(() => {
-                setIconState(listRefreshButton.firstElementChild, 'error');
+                setIconState(listRefreshButtonImg, 'error');
                 setTimeout(() => {
-                    setIconState(listRefreshButton.firstElementChild, 'refresh');
+                    setIconState(listRefreshButtonImg, 'refresh');
                 }, 1000);
             });
 		}, false);
 
 		listPlusButton.addEventListener('click', () => {
             setTextElement(addListLabel, 'New List:');
-            setIconState(addListStatus.firstElementChild, 'blank');
+            setIconState(addListStatusImg, 'blank');
             addListSubmitButton.disabled = false;
             addListCancelButton.disabled = false;
             addListElement.value = '';
@@ -188,18 +189,18 @@
             case "listsRefreshed":
                 browser.storage.local.get('defaultList').then((setting) => {
                     updateLists(message.lists, setting.defaultList, message.debug);
-                    setIconState(listRefreshButton.firstElementChild, 'done');
+                    setIconState(listRefreshButtonImg, 'done');
                     setTimeout(() => {
-                        setIconState(listRefreshButton.firstElementChild, 'refresh');
+                        setIconState(listRefreshButtonImg, 'refresh');
                     }, 1000);
                 }).catch(handleFatalError);
                 break;
             case "listsRefreshedError":
                 browser.storage.local.get('defaultList').then((setting) => {
                     updateLists(message.lists, setting.defaultList, message.debug);
-                    setIconState(listRefreshButton.firstElementChild, 'error');
+                    setIconState(listRefreshButtonImg, 'error');
                     setTimeout(() => {
-                        setIconState(listRefreshButton.firstElementChild, 'refresh');
+                        setIconState(listRefreshButtonImg, 'refresh');
                     }, 1000);
                 }).catch(handleFatalError);
                 break;
@@ -267,7 +268,11 @@
         browser.storage.local.get().then((settings) => {
             browser.tabs.query({active: true}).then((activeTabs) => {
                 browser.runtime.sendMessage({action: "lists"}).then((lists) => {
-                    document.getElementById('title').textContent = `Tabs: ${activeTabs.length} Lists: ${lists.length}`;
+                    let newTitle = `${activeTabs.length} tabs`;
+                    for (let i = 0; i < activeTabs.length; i++) {
+                        newTitle = `${newTitle} : ${activeTabs[i].id}-${activeTabs[i].title}-${activeTabs[i].discarded}-${activeTabs[i].lastAccessed}`;
+                    }
+                    document.getElementById('title').textContent = newTitle;
                     let link =  activeTabs[0].url;
                     if (link.startsWith('about:')) {
                         populateAddTask(settings, '', activeTabs[0], undefined);
