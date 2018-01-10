@@ -4,8 +4,10 @@
     'use strict';
 
     const ANDROID = 'android';
+    let isMobile = false;
     let validationRegex = new RegExp('^https?://');
     let activeTimeout = undefined;
+    let desktopSelectionCode = 'window.getSelection().toString()';
 
     // Sections
     let addTaskSection = document.getElementById('content');
@@ -58,6 +60,7 @@
 
         browser.runtime.getPlatformInfo().then((info) => {
             if(ANDROID === info.os) {
+                isMobile = true;
                 document.body.style.fontSize = '2.4em';
                 document.body.style.width = '100%';
                 let icons = document.querySelectorAll("button.icon img");
@@ -88,7 +91,7 @@
 
         optionsButton.addEventListener('click', () => {
             browser.runtime.openOptionsPage().then(() => {
-                window.close();
+                closeMe();
             });
         }, false);
 
@@ -221,9 +224,21 @@
             if (then) {
                 then();
             } else {
-                window.close();
+                closeMe()
             }
         }, 1000);
+    };
+
+    let closeMe = () => {
+        if (isMobile) {
+            browser.tabs.getCurrent().then((myTab) => {
+                browser.tabs.remove(myTab.id).catch((error) => {
+                    console.warn(`Moo Later closing error: ${error.message}`);
+                });
+            });
+        } else {
+            window.close();
+        }
     };
 
 	let showMessage = (message, icon) => {
@@ -273,8 +288,7 @@
                     if (link.startsWith('about:')) {
                         populateAddTask(settings, '', activeTab, undefined);
                     } else {
-                        let code = 'window.getSelection().toString()';
-                        browser.tabs.executeScript(activeTab.id, {code: code}).then((selection) => {
+                        browser.tabs.executeScript(activeTab.id, {code: desktopSelectionCode}).then((selection) => {
                             populateAddTask(settings, link, activeTab, `${selection}`);
                         }, (error) => {
                             populateAddTask(settings, link, activeTab, undefined);

@@ -65,6 +65,7 @@ class Milk {
                 retry();
             }
 		}).catch((reason) => {
+			Milk.log(reason.message, debug);
 		    if (error) {
 		        error(reason);
             }
