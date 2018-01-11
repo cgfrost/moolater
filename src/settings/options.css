@@ -40,7 +40,7 @@ body, form {
 }
 
 #submit button {
-    padding: 5px 10px;
+    padding: 0.3em 0.6em;
     border-radius: 2px;
     border: 1px solid #B4B4B4;
     background-color: transparent;
