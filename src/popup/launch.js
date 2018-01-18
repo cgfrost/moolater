@@ -281,25 +281,35 @@
 
     let showAddTask = () => {
         browser.storage.local.get().then((settings) => {
-            browser.tabs.query({active: true}).then((activeTabs) => {
-                browser.runtime.sendMessage({action: "lists"}).then((lists) => {
-                    let activeTab = getActiveTab(activeTabs);
-                    let link =  activeTab.url;
-                    if (link.startsWith('about:')) {
-                        populateAddTask(settings, '', activeTab, undefined);
-                    } else {
-                        browser.tabs.executeScript(activeTab.id, {code: desktopSelectionCode}).then((selection) => {
-                            populateAddTask(settings, link, activeTab, `${selection}`);
-                        }, (error) => {
-                            populateAddTask(settings, link, activeTab, undefined);
-                            console.log(`Got selected text error '${error}'`);
-                        });
-                    }
-                    updateLists(lists, settings.defaultList);
-                    showSection(addTaskSection);
-                });
+            browser.runtime.sendMessage({action: "lists"}).then((lists) => {
+                if(isMobile) {
+                    browser.tabs.query({active: true}).then((activeTabs) => {
+                        prePopulateAddTask(settings, activeTabs, lists);
+                    });
+                } else {
+                    browser.windows.getCurrent({populate: true, windowTypes: ['normal']}).then((currentWindow) => {
+                        prePopulateAddTask(settings, currentWindow.tabs, lists);
+                    });
+                }
             });
         }).catch(handleFatalError);
+    };
+
+    let prePopulateAddTask = (settings, tabs, lists) => {
+        let activeTab = getActiveTab(tabs);
+        let link =  activeTab.url;
+        if (link.startsWith('about:')) {
+            populateAddTask(settings, '', activeTab, undefined);
+        } else {
+            browser.tabs.executeScript(activeTab.id, {code: desktopSelectionCode}).then((selection) => {
+                populateAddTask(settings, link, activeTab, `${selection}`);
+            }, (error) => {
+                populateAddTask(settings, link, activeTab, undefined);
+                console.log(`Got selected text error '${error}'`);
+            });
+        }
+        updateLists(lists, settings.defaultList);
+        showSection(addTaskSection);
     };
 
     let getActiveTab = (tabs) => {
@@ -311,7 +321,7 @@
         }
         let tabToSend = tabs[0];
         for (let i = 1; i < tabs.length; i++) {
-            if (tabs[i].lastAccessed >= tabToSend.lastAccessed) {
+            if (tabs[i].active && tabs[i].lastAccessed >= tabToSend.lastAccessed) {
                 tabToSend = tabs[i];
             }
         }
