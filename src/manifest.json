@@ -1,9 +1,9 @@
 {
   "description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give Moo Later permission to use your Remember the Milk account the first time you try to save a task.",
   "manifest_version": 2,
-  "name": "MooLater",
-  "version": "2.6",
-  "homepage_url": "http://chrisfrost.com/moolater",
+  "name": "Loda Browsa",
+  "version": "1.0",
+  "homepage_url": "http://skipjaq.com/",
   "icons": {
     "18": "icons/icon-18.png",
     "32": "icons/icon-32.png",
@@ -13,14 +13,14 @@
 
   "applications": {
     "gecko": {
-      "id": "moolater@codewax",
+      "id": "",
       "strict_min_version": "57.0a1"
     }
   },
 
   "permissions": [
-    "https://www.rememberthemilk.com/*",
-    "https://api.rememberthemilk.com/*",
+    "https://api.skipjaq.io/*",
+    "https://api.skipjaq.co/*",
     "activeTab",
     "storage",
     "menus"
@@ -32,7 +32,7 @@
       "18": "icons/icon-18.png",
       "36": "icons/icon-36.png"
     },
-    "default_popup": "popup/mooLater.html",
+    "default_popup": "popup/browsa.html",
     "default_title": "Moo Later"
   },
 

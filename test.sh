@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "Testing MooLater"
+echo "Testing Loda Browsa"
