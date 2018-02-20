@@ -1,10 +1,13 @@
-/* global tabs:false, window:false, browser:false */
+/* global tabs:false, window:false, browser:false chrome:false*/
 
 (function () {
     'use strict';
 
-    const ANDROID = 'android';
-    let isMobile = false;
+    window.browser = (function () {
+        return window.browser ||
+               window.chrome;
+    })();
+
     let validationRegex = new RegExp('^https?://');
     let activeTimeout = undefined;
     let desktopSelectionCode = 'window.getSelection().toString()';

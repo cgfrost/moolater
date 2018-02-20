@@ -3,10 +3,14 @@
 (function () {
     'use strict';
 
-    console.log('============================= MOOLATER =============================');
+    console.log('============================= SKIPJAQ =============================');
 
-    const ANDROID = 'android';
-    let isMobile = false;
+    window.browser = (function () {
+        return window.msBrowser ||
+               window.browser ||
+               window.chrome;
+    })();
+
     let milk = undefined;
     let milkAction = new MilkAction();
     let lists = [];
@@ -45,11 +49,7 @@
             };
 
             browser.runtime.getPlatformInfo().then((info) => {
-                if(ANDROID === info.os) {
-                    isMobile = true;
-                }
-
-                let data = '{"a": "bf427f2504b074dc361c18d255354649", "b": "9d98f15fda6ba725"}';
+                let data = '{"a": "xxx", "b": "xxx"}';
                 milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token, debugMode);
 
                 if (!isMobile && validSettings.showContextMenu) {
@@ -83,7 +83,7 @@
 
     function addContextMenu() {
         browser.menus.create({
-            id: 'moolater',
+            id: 'skipjaq',
             type: 'normal',
             title: 'MooLater',
             contexts: ['all']

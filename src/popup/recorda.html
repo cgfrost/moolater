@@ -7,13 +7,13 @@
 </head>
 
 <body>
-    <header><p id="title">Moo Later</p></header>
+    <header><p id="title">Skipjaq Recorder</p></header>
 
     <form id="content" class="section">
-    	<label id="task-label" class="multi-label">Task name:
+    	<label id="task-label" class="multi-label">Model name:
     		<input type="text" id="task" class="multi-input">
     	</label>
-    	<label id="link-label" class="multi-label">Link:
+    	<label id="link-label" class="multi-label">Domain:
     		<input type="url" id="link" class="multi-input">
     	</label>
     	<label id="selected-text-label" class="line-label hide">Add highlighted text:
@@ -25,7 +25,7 @@
     		<button class="icon" id="lists-plus" type="button"><img src="../images/plus.svg" /></button>
     	</label>
     	<p class="controls">
-    		<button id="add-task-submit" type="button">Add Task</button>
+    		<button id="add-task-submit" type="button">Start Recording</button>
     	</p>
     </form>
 
@@ -41,11 +41,11 @@
     </form>
 
     <div id="login" class="section hide">
-        <p class="msg">Moo Later needs permission to access your Remember The Milk account.</p>
+        <p class="msg">The Recorder needs permission to access your Skipjaq account.</p>
         <p class="controls">
             <button id="permissions-submit" type="submit">Allow Access</button>
         </p>
-        <p class="footnote">Moo Later won't store your password and you can revoke access at any time from Remember The Milk.</p>
+        <p class="footnote">Your password won't be stored locally.</p>
     </div>
 
     <div id="status" class="section hide">

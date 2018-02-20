@@ -4,8 +4,7 @@ data.json
 dev-profile
 node_modules
 
-moolater*.zip
-
+target
 ### IntelliJ IDEA ###
 .idea
 *.iws
