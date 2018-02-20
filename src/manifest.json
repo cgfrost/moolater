@@ -5,9 +5,9 @@
   "version": "1.0",
   "homepage_url": "http://skipjaq.com/",
   "icons": {
-    "18": "icons/icon-18.png",
+    "16": "icons/icon-16.png",
+    "24": "icons/icon-24.png",
     "32": "icons/icon-32.png",
-    "64": "icons/icon-64.png",
     "128": "icons/icon-128.png"
   },
 

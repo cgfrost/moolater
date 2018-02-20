@@ -27,6 +27,18 @@ npm install --global web-ext
 web-ext --overwrite-dest -s src -a target build
 ```
 
+The `build.sh` script will do this for you and also produce an xpi file for uploading to Firefox.
+
 # Running locally
 
 The `run.sh` script can be used to create a development instance of Firefox with the Skipjaq Recorda installed. This does not depend on it having been built, it will use the src files as is.
+
+To do this the run configuration in IntelliJ will need this env variable.
+
+```
+PATH=/home/......./.nvm/versions/node/v8.9.3/bin:/usr/bin
+```
+
+The work directory should be set to the project root.
+
+For Chrome, open `chrome://extensions`, enable developer mode and select to install an unpacked extension, use the src directory.

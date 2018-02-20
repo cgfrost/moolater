@@ -61,19 +61,6 @@
 	// Initialization
 	document.addEventListener('DOMContentLoaded', () => {
 
-        browser.runtime.getPlatformInfo().then((info) => {
-            if(ANDROID === info.os) {
-                isMobile = true;
-                document.body.style.fontSize = '2.4em';
-                document.body.style.width = '100%';
-                let icons = document.querySelectorAll("button.icon img");
-                for (let i = 0; i < icons.length; i++) {
-                    icons[i].style.width = '5.4em';
-                    icons[i].style.height = '5.4em';
-                }
-            }
-        });
-
         taskElement.addEventListener('keyup', (event) => {
         	if (event.keyCode === 13) {
         		linkElement.focus();
