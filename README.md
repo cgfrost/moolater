@@ -5,12 +5,6 @@
 </p>
 
 Firefox and Chrome extension for recording a web session as a load model to [Skipjaq](http://skipjaq.com/) from the tool bar. Find it in the Firefox [Add-Ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/skipjaq-recorda/).
-<p align="center">
-	<img src="screenshots/step-1.png?raw=true" width="205"/>
-	<img src="screenshots/step-2.png?raw=true" width="205"/>
-	<img src="screenshots/step-3.png?raw=true" width="205"/>
-	<img src="screenshots/step-4.png?raw=true" width="205"/>
-</p>
 
 # Hotkeys
 
@@ -22,6 +16,8 @@ This extension can be configured through the Firefox Add-ons preferences page. T
 
 # Building
 
+Install the latest LTS version of NodeJS. Then:
+
 ```bash
 npm install --global web-ext
 web-ext --overwrite-dest -s src -a target build
@@ -31,9 +27,11 @@ The `build.sh` script will do this for you and also produce an xpi file for uplo
 
 # Running locally
 
+Make sure `web-ext` is installed as described in the Building section above.
+
 The `run.sh` script can be used to create a development instance of Firefox with the Skipjaq Recorda installed. This does not depend on it having been built, it will use the src files as is.
 
-To do this the run configuration in IntelliJ will need this env variable. The `USER` home directory and Node `VERSION` will need to be set.
+To do this with an IntelliJ run configuration, set this env variable. The `USER` home directory and Node `VERSION` will need to be set.
 
 ```
 PATH=/home/USER/.nvm/versions/node/VERSION/bin:/usr/bin
