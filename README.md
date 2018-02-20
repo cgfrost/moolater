@@ -33,10 +33,10 @@ The `build.sh` script will do this for you and also produce an xpi file for uplo
 
 The `run.sh` script can be used to create a development instance of Firefox with the Skipjaq Recorda installed. This does not depend on it having been built, it will use the src files as is.
 
-To do this the run configuration in IntelliJ will need this env variable.
+To do this the run configuration in IntelliJ will need this env variable. The `USER` home directory and Node `VERSION` will need to be set.
 
 ```
-PATH=/home/......./.nvm/versions/node/v8.9.3/bin:/usr/bin
+PATH=/home/USER/.nvm/versions/node/VERSION/bin:/usr/bin
 ```
 
 The work directory should be set to the project root.
