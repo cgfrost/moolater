@@ -1,23 +1,17 @@
 /* global browser: false */
 
-const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
-const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
+const BASE_URL = 'https://skipjaq.io/auth/api/';
 const API_VERSION = '2';
 const FORMAT = 'json';
 const INVALID = 'INVALID';
 
-class Milk {
+class Skipjaq {
 
-    constructor(data, permissions, frob, token, debug) {
-        if (!data.a || !data.b) {
-            throw 'Milk Error: Missing data.';
-        }
-        this.data = data;
+    constructor(permissions, frob, token, debug) {
         this.permissions = (permissions) ? permissions : 'write';
         this.hasher = new Hash();
-        this.milkAuth = new MilkAuth();
+        this.milkAuth = new SkipjaqAuth();
         this.auth_token = token;
-        this.frob = frob;
         this.timeline = undefined;
         this.ensureFrob(debug);
     }
@@ -34,46 +28,46 @@ class Milk {
      * @returns {boolean} true if the frob and token are set
      */
     isUserReady(debug) {
-        Milk.log(`User ready, frob: ${this.frob}, token: ${this.auth_token}`, debug);
+        Milk.log(`User ready, token: ${this.auth_token}`, debug);
         return this.frob !== INVALID && this.auth_token !== INVALID;
     }
 
-	/**
-	 * Generates a RTM authentication URL
-	 *
-	 * @return {String} to send the user to for authorizing
-	 */
-	getAuthUrl() {
-		let params = {
-			api_key: this.data.a,
-			perms: this.permissions,
+    /**
+     * Generates a RTM authentication URL
+     *
+     * @return {String} to send the user to for authorizing
+     */
+    getAuthUrl() {
+    	let params = {
+    		api_key: this.data.a,
+    		perms: this.permissions,
             frob: this.frob
-		};
-		return AUTH_URL + this.encodeUrlParams(params);
-	};
+    	};
+    	return AUTH_URL + this.encodeUrlParams(params);
+    };
 
-	/**
-	 * Gets the timeline ID
-	 *
-	 * @return     Returns the timeline ID String
-	 */
-	setTimeline(debug, retry, error) {
-	    Milk.log('Fetching a new timeline', debug);
-		this.milkAuth.createTimeline(this, debug).then((response) => {
-			this.timeline = response.rsp.timeline;
-			if (retry) {
+    /**
+     * Gets the timeline ID
+     *
+     * @return     Returns the timeline ID String
+     */
+    setTimeline(debug, retry, error) {
+        Milk.log('Fetching a new timeline', debug);
+    	this.milkAuth.createTimeline(this, debug).then((response) => {
+    		this.timeline = response.rsp.timeline;
+    		if (retry) {
                 retry();
             }
-		}).catch((reason) => {
-			Milk.log(reason.message, debug);
-		    if (error) {
-		        error(reason);
+    	}).catch((reason) => {
+    		Milk.log(reason.message, debug);
+    	    if (error) {
+    	        error(reason);
             }
-		});
-	};
+    	});
+    };
 
-	ensureFrob(debug) {
-	    if (this.frob === INVALID) {
+    ensureFrob(debug) {
+        if (this.frob === INVALID) {
             this.milkAuth.getFrob(this, debug).then((response) => {
                 Milk.log(`Setting frob to ${response.rsp.frob}`, debug);
                 this.frob = response.rsp.frob;
@@ -82,18 +76,20 @@ class Milk {
         }
     }
 
-	/**
-	 * Main method for making API calls
-	 *
-	 * @param method    Specifies what API method to be used
+    post(path, )
+
+    /**
+     * Main method for making API calls
+     *
+     * @param method    Specifies what API method to be used
      * @param debug     {boolean} Produce debug logging or not
-	 * @param params    Array of API parameters to accompany the method parameter
-	 * @param complete  Callback to fire after the request comes back
-	 * @param error     (Optional) Callback to fire if the request fails
-	 * @return          Returns the response from the RTM API
-	 */
-	get(method, debug, params, complete, error) {
-		if (!method) {
+     * @param params    Array of API parameters to accompany the method parameter
+     * @param complete  Callback to fire after the request comes back
+     * @param error     (Optional) Callback to fire if the request fails
+     * @return          Returns the response from the RTM API
+     */
+    get(method, debug, params, complete, error) {
+    	if (!method) {
 			throw 'Error: API Method must be defined.';
 		}
 		if (!params) {

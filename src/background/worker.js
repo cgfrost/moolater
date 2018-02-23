@@ -6,8 +6,7 @@
     console.log('============================= SKIPJAQ =============================');
 
     window.browser = (function () {
-        return window.msBrowser ||
-               window.browser ||
+        return window.browser ||
                window.chrome;
     })();
 
@@ -48,64 +47,32 @@
                 token: settings.token || 'INVALID'
             };
 
-            browser.runtime.getPlatformInfo().then((info) => {
-                let data = '{"a": "xxx", "b": "xxx"}';
-                milk = new Milk(JSON.parse(data), 'write', validSettings.frob, validSettings.token, debugMode);
+            milk = new Skipjaq('write', validSettings.frob, validSettings.token, debugMode);
 
-                if (!isMobile && validSettings.showContextMenu) {
-                    addContextMenu();
-                }
+            if (milk.isUserReady(debugMode)) {
+                refreshLists();
+                milk.setTimeline(debugMode);
+            }
 
-                if (milk.isUserReady(debugMode)) {
-                    refreshLists();
-                    milk.setTimeline(debugMode);
-                }
-
-                browser.storage.local.set(validSettings).then(() => {
-                    if(!isMobile) {
-                        browser.storage.onChanged.addListener((changes, area) => {
-                            if (area === 'local' && changes.showContextMenu && changes.showContextMenu.oldValue !== changes.showContextMenu.newValue) {
-                                if (changes.showContextMenu.newValue) {
-                                    addContextMenu();
-                                } else {
-                                    removeContextMenu();
-                                }
-                            }
-                        });
+            browser.storage.local.set(validSettings).then(() => {
+                browser.storage.onChanged.addListener((changes, area) => {
+                    if (area === 'local' && changes.showContextMenu && changes.showContextMenu.oldValue !== changes.showContextMenu.newValue) {
+                        if (changes.showContextMenu.newValue) {
+                            // addContextMenu();
+                        } else {
+                            // removeContextMenu();
+                        }
                     }
-                    log(`Storage initialized`);
                 });
+
+                log(`Storage initialized`);
             });
         }).catch(handleError);
     }
 
-    // Context Menus - not supported on Android
-
-    function addContextMenu() {
-        browser.menus.create({
-            id: 'skipjaq',
-            type: 'normal',
-            title: 'MooLater',
-            contexts: ['all']
-        }, () => {
-            browser.menus.onClicked.addListener(contextMenuListener);
-        });
-    }
-
-    function removeContextMenu() {
-        if (browser.menus.onClicked.hasListener(contextMenuListener)) {
-            browser.menus.onClicked.removeListener(contextMenuListener)
-        }
-        browser.menus.removeAll();
-    }
-
-    function contextMenuListener() {
-        browser.browserAction.openPopup();
-    }
-
     // Actions
 
-    function authorise() {
+    function authorise(userId, password) {
         let authUrl = milk.getAuthUrl();
         if (isMobile) {
             browser.tabs.create({url: authUrl, active: true}).then((newTab) => {
@@ -205,23 +172,17 @@
     function handleMessage(message, sender, sendResponse) {
         log(`Message received in the background script: ${message.action} - ${sender.id}`);
         switch(message.action) {
-            case "userReady":
+            case "login":
+                authorise(message.userId, message.password);
+                break;
+            case "refreshDomains":
                 sendResponse(milk.isUserReady(debugMode));
                 break;
-            case "authorise":
-                authorise();
-                break;
-            case "addTask":
-                addTask(message.name, message.link, message.useSelection, message.selection, message.listId);
-                break;
-            case "lists":
+            case "refreshApplications":
                 sendResponse(lists);
                 break;
-            case "refreshLists":
-                refreshLists();
-                break;
-            case "addList":
-                addList(message.listName);
+            case "saveRecording":
+                addTask(message.name, message.link, message.useSelection, message.selection, message.listId);
                 break;
             default:
                 handleError(`Unrecognised message with query "${message.action}"`);

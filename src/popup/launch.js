@@ -10,22 +10,21 @@
 
     let validationRegex = new RegExp('^https?://');
     let activeTimeout = undefined;
-    let desktopSelectionCode = 'window.getSelection().toString()';
 
     // Sections
-    let addTaskSection = document.getElementById('content');
-    let addListSection = document.getElementById('add-list');
     let loginSection = document.getElementById('login');
+    let addTaskSection = document.getElementById('content');
     let statusSection = document.getElementById('status');
 
     // Buttons
-    let addListSubmitButton = document.getElementById('add-list-submit');
-    let addListCancelButton = document.getElementById('add-list-cancel');
-    let addTaskSubmitButton = document.getElementById('add-task-submit');
-    let permissionSubmitButton = document.getElementById('permissions-submit');
-    let listRefreshButton = document.getElementById('lists-refresh');
-    let listRefreshButtonImg = listRefreshButton.firstElementChild;
-    let listPlusButton = document.getElementById('lists-plus');
+    let loginSubmitButton = document.getElementById('login-submit');
+    let loginResetButton = document.getElementById('login-reset');
+    let domainRefreshButton = document.getElementById('domain-refresh');
+    let domainRefreshButtonImg = listRefreshButton.firstElementChild;
+    let applicationRefreshButton = document.getElementById('application-refresh');
+    let applicationRefreshButtonImg = listRefreshButton.firstElementChild;
+    let existingModelRefreshButton = document.getElementById('existing-model-refresh');
+    let existingModelRefreshButtonImg = listRefreshButton.firstElementChild;
     let optionsButton = document.getElementById('options');
 
     // Status
@@ -33,18 +32,16 @@
     let statusImg = document.getElementById('status-img');
 
     // Add Task Form Elements
-    let taskElement = document.getElementById('task');
-    let taskLabel = document.getElementById('task-label');
-    let linkElement = document.getElementById('link');
-    let linkLabel = document.getElementById('link-label');
-    let listsElement = document.getElementById('lists');
-    let selectedElement = document.getElementById('selected-text');
-    let selectedLabel = document.getElementById('selected-text-label');
-
-    // Add List Form Elements
-    let addListElement = document.getElementById('list');
-    let addListLabel = document.getElementById('list-label');
-    let addListStatusImg = document.getElementById('add-list-status-img');
+    let domainElement = document.getElementById('domain');
+    let domainLabel = document.getElementById('domain-label');
+    let applicationElement = document.getElementById('link');
+    let applicationLabel = document.getElementById('link-label');
+    let existingModelElement = document.getElementById('existing-model');
+    let existingModelLabel = document.getElementById('existing-model-label');
+    let modelNameElement = document.getElementById('model-name');
+    let modelNameLabel = document.getElementById('model-name-label');
+    let filterElement = document.getElementById('filter');
+    let filterLabel = document.getElementById('filter-label');
 
     function handleFatalError(error, altAction) {
         let errorMessage = error.message ? error.message : error.toString();
@@ -87,7 +84,7 @@
 
         browser.runtime.sendMessage({action: "userReady"}).then((response) => {
             if (response){
-                showAddTask();
+                showAddRecording();
             } else {
                 showSection(loginSection);
             }
@@ -108,7 +105,7 @@
                         showSection(addTaskSection);
                     }, 500);
                 }).catch((error) => {
-                    handleFatalError(error, showAddTask);
+                    handleFatalError(error, showAddRecording);
                 });
             } else {
                 setTextElement(addListLabel, 'New List: List name can\'t be empty.');
@@ -220,15 +217,11 @@
     };
 
     let closeMe = () => {
-        if (isMobile) {
-            browser.tabs.getCurrent().then((myTab) => {
-                browser.tabs.remove(myTab.id).catch((error) => {
-                    console.warn(`Moo Later closing error: ${error.message}`);
-                });
+        browser.tabs.getCurrent().then((myTab) => {
+            browser.tabs.remove(myTab.id).catch((error) => {
+                console.warn(`Skipjaq closing error: ${error.message}`);
             });
-        } else {
-            window.close();
-        }
+        });
     };
 
 	let showMessage = (message, icon) => {
@@ -269,7 +262,7 @@
 		}
 	};
 
-    let showAddTask = () => {
+    let showAddRecording = () => {
         browser.storage.local.get().then((settings) => {
             browser.runtime.sendMessage({action: "lists"}).then((lists) => {
                 if(isMobile) {

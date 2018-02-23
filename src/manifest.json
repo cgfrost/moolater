@@ -41,9 +41,9 @@
   "background": {
     "scripts": [
       "background/Hash.js",
-      "background/MilkAuth.js",
-      "background/MilkAction.js",
-      "background/Milk.js",
+      "background/SkipjaqAuth.js",
+      "background/SkipjaqAction.js",
+      "background/Skipjaq.js",
       "background/worker.js"
     ]
   },
