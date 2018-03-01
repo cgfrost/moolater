@@ -1,26 +1,26 @@
 {
-  "description": "Quickly save a web page as a task in Remember the Milk to read later. You will need to give Moo Later permission to use your Remember the Milk account the first time you try to save a task.",
+  "description": "Record a web session to generate a Skipjaq Load Model.",
   "manifest_version": 2,
-  "name": "MooLater",
-  "version": "2.6",
-  "homepage_url": "http://chrisfrost.com/moolater",
+  "name": "Skipjaq Recorder",
+  "version": "1.0",
+  "homepage_url": "http://skipjaq.com/",
   "icons": {
-    "18": "icons/icon-18.png",
+    "16": "icons/icon-16.png",
+    "24": "icons/icon-24.png",
     "32": "icons/icon-32.png",
-    "64": "icons/icon-64.png",
     "128": "icons/icon-128.png"
   },
 
   "applications": {
     "gecko": {
-      "id": "moolater@codewax",
+      "id": "recorda@skipjaq",
       "strict_min_version": "57.0a1"
     }
   },
 
   "permissions": [
-    "https://www.rememberthemilk.com/*",
-    "https://api.rememberthemilk.com/*",
+    "https://api.skipjaq.io/*",
+    "https://skipjaq.io/*",
     "activeTab",
     "storage",
     "menus"
@@ -28,20 +28,21 @@
 
   "browser_action": {
     "browser_style": false,
+    "chrome_style": false,
     "default_icon": {
-      "18": "icons/icon-18.png",
-      "36": "icons/icon-36.png"
+      "16": "icons/icon-16.png",
+      "24": "icons/icon-24.png",
+      "32": "icons/icon-32.png"
     },
-    "default_popup": "popup/mooLater.html",
-    "default_title": "Moo Later"
+    "default_popup": "popup/recorda.html",
+    "default_title": "Skipjaq"
   },
 
   "background": {
     "scripts": [
       "background/Hash.js",
-      "background/MilkAuth.js",
-      "background/MilkAction.js",
-      "background/Milk.js",
+      "background/SkipjaqAction.js",
+      "background/Skipjaq.js",
       "background/worker.js"
     ]
   },
@@ -49,14 +50,15 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "default": "Alt+M"
+        "default": "Alt+S"
       },
-      "description": "Open MooLater"
+      "description": "Open Skipjaq Recorder"
     }
   },
 
   "options_ui": {
     "browser_style": false,
+    "chrome_style": false,
     "page": "settings/options.html"
   }
 

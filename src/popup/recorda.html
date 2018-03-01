@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<link href="style.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    <header><p id="title">Skipjaq Recorder</p></header>
+
+    <form id="login" class="section hide">
+        <p class="msg">The Recorder needs permission to access your Skipjaq account.</p>
+
+        <label id="login-id-label" class="multi-label">Id:
+            <input type="text" id="login-id" class="multi-input">
+        </label>
+        <label id="login-password-label" class="multi-label">Password:
+            <input type="password" id="login-password" class="multi-input">
+        </label>
+        <p class="controls">
+            <button id="login-submit" type="submit">Login</button>
+        </p>
+        <p class="footnote">Your password won't be stored locally.</p>
+    </form>
+
+    <form id="recorder" class="section">
+        <label id="domain-label" class="multi-label">Domain:
+            <select required id="domain" class="line-input"></select>
+            <button class="icon" id="domain-refresh" type="button"><img src="../images/refresh.svg" /></button>
+        </label>
+        <label id="application-label" class="multi-label">Application:
+            <select required id="application" class="line-input"></select>
+            <button class="icon" id="application-refresh" type="button"><img src="../images/refresh.svg" /></button>
+        </label>
+    	<label id="model-name-label" class="multi-label">New model name:
+    		<input type="text" id="model-name" class="multi-input">
+    	</label>
+    	<label id="filter-label" class="multi-label">Host filter:
+    		<input type="url" id="filter" class="multi-input">
+    	</label>
+    	<p class="controls">
+    		<button id="record" type="button" value="start">Start Recording</button>
+    	</p>
+    </form>
+
+    <div id="status" class="section hide">
+        <p class="msg" id="status-msg"></p>
+        <img class="msg" id="status-img" src="../images/done.svg" />
+    </div>
+
+    <button class="icon" id="options" type="button"><img src="../images/gear.svg" /></button>
+
+    <script src="launch.js" type="text/javascript" charset="utf-8"></script>
+
+</body>
+
+</html>

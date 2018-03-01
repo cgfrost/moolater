@@ -1,4 +1,4 @@
-/* global escape:false, unescape:false */
+/* eslint-disable */
 
 /*
 CryptoJS v3.1.2

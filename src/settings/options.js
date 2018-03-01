@@ -3,7 +3,10 @@
 (function () {
     'use strict';
 
-    const ANDROID = 'android';
+    window.browser = (function () {
+        return window.browser || window.chrome;
+    })();
+
     let statusIcon = document.getElementById('status-img');
 
     function flashIconState(icon, iconName) {
@@ -21,11 +24,11 @@
         e.preventDefault();
         setIconState(statusIcon, 'loading');
         let settings = {
-            defaultList: document.getElementById('moolater-defaultList').value,
-            useTitle: document.getElementById('moolater-useTitle').checked,
-            useLink: document.getElementById('moolater-useLink').checked,
-            useSmartAdd: document.getElementById('moolater-useSmartAdd').checked,
-            showContextMenu: document.getElementById('moolater-showContextMenu').checked
+            defaultList: document.getElementById('skipjaq-default').value,
+            // useTitle: document.getElementById('skipjaq-useTitle').checked,
+            // useLink: document.getElementById('skipjaq-useLink').checked,
+            // useSmartAdd: document.getElementById('skipjaq-useSmartAdd').checked,
+            // showContextMenu: document.getElementById('skipjaq-showContextMenu').checked
         };
         browser.storage.local.set(settings).then(() => {
             flashIconState(statusIcon, 'done');
@@ -38,22 +41,16 @@
     function setup() {
         setIconState(statusIcon, 'blank');
 
-        let booleanOption = (option) => {
-            return option === undefined ? true : option === true;
-        };
-
-        browser.runtime.getPlatformInfo().then((info) => {
-            if (ANDROID === info.os) {
-                document.getElementById('desktop-only').classList.add('hide');
-            }
-        });
+        // let booleanOption = (option) => {
+        //     return option === undefined ? true : option === true;
+        // };
 
         browser.storage.local.get().then((settings) => {
-            document.getElementById('moolater-defaultList').value = settings.defaultList || 'Read Later';
-            document.getElementById('moolater-useTitle').checked = booleanOption(settings.useTitle);
-            document.getElementById('moolater-useLink').checked = booleanOption(settings.useLink);
-            document.getElementById('moolater-useSmartAdd').checked = booleanOption(settings.useSmartAdd);
-            document.getElementById('moolater-showContextMenu').checked = booleanOption(settings.showContextMenu);
+            document.getElementById('skipjaq-defaultList').value = settings.defaultList || 'Read Later';
+            // document.getElementById('skipjaq-useTitle').checked = booleanOption(settings.useTitle);
+            // document.getElementById('skipjaq-useLink').checked = booleanOption(settings.useLink);
+            // document.getElementById('skipjaq-useSmartAdd').checked = booleanOption(settings.useSmartAdd);
+            // document.getElementById('skipjaq-showContextMenu').checked = booleanOption(settings.showContextMenu);
         }).catch((error) => {
             console.log(`Settings error: ${error.message}`);
         });
