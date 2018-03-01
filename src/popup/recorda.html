@@ -19,13 +19,12 @@
             <input type="password" id="login-password" class="multi-input">
         </label>
         <p class="controls">
-            <button id="login-reset" type="reset">Reset</button>
             <button id="login-submit" type="submit">Login</button>
         </p>
         <p class="footnote">Your password won't be stored locally.</p>
     </form>
 
-    <form id="content" class="section">
+    <form id="recorder" class="section">
         <label id="domain-label" class="multi-label">Domain:
             <select required id="domain" class="line-input"></select>
             <button class="icon" id="domain-refresh" type="button"><img src="../images/refresh.svg" /></button>
@@ -34,10 +33,6 @@
             <select required id="application" class="line-input"></select>
             <button class="icon" id="application-refresh" type="button"><img src="../images/refresh.svg" /></button>
         </label>
-        <label id="existing-model-label" class="multi-label">Use an existing model:
-            <select required id="existing-model" class="line-input"></select>
-            <button class="icon" id="existing-model-refresh" type="button"><img src="../images/refresh.svg" /></button>
-        </label>
     	<label id="model-name-label" class="multi-label">New model name:
     		<input type="text" id="model-name" class="multi-input">
     	</label>
@@ -45,7 +40,7 @@
     		<input type="url" id="filter" class="multi-input">
     	</label>
     	<p class="controls">
-    		<button id="add-task-submit" type="button">Start Recording</button>
+    		<button id="record" type="button" value="start">Start Recording</button>
     	</p>
     </form>
 

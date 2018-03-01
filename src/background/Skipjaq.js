@@ -1,19 +1,12 @@
-/* global browser: false */
+/* exported Skipjaq */
 
-const BASE_URL = 'https://skipjaq.io/auth/api/';
-const API_VERSION = '2';
-const FORMAT = 'json';
-const INVALID = 'INVALID';
 
 class Skipjaq {
 
-    constructor(permissions, frob, token, debug) {
-        this.permissions = (permissions) ? permissions : 'write';
-        this.hasher = new Hash();
-        this.milkAuth = new SkipjaqAuth();
+    constructor(token) {
+        // this.hasher = new Hash();
         this.auth_token = token;
-        this.timeline = undefined;
-        this.ensureFrob(debug);
+        this.baseUrl = "https://skipjaq.io/auth/api/";
     }
 
     static log(message, debugMode) {
@@ -28,207 +21,172 @@ class Skipjaq {
      * @returns {boolean} true if the frob and token are set
      */
     isUserReady(debug) {
-        Milk.log(`User ready, token: ${this.auth_token}`, debug);
-        return this.frob !== INVALID && this.auth_token !== INVALID;
+        Skipjaq.log(`User ready, token: ${this.auth_token}`, debug);
+        return this.auth_token !== "INVALID";
     }
 
-    /**
-     * Generates a RTM authentication URL
-     *
-     * @return {String} to send the user to for authorizing
-     */
-    getAuthUrl() {
-    	let params = {
-    		api_key: this.data.a,
-    		perms: this.permissions,
-            frob: this.frob
-    	};
-    	return AUTH_URL + this.encodeUrlParams(params);
-    };
-
-    /**
-     * Gets the timeline ID
-     *
-     * @return     Returns the timeline ID String
-     */
-    setTimeline(debug, retry, error) {
-        Milk.log('Fetching a new timeline', debug);
-    	this.milkAuth.createTimeline(this, debug).then((response) => {
-    		this.timeline = response.rsp.timeline;
-    		if (retry) {
-                retry();
-            }
-    	}).catch((reason) => {
-    		Milk.log(reason.message, debug);
-    	    if (error) {
-    	        error(reason);
-            }
-    	});
-    };
-
-    ensureFrob(debug) {
-        if (this.frob === INVALID) {
-            this.milkAuth.getFrob(this, debug).then((response) => {
-                Milk.log(`Setting frob to ${response.rsp.frob}`, debug);
-                this.frob = response.rsp.frob;
-                browser.storage.local.set({frob: response.rsp.frob});
-            });
-        }
+    post(path, debug, params, body, complete, error) {
+        this.httpCall("POST", path, debug, params, body, complete, error);
     }
 
-    post(path, )
+    get(path, debug, params, body, complete, error) {
+        this.httpCall("GET", path, debug, params, body, complete, error);
+    }
 
     /**
      * Main method for making API calls
      *
-     * @param method    Specifies what API method to be used
+     * @param method    Specifies what API method to be used, POST, GET, etc...
+     * @param path      The path to add on to the base path.
      * @param debug     {boolean} Produce debug logging or not
      * @param params    Array of API parameters to accompany the method parameter
+     * @param body      Map object to send as a JSON body payload
      * @param complete  Callback to fire after the request comes back
      * @param error     (Optional) Callback to fire if the request fails
      * @return          Returns the response from the RTM API
      */
-    get(method, debug, params, complete, error) {
-    	if (!method) {
-			throw 'Error: API Method must be defined.';
-		}
-		if (!params) {
-			throw 'Error: API Params must be defined.';
-		}
-		if (!complete) {
-			throw 'Error: API Complete function must be defined.';
-		}
-		if (!error) {
-			error = function () {};
-		}
+    httpCall(method, path, debug, params, body, complete, error) {
+        if (!method) {
+            throw "Error: API Method must be defined.";
+        }
+        if (!params) {
+            throw "Error: API Params must be defined.";
+        }
+        if (!body) {
+            throw "Error: API Body must be defined.";
+        }
+        if (!complete) {
+            throw "Error: API Complete function must be defined.";
+        }
+        if (!error) {
+            error = function () {};
+        }
 
-		params.v = API_VERSION;
-		params.format = FORMAT;
-		params.method = method;
+        if (this.auth_token !== "INVALID") {
+            params.auth_token = this.auth_token;
+        }
 
-		if (this.auth_token !== INVALID) {
-			params.auth_token = this.auth_token;
-		}
+        let requestUrl = `${this.baseUrl}${path}${this.encodeUrlParams(params)}`;
+        let myHeaders = new Headers([["Content-Type", "application/json; charset=utf-8"]]);
+        let request;
+        if (method !== "GET" && method !== "HEAD") { // These http methods must not have a body.
+            request = new Request(requestUrl, {method: method, headers: myHeaders, body: JSON.stringify(body)});
+        } else {
+            request = new Request(requestUrl, {method: method, headers: myHeaders});
+        }
 
-		if (this.frob !== INVALID) {
-			params.frob = this.frob;
-		}
+        fetch(request).then((response) => {
+            response.text().then((text) => {
 
-		let requestUrl = BASE_URL + this.encodeUrlParams(params);
-        let myHeaders = new Headers([['Content-Type', 'application/json; charset=utf-8']]);
-        let fetchInit = {method: 'GET', headers: myHeaders};
-		fetch(requestUrl, fetchInit).then((response) => {
-		    response.text().then((text) => {
+                Skipjaq.log("*************************************", debug);
+                Skipjaq.log(`Request.Url     : ${requestUrl}`, debug);
+                Skipjaq.log(`Request.Method  : ${method}`, debug);
+                Skipjaq.log(`Response.Text   : ${text}`, debug);
+                Skipjaq.log(`        .Status : ${response.status}`, debug);
+                Skipjaq.log(`        .SText  : ${response.statusText}`, debug);
+                Skipjaq.log("*************************************", debug);
 
-		        Milk.log('*************************************', debug);
-                Milk.log(`Request.Url     : ${requestUrl}`, debug);
-                Milk.log(`Request.Method  : ${method}`, debug);
-                Milk.log(`Response.Text   : ${text}`, debug);
-                Milk.log(`        .Status : ${response.status}`, debug);
-                Milk.log(`        .SText  : ${response.statusText}`, debug);
-                Milk.log('*************************************', debug);
-
-		        if (response.status === 200) {
-		            let jsonData = JSON.parse(text);
-		            if (jsonData.rsp.stat === 'ok') {
-		                    complete(jsonData);
-		            } else {
-		                this.handleError(response, jsonData.rsp, error, () => {
-		                    this.get(method, params, complete, error);
-		                }, debug);
-		            }
-		        } else {
-		            this.handleError(response, undefined, error, () => {
-		                this.get(method, params, complete, error);
-		            }, debug);
-		        }
+                if (response.status === 200) {
+                    let jsonData = JSON.parse(text);
+                    complete(jsonData);
+                } else {
+                    Skipjaq.log(`Network Error:${response.status} ${response.statusText}`);
+                    error(`Network Error:${response.status} ${response.statusText}`);
+                }
             });
-		});
-	};
+        });
+    }
+    //
+    // handleError(response, jsonData, error) {
+    //     if (response.status === 200) {
+    //         if (jsonData.err && jsonData.err.msg && jsonData.err.code) {
+    //             this.auth_token = INVALID;
+    //             // if (jsonData.err.code === '98') {
+    //             // 	this.auth_token = INVALID;
+    //             //    browser.storage.local.set({token: INVALID}).then(() => {
+    //             //        this.fetchToken(retry, error, debug);
+    //             //    });
+    //             // 	return;
+    //             // } else if (jsonData.err.code === '101') {
+    //             // 	this.auth_token = INVALID;
+    //             // 	this.frob = INVALID;
+    //             // 	browser.storage.local.set({token: INVALID, frob: INVALID}).then(() => {
+    //             //        this.ensureFrob(debug);
+    //             //    });
+    //             // } else if (jsonData.err.code === '300') { // Timeline is invalid
+    //             //    this.setTimeline(debug, retry, error);
+    //             // }
+    //         }
+    //         error(`Error ${jsonData.err.code}: ${jsonData.err.msg}`);
+    //     } else {
+    //         error(`Network Error:${response.status} ${response.statusText}`);
+    //     }
+    // }
 
-	handleError(response, jsonData, error, retry, debug) {
-		if (response.status === 200) {
-			if (jsonData.err && jsonData.err.msg && jsonData.err.code) {
-				if (jsonData.err.code === '98') {
-					this.auth_token = INVALID;
-                    browser.storage.local.set({token: INVALID}).then(() => {
-                        this.fetchToken(retry, error, debug);
-                    });
-					return;
-				} else if (jsonData.err.code === '101') {
-					this.auth_token = INVALID;
-					this.frob = INVALID;
-					browser.storage.local.set({token: INVALID, frob: INVALID}).then(() => {
-                        this.ensureFrob(debug);
-                    });
-				} else if (jsonData.err.code === '300') { // Timeline is invalid
-                    this.setTimeline(debug, retry, error);
-				}
-			}
-			error(`Error ${jsonData.err.code}: ${jsonData.err.msg}`);
-		} else {
-			error(`Network Error:${response.status} ${response.statusText}`);
-		}
-	};
+    // fetchToken(retry, error, debug) {
+    //    Skipjaq.log('Fetching new token', debug);
+    // 	this.milkAuth.getToken(this, debug).then((resp) => {
+    // 	    this.auth_token = resp.rsp.auth.token;
+    // 	    this.setTimeline(debug, retry, error);
+    // 	    browser.storage.local.set({token: resp.rsp.auth.token});
+    // 	}).catch((reason) => {
+    // 	    if (error) {
+    //            Skipjaq.log(`Error fetching new token ${reason.message}`, debug);
+    // 	        error(reason.message);
+    // 	    }
+    // 	});
+    // };
 
-	fetchToken(retry, error, debug) {
-	    Milk.log('Fetching new token', debug);
-		this.milkAuth.getToken(this, debug).then((resp) => {
-		    this.auth_token = resp.rsp.auth.token;
-		    this.setTimeline(debug, retry, error);
-		    browser.storage.local.set({token: resp.rsp.auth.token});
-		}).catch((reason) => {
-		    if (error) {
-                Milk.log(`Error fetching new token ${reason.message}`, debug);
-		        error(reason.message);
-		    }
-		});
-	};
+    setToken(token) {
+        this.auth_token = token;
+    }
 
-	/**
-	 * Private - Encodes request parameters into URL format
+    /**
+	 * Encodes request parameters into URL format
 	 *
 	 * @param params    Array of parameters to be URL encoded
 	 * @return {string} Returns the URL encoded string of parameters
 	 */
-	encodeUrlParams(params) {
-		params = (params) ? params : {};
-		let paramString = '?';
+    encodeUrlParams(params) {
+        params = (params) ? params : {};
+        let paramString = "?";
         let firstParam = true;
+        let hasParams;
 
-		params.api_key = this.data.a;
+        for (let key in params) {
+            hasParams = true;
+            if (firstParam) {
+                // paramString += `${key}=${encodeURIComponent(params[key])}`;
+                paramString += `${key}=${params[key]}`;
+            } else {
+                // paramString += `&${key}=${encodeURIComponent(params[key])}`;
+                paramString += `&${key}=${params[key]}`;
+            }
+            firstParam = false;
+        }
 
-		for (let key in params) {
-			if (firstParam) {
-				paramString += `${key}=${encodeURIComponent(params[key])}`;
-			} else {
-				paramString += `&${key}=${encodeURIComponent(params[key])}`;
-			}
-			firstParam = false;
-		}
+        // paramString += this.generateSig(params);
+        return hasParams ? paramString : "";
+    }
 
-		paramString += this.generateSig(params);
-		return paramString;
-	};
-
-	/**
+    /**
 	 * Private - Generates a URL encoded authentication signature
 	 *
 	 * @param params    The parameters used to generate the signature
 	 * @return {string} Returns the URL encoded authentication signature
 	 */
-	generateSig(params) {
-		params = (params) ? params : {};
-		let signature = '';
-		let keys = Object.keys(params);
-
-		keys.sort();
-		for (let i = 0; i < keys.length; i++) {
-			signature += keys[i] + params[keys[i]];
-		}
-		signature = this.data.b + signature;
-
-		return `&api_sig=${this.hasher.md5(signature)}`;
-	};
+    // generateSig(params) {
+    // 	params = (params) ? params : {};
+    // 	let signature = '';
+    // 	let keys = Object.keys(params);
+    //
+    // 	keys.sort();
+    // 	for (let i = 0; i < keys.length; i++) {
+    // 		signature += keys[i] + params[keys[i]];
+    // 	}
+    // 	signature = this.data.b + signature;
+    //
+    // 	return `&api_sig=${this.hasher.md5(signature)}`;
+    // };
 
 }

@@ -19,11 +19,18 @@ This extension can be configured through the Firefox Add-ons preferences page. T
 Install the latest LTS version of NodeJS. Then:
 
 ```bash
-npm install --global web-ext
-web-ext --overwrite-dest -s src -a target build
+npm install
+npm build
 ```
 
-The `build.sh` script will do this for you and also produce an xpi file for uploading to Firefox.
+The `build.sh` script will produce a zip for Chrome and an xpi file for uploading to Firefox.
+
+# Testing
+
+```bash
+npm install
+npm test
+```
 
 # Running locally
 
@@ -40,3 +47,9 @@ PATH=/home/USER/.nvm/versions/node/VERSION/bin:/usr/bin
 The work directory should be set to the project root.
 
 For Chrome, open `chrome://extensions`, enable developer mode and select to install an unpacked extension, use the src directory.
+
+The script can be invoked from the command line with `npm debug`.
+
+# Development mode
+
+When the extension is installed manually, not through the extensions store, it will target staging. When installed permanently it will target production.

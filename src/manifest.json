@@ -20,7 +20,7 @@
 
   "permissions": [
     "https://api.skipjaq.io/*",
-    "https://api.skipjaq.co/*",
+    "https://skipjaq.io/*",
     "activeTab",
     "storage",
     "menus"
@@ -41,7 +41,6 @@
   "background": {
     "scripts": [
       "background/Hash.js",
-      "background/SkipjaqAuth.js",
       "background/SkipjaqAction.js",
       "background/Skipjaq.js",
       "background/worker.js"

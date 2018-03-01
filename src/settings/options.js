@@ -4,9 +4,7 @@
     'use strict';
 
     window.browser = (function () {
-        return window.msBrowser ||
-               window.browser ||
-               window.chrome;
+        return window.browser || window.chrome;
     })();
 
     let statusIcon = document.getElementById('status-img');
@@ -27,10 +25,10 @@
         setIconState(statusIcon, 'loading');
         let settings = {
             defaultList: document.getElementById('skipjaq-default').value,
-            useTitle: document.getElementById('skipjaq-useTitle').checked,
-            useLink: document.getElementById('skipjaq-useLink').checked,
-            useSmartAdd: document.getElementById('skipjaq-useSmartAdd').checked,
-            showContextMenu: document.getElementById('skipjaq-showContextMenu').checked
+            // useTitle: document.getElementById('skipjaq-useTitle').checked,
+            // useLink: document.getElementById('skipjaq-useLink').checked,
+            // useSmartAdd: document.getElementById('skipjaq-useSmartAdd').checked,
+            // showContextMenu: document.getElementById('skipjaq-showContextMenu').checked
         };
         browser.storage.local.set(settings).then(() => {
             flashIconState(statusIcon, 'done');
@@ -43,16 +41,16 @@
     function setup() {
         setIconState(statusIcon, 'blank');
 
-        let booleanOption = (option) => {
-            return option === undefined ? true : option === true;
-        };
+        // let booleanOption = (option) => {
+        //     return option === undefined ? true : option === true;
+        // };
 
         browser.storage.local.get().then((settings) => {
             document.getElementById('skipjaq-defaultList').value = settings.defaultList || 'Read Later';
-            document.getElementById('skipjaq-useTitle').checked = booleanOption(settings.useTitle);
-            document.getElementById('skipjaq-useLink').checked = booleanOption(settings.useLink);
-            document.getElementById('skipjaq-useSmartAdd').checked = booleanOption(settings.useSmartAdd);
-            document.getElementById('skipjaq-showContextMenu').checked = booleanOption(settings.showContextMenu);
+            // document.getElementById('skipjaq-useTitle').checked = booleanOption(settings.useTitle);
+            // document.getElementById('skipjaq-useLink').checked = booleanOption(settings.useLink);
+            // document.getElementById('skipjaq-useSmartAdd').checked = booleanOption(settings.useSmartAdd);
+            // document.getElementById('skipjaq-showContextMenu').checked = booleanOption(settings.showContextMenu);
         }).catch((error) => {
             console.log(`Settings error: ${error.message}`);
         });

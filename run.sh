@@ -1,3 +1,3 @@
 #!/bin/bash
-echo "Running Loda Browsa"
-web-ext run --verbose --browser-console --url https://xkcd.com --source-dir src
+echo "Running Loda Recorda"
+./node_modules/.bin/web-ext run --verbose --browser-console --url https://xkcd.com --source-dir src
