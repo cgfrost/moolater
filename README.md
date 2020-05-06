@@ -37,16 +37,30 @@ This extension can be configured through the Firefox Add-ons Manager page. This 
  
 When entering a new task the address must be a valid URL that starts with `http://` or `https://`. To save a task with no address the link field can be left empty.
 
-# Building
+# Development
+
+## Initial setup
+
+1. Install Node.js and npm.
+1. Run `npm install` to install dependencies.
+
+## Building
+
+To build the extension, run:
 
 ```bash
-npm install --global web-ext
-web-ext --overwrite-dest -s src -a target build
+npm run build
 ```
 
-# Running locally
+## Developing
 
-The `run.sh` script can be used to create a development instance of Firefox with Moo Later installed. This does not depend on it having been built; it will use the `src` files as is.
+To create a development instance of Firefox with Moo Later installed, run:
+
+```bash
+npm run develop
+```
+
+This does not depend on it having been built; it will use the `src` files as is.
 
 # Attribution
 
