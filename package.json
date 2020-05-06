@@ -1,0 +1,14 @@
+{
+  "name": "moolater",
+  "description": "Quickly save a web page as a task in Remember the Milk to read later.",
+  "author": "Christopher Frost",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "./build.sh",
+    "develop": "./run.sh"
+  },
+  "devDependencies": {
+    "web-ext": "^4.2.0"
+  }
+}
