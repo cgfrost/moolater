@@ -205,26 +205,26 @@
     function handleMessage(message, sender, sendResponse) {
         log(`Message received in the background script: ${message.action} - ${sender.id}`);
         switch(message.action) {
-            case "userReady":
-                sendResponse(milk.isUserReady(debugMode));
-                break;
-            case "authorise":
-                authorise();
-                break;
-            case "addTask":
-                addTask(message.name, message.link, message.useSelection, message.selection, message.listId);
-                break;
-            case "lists":
-                sendResponse(lists);
-                break;
-            case "refreshLists":
-                refreshLists();
-                break;
-            case "addList":
-                addList(message.listName);
-                break;
-            default:
-                handleError(`Unrecognised message with query "${message.action}"`);
+        case "userReady":
+            sendResponse(milk.isUserReady(debugMode));
+            break;
+        case "authorise":
+            authorise();
+            break;
+        case "addTask":
+            addTask(message.name, message.link, message.useSelection, message.selection, message.listId);
+            break;
+        case "lists":
+            sendResponse(lists);
+            break;
+        case "refreshLists":
+            refreshLists();
+            break;
+        case "addList":
+            addList(message.listName);
+            break;
+        default:
+            handleError(`Unrecognised message with query "${message.action}"`);
         }
     }
 

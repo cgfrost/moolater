@@ -9,7 +9,7 @@ code.google.com/p/crypto-js/wiki/License
 
 class Hash {
 
-	constructor() {
+    constructor() {
 
         let hasherBuilder = function (Math) {
 
@@ -141,7 +141,7 @@ class Hash {
              * @property {number} sigBytes The number of significant bytes in this word array.
              */
             var WordArray = Base.extend({
-                                            /**
+                /**
                                              * Initializes a newly created word array.
                                              *
                                              * @param {Array} words (Optional) An array of 32-bit words.
@@ -153,17 +153,17 @@ class Hash {
                                              *     var wordArray = WordArray.create([0x00010203, 0x04050607]);
                                              *     var wordArray = WordArray.create([0x00010203, 0x04050607], 6);
                                              */
-                                            init: function (words, sigBytes) {
-                                                words = this.words = words || [];
+                init: function (words, sigBytes) {
+                    words = this.words = words || [];
 
-                                                if (sigBytes !== undefined) {
-                                                    this.sigBytes = sigBytes;
-                                                } else {
-                                                    this.sigBytes = words.length * 4;
-                                                }
-                                            },
+                    if (sigBytes !== undefined) {
+                        this.sigBytes = sigBytes;
+                    } else {
+                        this.sigBytes = words.length * 4;
+                    }
+                },
 
-                                            /**
+                /**
                                              * Converts this word array to a string.
                                              *
                                              * @param {Encoder} encoder (Optional) The encoding strategy to use. Default: Hex
@@ -176,11 +176,11 @@ class Hash {
                                              *     var string = wordArray.toString();
                                              *     var string = wordArray.toString(CryptoJS.enc.Utf8);
                                              */
-                                            toString: function (encoder) {
-                                                return (encoder || Hex).stringify(this);
-                                            },
+                toString: function (encoder) {
+                    return (encoder || Hex).stringify(this);
+                },
 
-                                            /**
+                /**
                                              * Concatenates a word array to this word array.
                                              *
                                              * @param {WordArray} wordArray The word array to append.
@@ -191,58 +191,58 @@ class Hash {
                                              *
                                              *     wordArray1.concat(wordArray2);
                                              */
-                                            concat: function (wordArray) {
-                                                // Shortcuts
-                                                var thisWords = this.words;
-                                                var thatWords = wordArray.words;
-                                                var thisSigBytes = this.sigBytes;
-                                                var thatSigBytes = wordArray.sigBytes;
+                concat: function (wordArray) {
+                    // Shortcuts
+                    var thisWords = this.words;
+                    var thatWords = wordArray.words;
+                    var thisSigBytes = this.sigBytes;
+                    var thatSigBytes = wordArray.sigBytes;
 
-                                                // Clamp excess bits
-                                                this.clamp();
+                    // Clamp excess bits
+                    this.clamp();
 
-                                                // Concat
-                                                if (thisSigBytes % 4) {
-                                                    // Copy one byte at a time
-                                                    for (var i = 0; i < thatSigBytes; i++) {
-                                                        var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8))
+                    // Concat
+                    if (thisSigBytes % 4) {
+                        // Copy one byte at a time
+                        for (var i = 0; i < thatSigBytes; i++) {
+                            var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8))
                                                                        & 0xff;
-                                                        thisWords[(thisSigBytes + i) >>> 2] |=
+                            thisWords[(thisSigBytes + i) >>> 2] |=
                                                             thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
-                                                    }
-                                                } else if (thatWords.length > 0xffff) {
-                                                    // Copy one word at a time
-                                                    for (var ii = 0; ii < thatSigBytes; ii += 4) {
-                                                        thisWords[(thisSigBytes + ii) >>> 2] = thatWords[ii >>> 2];
-                                                    }
-                                                } else {
-                                                    // Copy all words at once
-                                                    thisWords.push.apply(thisWords, thatWords);
-                                                }
-                                                this.sigBytes += thatSigBytes;
+                        }
+                    } else if (thatWords.length > 0xffff) {
+                        // Copy one word at a time
+                        for (var ii = 0; ii < thatSigBytes; ii += 4) {
+                            thisWords[(thisSigBytes + ii) >>> 2] = thatWords[ii >>> 2];
+                        }
+                    } else {
+                        // Copy all words at once
+                        thisWords.push.apply(thisWords, thatWords);
+                    }
+                    this.sigBytes += thatSigBytes;
 
-                                                // Chainable
-                                                return this;
-                                            },
+                    // Chainable
+                    return this;
+                },
 
-                                            /**
+                /**
                                              * Removes insignificant bits.
                                              *
                                              * @example
                                              *
                                              *     wordArray.clamp();
                                              */
-                                            clamp: function () {
-                                                // Shortcuts
-                                                var words = this.words;
-                                                var sigBytes = this.sigBytes;
+                clamp: function () {
+                    // Shortcuts
+                    var words = this.words;
+                    var sigBytes = this.sigBytes;
 
-                                                // Clamp
-                                                words[sigBytes >>> 2] &= 0xffffffff << (32 - (sigBytes % 4) * 8);
-                                                words.length = Math.ceil(sigBytes / 4);
-                                            },
+                    // Clamp
+                    words[sigBytes >>> 2] &= 0xffffffff << (32 - (sigBytes % 4) * 8);
+                    words.length = Math.ceil(sigBytes / 4);
+                },
 
-                                            /**
+                /**
                                              * Creates a copy of this word array.
                                              *
                                              * @return {WordArray} The clone.
@@ -251,14 +251,14 @@ class Hash {
                                              *
                                              *     var clone = wordArray.clone();
                                              */
-                                            clone: function () {
-                                                var clone = Base.clone.call(this);
-                                                clone.words = this.words.slice(0);
+                clone: function () {
+                    var clone = Base.clone.call(this);
+                    clone.words = this.words.slice(0);
 
-                                                return clone;
-                                            },
+                    return clone;
+                },
 
-                                            /**
+                /**
                                              * Creates a word array filled with random bytes.
                                              *
                                              * @param {number} nBytes The number of random bytes to generate.
@@ -271,15 +271,15 @@ class Hash {
                                              *
                                              *     var wordArray = CryptoJS.lib.WordArray.random(16);
                                              */
-                                            random: function (nBytes) {
-                                                var words = [];
-                                                for (var i = 0; i < nBytes; i += 4) {
-                                                    words.push((Math.random() * 0x100000000) | 0);
-                                                }
+                random: function (nBytes) {
+                    var words = [];
+                    for (var i = 0; i < nBytes; i += 4) {
+                        words.push((Math.random() * 0x100000000) | 0);
+                    }
 
-                                                return new WordArray.init(words, nBytes);
-                                            }
-                                        });
+                    return new WordArray.init(words, nBytes);
+                }
+            });
 
             /**
              * Hex encoding strategy.
@@ -451,20 +451,20 @@ class Hash {
              * @property {number} _minBufferSize The number of blocks that should be kept unprocessed in the buffer. Default: 0
              */
             var BufferedBlockAlgorithm = Base.extend({
-                                                         /**
+                /**
                                                           * Resets this block algorithm's data buffer to its initial state.
                                                           *
                                                           * @example
                                                           *
                                                           *     bufferedBlockAlgorithm.reset();
                                                           */
-                                                         reset: function () {
-                                                             // Initial values
-                                                             this._data = new WordArray.init();
-                                                             this._nDataBytes = 0;
-                                                         },
+                reset: function () {
+                    // Initial values
+                    this._data = new WordArray.init();
+                    this._nDataBytes = 0;
+                },
 
-                                                         /**
+                /**
                                                           * Adds new data to this block algorithm's buffer.
                                                           *
                                                           * @param {WordArray|string} data The data to append. Strings are converted to a WordArray using UTF-8.
@@ -474,18 +474,18 @@ class Hash {
                                                           *     bufferedBlockAlgorithm._append('data');
                                                           *     bufferedBlockAlgorithm._append(wordArray);
                                                           */
-                                                         _append: function (data) {
-                                                             // Convert string to WordArray, else assume WordArray already
-                                                             if (typeof data === 'string') {
-                                                                 data = Utf8.parse(data);
-                                                             }
+                _append: function (data) {
+                    // Convert string to WordArray, else assume WordArray already
+                    if (typeof data === 'string') {
+                        data = Utf8.parse(data);
+                    }
 
-                                                             // Append
-                                                             this._data.concat(data);
-                                                             this._nDataBytes += data.sigBytes;
-                                                         },
+                    // Append
+                    this._data.concat(data);
+                    this._nDataBytes += data.sigBytes;
+                },
 
-                                                         /**
+                /**
                                                           * Processes available data blocks.
                                                           *
                                                           * This method invokes _doProcessBlock(offset), which must be implemented by a concrete subtype.
@@ -499,52 +499,52 @@ class Hash {
                                                           *     var processedData = bufferedBlockAlgorithm._process();
                                                           *     var processedData = bufferedBlockAlgorithm._process(!!'flush');
                                                           */
-                                                         _process: function (doFlush) {
-                                                             // Shortcuts
-                                                             var data = this._data;
-                                                             var dataWords = data.words;
-                                                             var dataSigBytes = data.sigBytes;
-                                                             var blockSize = this.blockSize;
-                                                             var blockSizeBytes = blockSize * 4;
+                _process: function (doFlush) {
+                    // Shortcuts
+                    var data = this._data;
+                    var dataWords = data.words;
+                    var dataSigBytes = data.sigBytes;
+                    var blockSize = this.blockSize;
+                    var blockSizeBytes = blockSize * 4;
 
-                                                             // Count blocks ready
-                                                             var nBlocksReady = dataSigBytes / blockSizeBytes;
-                                                             if (doFlush) {
-                                                                 // Round up to include partial blocks
-                                                                 nBlocksReady = Math.ceil(nBlocksReady);
-                                                             } else {
-                                                                 // Round down to include only full blocks,
-                                                                 // less the number of blocks that must remain in the buffer
-                                                                 nBlocksReady =
+                    // Count blocks ready
+                    var nBlocksReady = dataSigBytes / blockSizeBytes;
+                    if (doFlush) {
+                        // Round up to include partial blocks
+                        nBlocksReady = Math.ceil(nBlocksReady);
+                    } else {
+                        // Round down to include only full blocks,
+                        // less the number of blocks that must remain in the buffer
+                        nBlocksReady =
                                                                      Math.max((nBlocksReady | 0) - this._minBufferSize,
                                                                          0);
-                                                             }
+                    }
 
-                                                             // Count words ready
-                                                             var nWordsReady = nBlocksReady * blockSize;
+                    // Count words ready
+                    var nWordsReady = nBlocksReady * blockSize;
 
-                                                             // Count bytes ready
-                                                             var nBytesReady = Math.min(nWordsReady * 4, dataSigBytes);
+                    // Count bytes ready
+                    var nBytesReady = Math.min(nWordsReady * 4, dataSigBytes);
 
-                                                             // Process blocks
-                                                             var processedWords;
-                                                             if (nWordsReady) {
-                                                                 for (var offset = 0; offset < nWordsReady;
-                                                                      offset += blockSize) {
-                                                                     // Perform concrete-algorithm logic
-                                                                     this._doProcessBlock(dataWords, offset);
-                                                                 }
+                    // Process blocks
+                    var processedWords;
+                    if (nWordsReady) {
+                        for (var offset = 0; offset < nWordsReady;
+                            offset += blockSize) {
+                            // Perform concrete-algorithm logic
+                            this._doProcessBlock(dataWords, offset);
+                        }
 
-                                                                 // Remove processed words
-                                                                 processedWords = dataWords.splice(0, nWordsReady);
-                                                                 data.sigBytes -= nBytesReady;
-                                                             }
+                        // Remove processed words
+                        processedWords = dataWords.splice(0, nWordsReady);
+                        data.sigBytes -= nBytesReady;
+                    }
 
-                                                             // Return processed words
-                                                             return new WordArray.init(processedWords, nBytesReady);
-                                                         },
+                    // Return processed words
+                    return new WordArray.init(processedWords, nBytesReady);
+                },
 
-                                                         /**
+                /**
                                                           * Creates a copy of this object.
                                                           *
                                                           * @return {Object} The clone.
@@ -553,15 +553,15 @@ class Hash {
                                                           *
                                                           *     var clone = bufferedBlockAlgorithm.clone();
                                                           */
-                                                         clone: function () {
-                                                             var clone = Base.clone.call(this);
-                                                             clone._data = this._data.clone();
+                clone: function () {
+                    var clone = Base.clone.call(this);
+                    clone._data = this._data.clone();
 
-                                                             return clone;
-                                                         },
+                    return clone;
+                },
 
-                                                         _minBufferSize: 0
-                                                     });
+                _minBufferSize: 0
+            });
 
             /**
              * Abstract hasher template.
@@ -569,12 +569,12 @@ class Hash {
              * @property {number} blockSize The number of 32-bit words this hasher operates on. Default: 16 (512 bits)
              */
             var Hasher = BufferedBlockAlgorithm.extend({
-                                                           /**
+                /**
                                                             * Configuration options.
                                                             */
-                                                           cfg: Base.extend(),
+                cfg: Base.extend(),
 
-                                                           /**
+                /**
                                                             * Initializes a newly created hasher.
                                                             *
                                                             * @param {Object} cfg (Optional) The configuration options to use for this hash computation.
@@ -583,30 +583,30 @@ class Hash {
                                                             *
                                                             *     var hasher = CryptoJS.algo.SHA256.create();
                                                             */
-                                                           init: function (cfg) {
-                                                               // Apply config defaults
-                                                               this.cfg = this.cfg.extend(cfg);
+                init: function (cfg) {
+                    // Apply config defaults
+                    this.cfg = this.cfg.extend(cfg);
 
-                                                               // Set initial values
-                                                               this.reset();
-                                                           },
+                    // Set initial values
+                    this.reset();
+                },
 
-                                                           /**
+                /**
                                                             * Resets this hasher to its initial state.
                                                             *
                                                             * @example
                                                             *
                                                             *     hasher.reset();
                                                             */
-                                                           reset: function () {
-                                                               // Reset data buffer
-                                                               BufferedBlockAlgorithm.reset.call(this);
+                reset: function () {
+                    // Reset data buffer
+                    BufferedBlockAlgorithm.reset.call(this);
 
-                                                               // Perform concrete-hasher logic
-                                                               this._doReset();
-                                                           },
+                    // Perform concrete-hasher logic
+                    this._doReset();
+                },
 
-                                                           /**
+                /**
                                                             * Updates this hasher with a message.
                                                             *
                                                             * @param {WordArray|string} messageUpdate The message to append.
@@ -618,18 +618,18 @@ class Hash {
                                                             *     hasher.update('message');
                                                             *     hasher.update(wordArray);
                                                             */
-                                                           update: function (messageUpdate) {
-                                                               // Append
-                                                               this._append(messageUpdate);
+                update: function (messageUpdate) {
+                    // Append
+                    this._append(messageUpdate);
 
-                                                               // Update the hash
-                                                               this._process();
+                    // Update the hash
+                    this._process();
 
-                                                               // Chainable
-                                                               return this;
-                                                           },
+                    // Chainable
+                    return this;
+                },
 
-                                                           /**
+                /**
                                                             * Finalizes the hash computation.
                                                             * Note that the finalize operation is effectively a destructive, read-once operation.
                                                             *
@@ -643,21 +643,21 @@ class Hash {
                                                             *     var hash = hasher.finalize('message');
                                                             *     var hash = hasher.finalize(wordArray);
                                                             */
-                                                           finalize: function (messageUpdate) {
-                                                               // Final message update
-                                                               if (messageUpdate) {
-                                                                   this._append(messageUpdate);
-                                                               }
+                finalize: function (messageUpdate) {
+                    // Final message update
+                    if (messageUpdate) {
+                        this._append(messageUpdate);
+                    }
 
-                                                               // Perform concrete-hasher logic
-                                                               var hash = this._doFinalize();
+                    // Perform concrete-hasher logic
+                    var hash = this._doFinalize();
 
-                                                               return hash;
-                                                           },
+                    return hash;
+                },
 
-                                                           blockSize: 512 / 32,
+                blockSize: 512 / 32,
 
-                                                           /**
+                /**
                                                             * Creates a shortcut function to a hasher's object interface.
                                                             *
                                                             * @param {Hasher} hasher The hasher to create a helper for.
@@ -670,19 +670,19 @@ class Hash {
                                                             *
                                                             *     var md5 = Hasher._createFunction(MD5);
                                                             */
-                                                           _createFunction: function (hasher) {
-                                                               return function (message, cfg) {
-                                                                   return new hasher.init(cfg).finalize(message);
-                                                               };
-                                                           },
+                _createFunction: function (hasher) {
+                    return function (message, cfg) {
+                        return new hasher.init(cfg).finalize(message);
+                    };
+                },
 
-                                                       });
+            });
 
             /**
              * END OF CORE IMPLEMENTATION - START OF MD5 ALGORITHM
              */
 
-                // Compute constants
+            // Compute constants
             var T = [];
             (function () {
                 for (var i = 0; i < 64; i++) {
@@ -694,172 +694,172 @@ class Hash {
              * MD5 hash algorithm.
              */
             var MD5 = Hasher.extend({
-                                        _doReset: function () {
-                                            this._hash = new WordArray.init([
-                                                                                0x67452301, 0xefcdab89,
-                                                                                0x98badcfe, 0x10325476
-                                                                            ]);
-                                        },
+                _doReset: function () {
+                    this._hash = new WordArray.init([
+                        0x67452301, 0xefcdab89,
+                        0x98badcfe, 0x10325476
+                    ]);
+                },
 
-                                        _doProcessBlock: function (M, offset) {
-                                            // Swap endian
-                                            for (var i = 0; i < 16; i++) {
-                                                var offset_i = offset + i;
-                                                var M_offset_i = M[offset_i];
+                _doProcessBlock: function (M, offset) {
+                    // Swap endian
+                    for (var i = 0; i < 16; i++) {
+                        var offset_i = offset + i;
+                        var M_offset_i = M[offset_i];
 
-                                                M[offset_i] = (
-                                                    (((M_offset_i << 8) | (M_offset_i >>> 24)) & 0x00ff00ff) |
+                        M[offset_i] = (
+                            (((M_offset_i << 8) | (M_offset_i >>> 24)) & 0x00ff00ff) |
                                                     (((M_offset_i << 24) | (M_offset_i >>> 8)) & 0xff00ff00)
-                                                );
-                                            }
+                        );
+                    }
 
-                                            var H = this._hash.words;
+                    var H = this._hash.words;
 
-                                            var M_offset_0 = M[offset + 0];
-                                            var M_offset_1 = M[offset + 1];
-                                            var M_offset_2 = M[offset + 2];
-                                            var M_offset_3 = M[offset + 3];
-                                            var M_offset_4 = M[offset + 4];
-                                            var M_offset_5 = M[offset + 5];
-                                            var M_offset_6 = M[offset + 6];
-                                            var M_offset_7 = M[offset + 7];
-                                            var M_offset_8 = M[offset + 8];
-                                            var M_offset_9 = M[offset + 9];
-                                            var M_offset_10 = M[offset + 10];
-                                            var M_offset_11 = M[offset + 11];
-                                            var M_offset_12 = M[offset + 12];
-                                            var M_offset_13 = M[offset + 13];
-                                            var M_offset_14 = M[offset + 14];
-                                            var M_offset_15 = M[offset + 15];
+                    var M_offset_0 = M[offset + 0];
+                    var M_offset_1 = M[offset + 1];
+                    var M_offset_2 = M[offset + 2];
+                    var M_offset_3 = M[offset + 3];
+                    var M_offset_4 = M[offset + 4];
+                    var M_offset_5 = M[offset + 5];
+                    var M_offset_6 = M[offset + 6];
+                    var M_offset_7 = M[offset + 7];
+                    var M_offset_8 = M[offset + 8];
+                    var M_offset_9 = M[offset + 9];
+                    var M_offset_10 = M[offset + 10];
+                    var M_offset_11 = M[offset + 11];
+                    var M_offset_12 = M[offset + 12];
+                    var M_offset_13 = M[offset + 13];
+                    var M_offset_14 = M[offset + 14];
+                    var M_offset_15 = M[offset + 15];
 
-                                            var a = H[0];
-                                            var b = H[1];
-                                            var c = H[2];
-                                            var d = H[3];
+                    var a = H[0];
+                    var b = H[1];
+                    var c = H[2];
+                    var d = H[3];
 
-                                            a = FF(a, b, c, d, M_offset_0, 7, T[0]);
-                                            d = FF(d, a, b, c, M_offset_1, 12, T[1]);
-                                            c = FF(c, d, a, b, M_offset_2, 17, T[2]);
-                                            b = FF(b, c, d, a, M_offset_3, 22, T[3]);
-                                            a = FF(a, b, c, d, M_offset_4, 7, T[4]);
-                                            d = FF(d, a, b, c, M_offset_5, 12, T[5]);
-                                            c = FF(c, d, a, b, M_offset_6, 17, T[6]);
-                                            b = FF(b, c, d, a, M_offset_7, 22, T[7]);
-                                            a = FF(a, b, c, d, M_offset_8, 7, T[8]);
-                                            d = FF(d, a, b, c, M_offset_9, 12, T[9]);
-                                            c = FF(c, d, a, b, M_offset_10, 17, T[10]);
-                                            b = FF(b, c, d, a, M_offset_11, 22, T[11]);
-                                            a = FF(a, b, c, d, M_offset_12, 7, T[12]);
-                                            d = FF(d, a, b, c, M_offset_13, 12, T[13]);
-                                            c = FF(c, d, a, b, M_offset_14, 17, T[14]);
-                                            b = FF(b, c, d, a, M_offset_15, 22, T[15]);
+                    a = FF(a, b, c, d, M_offset_0, 7, T[0]);
+                    d = FF(d, a, b, c, M_offset_1, 12, T[1]);
+                    c = FF(c, d, a, b, M_offset_2, 17, T[2]);
+                    b = FF(b, c, d, a, M_offset_3, 22, T[3]);
+                    a = FF(a, b, c, d, M_offset_4, 7, T[4]);
+                    d = FF(d, a, b, c, M_offset_5, 12, T[5]);
+                    c = FF(c, d, a, b, M_offset_6, 17, T[6]);
+                    b = FF(b, c, d, a, M_offset_7, 22, T[7]);
+                    a = FF(a, b, c, d, M_offset_8, 7, T[8]);
+                    d = FF(d, a, b, c, M_offset_9, 12, T[9]);
+                    c = FF(c, d, a, b, M_offset_10, 17, T[10]);
+                    b = FF(b, c, d, a, M_offset_11, 22, T[11]);
+                    a = FF(a, b, c, d, M_offset_12, 7, T[12]);
+                    d = FF(d, a, b, c, M_offset_13, 12, T[13]);
+                    c = FF(c, d, a, b, M_offset_14, 17, T[14]);
+                    b = FF(b, c, d, a, M_offset_15, 22, T[15]);
 
-                                            a = GG(a, b, c, d, M_offset_1, 5, T[16]);
-                                            d = GG(d, a, b, c, M_offset_6, 9, T[17]);
-                                            c = GG(c, d, a, b, M_offset_11, 14, T[18]);
-                                            b = GG(b, c, d, a, M_offset_0, 20, T[19]);
-                                            a = GG(a, b, c, d, M_offset_5, 5, T[20]);
-                                            d = GG(d, a, b, c, M_offset_10, 9, T[21]);
-                                            c = GG(c, d, a, b, M_offset_15, 14, T[22]);
-                                            b = GG(b, c, d, a, M_offset_4, 20, T[23]);
-                                            a = GG(a, b, c, d, M_offset_9, 5, T[24]);
-                                            d = GG(d, a, b, c, M_offset_14, 9, T[25]);
-                                            c = GG(c, d, a, b, M_offset_3, 14, T[26]);
-                                            b = GG(b, c, d, a, M_offset_8, 20, T[27]);
-                                            a = GG(a, b, c, d, M_offset_13, 5, T[28]);
-                                            d = GG(d, a, b, c, M_offset_2, 9, T[29]);
-                                            c = GG(c, d, a, b, M_offset_7, 14, T[30]);
-                                            b = GG(b, c, d, a, M_offset_12, 20, T[31]);
+                    a = GG(a, b, c, d, M_offset_1, 5, T[16]);
+                    d = GG(d, a, b, c, M_offset_6, 9, T[17]);
+                    c = GG(c, d, a, b, M_offset_11, 14, T[18]);
+                    b = GG(b, c, d, a, M_offset_0, 20, T[19]);
+                    a = GG(a, b, c, d, M_offset_5, 5, T[20]);
+                    d = GG(d, a, b, c, M_offset_10, 9, T[21]);
+                    c = GG(c, d, a, b, M_offset_15, 14, T[22]);
+                    b = GG(b, c, d, a, M_offset_4, 20, T[23]);
+                    a = GG(a, b, c, d, M_offset_9, 5, T[24]);
+                    d = GG(d, a, b, c, M_offset_14, 9, T[25]);
+                    c = GG(c, d, a, b, M_offset_3, 14, T[26]);
+                    b = GG(b, c, d, a, M_offset_8, 20, T[27]);
+                    a = GG(a, b, c, d, M_offset_13, 5, T[28]);
+                    d = GG(d, a, b, c, M_offset_2, 9, T[29]);
+                    c = GG(c, d, a, b, M_offset_7, 14, T[30]);
+                    b = GG(b, c, d, a, M_offset_12, 20, T[31]);
 
-                                            a = HH(a, b, c, d, M_offset_5, 4, T[32]);
-                                            d = HH(d, a, b, c, M_offset_8, 11, T[33]);
-                                            c = HH(c, d, a, b, M_offset_11, 16, T[34]);
-                                            b = HH(b, c, d, a, M_offset_14, 23, T[35]);
-                                            a = HH(a, b, c, d, M_offset_1, 4, T[36]);
-                                            d = HH(d, a, b, c, M_offset_4, 11, T[37]);
-                                            c = HH(c, d, a, b, M_offset_7, 16, T[38]);
-                                            b = HH(b, c, d, a, M_offset_10, 23, T[39]);
-                                            a = HH(a, b, c, d, M_offset_13, 4, T[40]);
-                                            d = HH(d, a, b, c, M_offset_0, 11, T[41]);
-                                            c = HH(c, d, a, b, M_offset_3, 16, T[42]);
-                                            b = HH(b, c, d, a, M_offset_6, 23, T[43]);
-                                            a = HH(a, b, c, d, M_offset_9, 4, T[44]);
-                                            d = HH(d, a, b, c, M_offset_12, 11, T[45]);
-                                            c = HH(c, d, a, b, M_offset_15, 16, T[46]);
-                                            b = HH(b, c, d, a, M_offset_2, 23, T[47]);
+                    a = HH(a, b, c, d, M_offset_5, 4, T[32]);
+                    d = HH(d, a, b, c, M_offset_8, 11, T[33]);
+                    c = HH(c, d, a, b, M_offset_11, 16, T[34]);
+                    b = HH(b, c, d, a, M_offset_14, 23, T[35]);
+                    a = HH(a, b, c, d, M_offset_1, 4, T[36]);
+                    d = HH(d, a, b, c, M_offset_4, 11, T[37]);
+                    c = HH(c, d, a, b, M_offset_7, 16, T[38]);
+                    b = HH(b, c, d, a, M_offset_10, 23, T[39]);
+                    a = HH(a, b, c, d, M_offset_13, 4, T[40]);
+                    d = HH(d, a, b, c, M_offset_0, 11, T[41]);
+                    c = HH(c, d, a, b, M_offset_3, 16, T[42]);
+                    b = HH(b, c, d, a, M_offset_6, 23, T[43]);
+                    a = HH(a, b, c, d, M_offset_9, 4, T[44]);
+                    d = HH(d, a, b, c, M_offset_12, 11, T[45]);
+                    c = HH(c, d, a, b, M_offset_15, 16, T[46]);
+                    b = HH(b, c, d, a, M_offset_2, 23, T[47]);
 
-                                            a = II(a, b, c, d, M_offset_0, 6, T[48]);
-                                            d = II(d, a, b, c, M_offset_7, 10, T[49]);
-                                            c = II(c, d, a, b, M_offset_14, 15, T[50]);
-                                            b = II(b, c, d, a, M_offset_5, 21, T[51]);
-                                            a = II(a, b, c, d, M_offset_12, 6, T[52]);
-                                            d = II(d, a, b, c, M_offset_3, 10, T[53]);
-                                            c = II(c, d, a, b, M_offset_10, 15, T[54]);
-                                            b = II(b, c, d, a, M_offset_1, 21, T[55]);
-                                            a = II(a, b, c, d, M_offset_8, 6, T[56]);
-                                            d = II(d, a, b, c, M_offset_15, 10, T[57]);
-                                            c = II(c, d, a, b, M_offset_6, 15, T[58]);
-                                            b = II(b, c, d, a, M_offset_13, 21, T[59]);
-                                            a = II(a, b, c, d, M_offset_4, 6, T[60]);
-                                            d = II(d, a, b, c, M_offset_11, 10, T[61]);
-                                            c = II(c, d, a, b, M_offset_2, 15, T[62]);
-                                            b = II(b, c, d, a, M_offset_9, 21, T[63]);
+                    a = II(a, b, c, d, M_offset_0, 6, T[48]);
+                    d = II(d, a, b, c, M_offset_7, 10, T[49]);
+                    c = II(c, d, a, b, M_offset_14, 15, T[50]);
+                    b = II(b, c, d, a, M_offset_5, 21, T[51]);
+                    a = II(a, b, c, d, M_offset_12, 6, T[52]);
+                    d = II(d, a, b, c, M_offset_3, 10, T[53]);
+                    c = II(c, d, a, b, M_offset_10, 15, T[54]);
+                    b = II(b, c, d, a, M_offset_1, 21, T[55]);
+                    a = II(a, b, c, d, M_offset_8, 6, T[56]);
+                    d = II(d, a, b, c, M_offset_15, 10, T[57]);
+                    c = II(c, d, a, b, M_offset_6, 15, T[58]);
+                    b = II(b, c, d, a, M_offset_13, 21, T[59]);
+                    a = II(a, b, c, d, M_offset_4, 6, T[60]);
+                    d = II(d, a, b, c, M_offset_11, 10, T[61]);
+                    c = II(c, d, a, b, M_offset_2, 15, T[62]);
+                    b = II(b, c, d, a, M_offset_9, 21, T[63]);
 
-                                            H[0] = (H[0] + a) | 0;
-                                            H[1] = (H[1] + b) | 0;
-                                            H[2] = (H[2] + c) | 0;
-                                            H[3] = (H[3] + d) | 0;
-                                        },
+                    H[0] = (H[0] + a) | 0;
+                    H[1] = (H[1] + b) | 0;
+                    H[2] = (H[2] + c) | 0;
+                    H[3] = (H[3] + d) | 0;
+                },
 
-                                        _doFinalize: function () {
-                                            // Shortcuts
-                                            var data = this._data;
-                                            var dataWords = data.words;
+                _doFinalize: function () {
+                    // Shortcuts
+                    var data = this._data;
+                    var dataWords = data.words;
 
-                                            var nBitsTotal = this._nDataBytes * 8;
-                                            var nBitsLeft = data.sigBytes * 8;
+                    var nBitsTotal = this._nDataBytes * 8;
+                    var nBitsLeft = data.sigBytes * 8;
 
-                                            // Add padding
-                                            dataWords[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
+                    // Add padding
+                    dataWords[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
 
-                                            var nBitsTotalH = Math.floor(nBitsTotal / 0x100000000);
-                                            var nBitsTotalL = nBitsTotal;
-                                            dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 15] = (
-                                                (((nBitsTotalH << 8) | (nBitsTotalH >>> 24)) & 0x00ff00ff) |
+                    var nBitsTotalH = Math.floor(nBitsTotal / 0x100000000);
+                    var nBitsTotalL = nBitsTotal;
+                    dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 15] = (
+                        (((nBitsTotalH << 8) | (nBitsTotalH >>> 24)) & 0x00ff00ff) |
                                                 (((nBitsTotalH << 24) | (nBitsTotalH >>> 8)) & 0xff00ff00)
-                                            );
-                                            dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
-                                                (((nBitsTotalL << 8) | (nBitsTotalL >>> 24)) & 0x00ff00ff) |
+                    );
+                    dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
+                        (((nBitsTotalL << 8) | (nBitsTotalL >>> 24)) & 0x00ff00ff) |
                                                 (((nBitsTotalL << 24) | (nBitsTotalL >>> 8)) & 0xff00ff00)
-                                            );
+                    );
 
-                                            data.sigBytes = (dataWords.length + 1) * 4;
+                    data.sigBytes = (dataWords.length + 1) * 4;
 
-                                            // Hash final blocks
-                                            this._process();
+                    // Hash final blocks
+                    this._process();
 
-                                            // Shortcuts
-                                            var hash = this._hash;
-                                            var H = hash.words;
+                    // Shortcuts
+                    var hash = this._hash;
+                    var H = hash.words;
 
-                                            // Swap endian
-                                            for (var i = 0; i < 4; i++) {
-                                                // Shortcut
-                                                var H_i = H[i];
+                    // Swap endian
+                    for (var i = 0; i < 4; i++) {
+                        // Shortcut
+                        var H_i = H[i];
 
-                                                H[i] = (((H_i << 8) | (H_i >>> 24)) & 0x00ff00ff) |
+                        H[i] = (((H_i << 8) | (H_i >>> 24)) & 0x00ff00ff) |
                                                        (((H_i << 24) | (H_i >>> 8)) & 0xff00ff00);
-                                            }
-                                            return hash;
-                                        },
+                    }
+                    return hash;
+                },
 
-                                        clone: function () {
-                                            var clone = Hasher.clone.call(this);
-                                            clone._hash = this._hash.clone();
+                clone: function () {
+                    var clone = Hasher.clone.call(this);
+                    clone._hash = this._hash.clone();
 
-                                            return clone;
-                                        }
-                                    });
+                    return clone;
+                }
+            });
 
             function FF(a, b, c, d, x, s, t) {
                 var n = a + ((b & c) | (~b & d)) + x + t;
