@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "./build.sh",
-    "develop": "./run.sh",
+    "dev": "web-ext run --verbose --browser-console --url https://xkcd.com --source-dir src",
     "lint:javascript": "eslint .",
     "lint:css": "stylelint '**/*.css'"
   },

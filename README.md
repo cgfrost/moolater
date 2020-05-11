@@ -11,6 +11,7 @@
 Firefox extension for quickly saving a webpage as a task to [Remember The Milk](https://www.rememberthemilk.com/) from the tool bar.
 
 The title and link of the current page are used to create the new task.
+A due date for the new task can optionally be set.
 Create new lists from Moo Later before saving a new task to it.
 Highlight text on the page and save it as a note to the new task in Remember The Milk.
 Find it in the Firefox [Add-ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/).
@@ -27,13 +28,14 @@ Supports Firefox mobile!
 
 # Comments
 
-Version 2 of Moo Later is a complete rewrite that supports Firefox version 57 and above. For versions of Firefox before this please stay with Moo Later 1.2.
+Version 3 of Moo Later contains some new features and supports Firefox version 75 and above. For versions of Firefox before this please stay with Moo Later version 2. For version of firefox before 57, use Moo Later 1.2.
 
 If you have a bug please raise it here on GitHub but for discussion and ideas head on over to the Remember the Milk [Forums](https://www.rememberthemilk.com/forums/tips/20401/). You can also leave a review on the Firefox [Add-ons marketplace](https://addons.mozilla.org/en-US/firefox/addon/moo-later/) page.
 
 # Hotkeys
 
 * On Linux/Mac/Windows `Alt + M` will open Moo Later.
+* Use the tab and enter keys to submit a new task without using the mouse.
 
 # Settings
 
@@ -42,6 +44,7 @@ This extension can be configured through the Firefox Add-ons Manager page. This 
 * Default List - The name of the list that will be selected automatically for new tasks. It must match the name of an existing list with the same capitalization. New tasks can not be added to Smart Lists. Default is empty which will go to the Inbox. I recommend using a separate list for Moo Later created tasks, perhaps called `Read Later`.
 * Use Title - Use the title of the currently viewed page for new tasks. Default is checked.
 * Use Address - Use the URL of the currently viewed page for new tasks. Default is checked.
+* Show in context menus - Show Moo Later in the right click context menu. Default is checked.
 * Use Smart Add - Should the new task's title be processed by Remember the Milk [Smart Add](https://www.rememberthemilk.com/help/?ctx=basics.smartadd.whatis)? Default is checked.
 
 When entering a new task the address must be a valid URL that starts with `http://` or `https://`. To save a task with no address the link field can be left empty.
@@ -66,7 +69,7 @@ npm run build
 To create a development instance of Firefox with Moo Later installed, run:
 
 ```bash
-npm run develop
+npm run dev
 ```
 
 This does not depend on it having been built; it will use the `src` files as is.
