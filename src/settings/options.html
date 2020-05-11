@@ -8,7 +8,11 @@
 </head>
 
 <body>
+    <h1>Moo Later Settings</h1>
     <form>
+        <div class="option">
+            <span>Due dates are set based on the timzone configured in Remember The Milk.
+        </div>
         <div class="option">
             <label for="moolater-defaultList">Default List</label>
             <input type="text" id="moolater-defaultList">
@@ -34,11 +38,13 @@
             <input type="checkbox" id="moolater-showContextMenu">
             <span class="description">Show MooLater in the right click context menu.</span>
         </div>
-        <div id="submit"><button type="submit">Save</button><img id="status-img" src="../images/blank.svg" /></div>
+        <div id="submit">
+            <button type="submit">Save</button>
+            <img id="status-img" src="../images/blank.svg" />
+        </div>
     </form>
 
     <script src="options.js" type="text/javascript" charset="utf-8"></script>
-
 </body>
 
 </html>
