@@ -16,17 +16,31 @@ class MilkAction {
     }
 
     addUrlToTask(milk, debug, list, link) {
-
-        let taskseries = list.taskseries.id ? list.taskseries : list.taskseries[0];
-        let task_id = taskseries.task.id ? taskseries.task.id : taskseries.task[0].id;
-
         return new Promise((resolve, reject) => {
+            let taskseries = list.taskseries.id ? list.taskseries : list.taskseries[0];
+            let task_id = taskseries.task.id ? taskseries.task.id : taskseries.task[0].id;
             milk.get('rtm.tasks.setURL', debug, {
                          list_id: list.id,
                          taskseries_id: taskseries.id,
                          task_id: task_id,
-                         url: link,
-                         timeline: milk.timeline
+                         timeline: milk.timeline,
+                         url: link
+                     },
+                     resolve,
+                     reject);
+        });
+    }
+
+    addDueDateToTask(milk, debug, list, dueDate) {
+        return new Promise((resolve, reject) => {
+            let taskseries = list.taskseries.id ? list.taskseries : list.taskseries[0];
+            let task_id = taskseries.task.id ? taskseries.task.id : taskseries.task[0].id;
+            milk.get('rtm.tasks.setDueDate', debug, {
+                         list_id: list.id,
+                         taskseries_id: taskseries.id,
+                         task_id: task_id,
+                         timeline: milk.timeline,
+                         due: dueDate,
                      },
                      resolve,
                      reject);
@@ -35,10 +49,8 @@ class MilkAction {
 
     addNoteToTask(milk, debug, list, title, text) {
         return new Promise((resolve, reject) => {
-
             let taskseries = list.taskseries.id ? list.taskseries : list.taskseries[0];
             let task_id = taskseries.task.id ? taskseries.task.id : taskseries.task[0].id;
-
             milk.get('rtm.tasks.notes.add', debug, {
                          list_id: list.id,
                          taskseries_id: taskseries.id,
@@ -49,6 +61,24 @@ class MilkAction {
                      },
                      resolve,
                      reject);
+        });
+    }
+
+    getSettings(milk, debug) {
+        return new Promise((resolve, reject) => {
+            milk.get('rtm.settings.getList', debug, {},
+                resolve,
+                reject);
+        });
+    }
+
+    getTimezoneOffset(milk, debug, timezone) {
+        return new Promise((resolve, reject) => {
+            milk.get('rtm.time.convert', debug, {
+                    to_timezone: timezone
+                },
+                resolve,
+                reject);
         });
     }
 

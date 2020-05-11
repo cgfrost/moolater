@@ -3,6 +3,16 @@
 (function () {
     'use strict';
 
+    const daysOfTheWeek = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday'
+    ];
+
     const ANDROID = 'android';
     let isMobile = false;
     let validationRegex = new RegExp('^https?://');
@@ -37,6 +47,8 @@
     let listsElement = document.getElementById('lists');
     let selectedElement = document.getElementById('selected-text');
     let selectedLabel = document.getElementById('selected-text-label');
+    let dueDateElement = document.getElementById('due-date');
+    let dueDateLabel = document.getElementById('due-date-label');
 
     // Add List Form Elements
     let addListElement = document.getElementById('list');
@@ -78,9 +90,15 @@
         }, false);
 
         linkElement.addEventListener('keyup', (event) => {
-        	if (event.keyCode === 13) {
+            if (event.keyCode === 13) {
+                dueDateElement.focus();
+            }
+        }, false);
+
+        dueDateElement.addEventListener('keyup', (event) => {
+            if (event.keyCode === 13) {
                 addTaskSubmitButton.focus();
-        	}
+            }
         }, false);
 
         addListElement.addEventListener('keyup', (event) => {
@@ -152,6 +170,7 @@
                     action: 'addTask',
                     name: taskElement.value,
                     link: linkElement.value,
+                    dueDate: dueDateElement.value,
                     useSelection: selectedElement.checked,
                     selection: selectedElement.value,
                     listId: listsElement.value
@@ -206,6 +225,9 @@
                         setIconState(listRefreshButtonImg, 'refresh');
                     }, 1000);
                 }).catch(handleFatalError);
+                break;
+            case "userSettingsRefreshed":
+                updateDueDates(message.settings);
                 break;
             case "taskAdded":
                 showMessageThen('Task added', 'done');
@@ -287,10 +309,13 @@
                         prePopulateAddTask(settings, activeTabs, lists);
                     });
                 } else {
-                    browser.windows.getCurrent({populate: true, windowTypes: ['normal']}).then((currentWindow) => {
+                    browser.windows.getCurrent({populate: true}).then((currentWindow) => {
                         prePopulateAddTask(settings, currentWindow.tabs, lists);
                     });
                 }
+            });
+            browser.runtime.sendMessage({action: "userSettings"}).then((userSettings) => {
+                updateDueDates(userSettings)
             });
         }).catch(handleFatalError);
     };
@@ -331,6 +356,7 @@
     let populateAddTask = (settings, link, activeTab, selectedText) => {
         setTextElement(taskLabel, 'Task name:');
         setTextElement(linkLabel, 'Link:');
+        setTextElement(dueDateLabel, 'Due date:');
         taskElement.value = settings.useTitle === true ? activeTab.title : '';
         linkElement.value = settings.useLink === true ? link : '';
         taskElement.focus();
@@ -342,6 +368,45 @@
             selectedLabel.classList.add('hide');
         }
     };
+
+    let updateDueDates = (userSettings) => {
+        while (dueDateElement.firstChild) {
+            dueDateElement.removeChild(dueDateElement.firstChild);
+        }
+        let userToday;
+        if (userSettings.settings.timezone && userSettings.settings.timezone.length !== 0) {
+            // Use the users prefered timezone
+            userToday = new Date(Date.now() + userSettings.timezoneOffset);
+            // console.log(`Users home date in ${userSettings.settings.timezone} is ${userToday.toISOString()}`);
+        } else {
+            // Fallback to using the users local timezone
+            userToday = new Date(); // UTC time.
+            userToday.setTime(userToday.getTime() - (userToday.getTimezoneOffset() * 60 * 1000));
+            // console.log(`Users local date is ${userToday.toISOString()}`);
+        }
+
+        const dueDates = [
+            { id: 'due-never', name: 'Never'},
+            { id: 'due-0', name: 'Today'},
+            { id: 'due-1', name: 'Tomorrow'},
+            { id: 'due-2', name: daysOfTheWeek[userToday.getUTCDay() + 2]},
+            { id: 'due-3', name: daysOfTheWeek[userToday.getUTCDay() + 3]},
+            { id: 'due-4', name: daysOfTheWeek[userToday.getUTCDay() + 4]},
+            { id: 'due-7', name: '1 Week'}
+        ];
+        let defaultFound = false;
+        for (let i = 0; i < dueDates.length; i++) {
+            let selected = userSettings.settings.defaultduedate === dueDates[i].name.toLowerCase();
+            if (selected) {
+                defaultFound = true;
+            }
+            let newOption = createOptionElement(dueDates[i].id, dueDates[i].name, selected);
+            dueDateElement.appendChild(newOption);
+        }
+        if (!defaultFound) {
+            dueDateElement.selectedIndex = "0";
+        }
+    }
 
     let updateLists = (lists, defaultList, debug) => {
         log(`Updating the lists, default: ${defaultList}`, debug);
