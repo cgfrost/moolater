@@ -13,7 +13,7 @@ form {
 h1 {
     padding-top: 1em;
     text-align: center;
-    color: #005DC2;
+    color: #005dc2;
 }
 
 .hide {
@@ -23,7 +23,7 @@ h1 {
 .option {
     padding: 1em 0 1em 0;
     display: block;
-    border-top: 1px solid #C0C0C0;
+    border-top: 1px solid #c0c0c0;
 }
 
 .option label {
@@ -47,13 +47,13 @@ h1 {
 }
 
 #submit button {
-    background-color: #005DC2;
-    color: #FFFFFF;
+    background-color: #005dc2;
+    color: #ffffff;
     font-size: 1.2em;
     padding: 0.3em 0.6em;
     margin-left: 3.4em;
     border-radius: 5px;
-    border: 2px solid #005DC2;
+    border: 2px solid #005dc2;
 }
 
 #submit button:hover {
