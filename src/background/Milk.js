@@ -1,5 +1,3 @@
-/* global browser: false */
-
 const AUTH_URL = 'https://www.rememberthemilk.com/services/auth/';
 const BASE_URL = 'https://api.rememberthemilk.com/services/rest/';
 const API_VERSION = '2';
@@ -38,42 +36,42 @@ class Milk {
         return this.frob !== INVALID && this.auth_token !== INVALID;
     }
 
-	/**
-	 * Generates a RTM authentication URL
-	 *
-	 * @return {String} to send the user to for authorizing
-	 */
-	getAuthUrl() {
-		let params = {
-			api_key: this.data.a,
-			perms: this.permissions,
+    /**
+     * Generates a RTM authentication URL
+     *
+     * @return {String} to send the user to for authorizing
+     */
+    getAuthUrl() {
+        let params = {
+            api_key: this.data.a,
+            perms: this.permissions,
             frob: this.frob
-		};
-		return AUTH_URL + this.encodeUrlParams(params);
-	};
+        };
+        return AUTH_URL + this.encodeUrlParams(params);
+    }
 
-	/**
-	 * Gets the timeline ID
-	 *
-	 * @return     Returns the timeline ID String
-	 */
-	setTimeline(debug, retry, error) {
-	    Milk.log('Fetching a new timeline', debug);
-		this.milkAuth.createTimeline(this, debug).then((response) => {
-			this.timeline = response.rsp.timeline;
-			if (retry) {
+    /**
+     * Gets the timeline ID
+     *
+     * @return     Returns the timeline ID String
+     */
+    setTimeline(debug, retry, error) {
+        Milk.log('Fetching a new timeline', debug);
+        this.milkAuth.createTimeline(this, debug).then((response) => {
+            this.timeline = response.rsp.timeline;
+            if (retry) {
                 retry();
             }
-		}).catch((reason) => {
-			Milk.log(reason.message, debug);
-		    if (error) {
-		        error(reason);
+        }).catch((reason) => {
+            Milk.log(reason.message, debug);
+            if (error) {
+                error(reason);
             }
-		});
-	};
+        });
+    }
 
-	ensureFrob(debug) {
-	    if (this.frob === INVALID) {
+    ensureFrob(debug) {
+        if (this.frob === INVALID) {
             this.milkAuth.getFrob(this, debug).then((response) => {
                 Milk.log(`Setting frob to ${response.rsp.frob}`, debug);
                 this.frob = response.rsp.frob;
@@ -82,49 +80,49 @@ class Milk {
         }
     }
 
-	/**
-	 * Main method for making API calls
-	 *
-	 * @param method    Specifies what API method to be used
+    /**
+     * Main method for making API calls
+     *
+     * @param method    Specifies what API method to be used
      * @param debug     {boolean} Produce debug logging or not
-	 * @param params    Array of API parameters to accompany the method parameter
-	 * @param complete  Callback to fire after the request comes back
-	 * @param error     (Optional) Callback to fire if the request fails
-	 * @return          Returns the response from the RTM API
-	 */
-	get(method, debug, params, complete, error) {
-		if (!method) {
-			throw 'Error: API Method must be defined.';
-		}
-		if (!params) {
-			throw 'Error: API Params must be defined.';
-		}
-		if (!complete) {
-			throw 'Error: API Complete function must be defined.';
-		}
-		if (!error) {
-			error = function () {};
-		}
+     * @param params    Array of API parameters to accompany the method parameter
+     * @param complete  Callback to fire after the request comes back
+     * @param error     (Optional) Callback to fire if the request fails
+     * @return          Returns the response from the RTM API
+     */
+    get(method, debug, params, complete, error) {
+        if (!method) {
+            throw 'Error: API Method must be defined.';
+        }
+        if (!params) {
+            throw 'Error: API Params must be defined.';
+        }
+        if (!complete) {
+            throw 'Error: API Complete function must be defined.';
+        }
+        if (!error) {
+            error = function () {};
+        }
 
-		params.v = API_VERSION;
-		params.format = FORMAT;
-		params.method = method;
+        params.v = API_VERSION;
+        params.format = FORMAT;
+        params.method = method;
 
-		if (this.auth_token !== INVALID) {
-			params.auth_token = this.auth_token;
-		}
+        if (this.auth_token !== INVALID) {
+            params.auth_token = this.auth_token;
+        }
 
-		if (this.frob !== INVALID) {
-			params.frob = this.frob;
-		}
+        if (this.frob !== INVALID) {
+            params.frob = this.frob;
+        }
 
-		let requestUrl = BASE_URL + this.encodeUrlParams(params);
+        let requestUrl = BASE_URL + this.encodeUrlParams(params);
         let myHeaders = new Headers([['Content-Type', 'application/json; charset=utf-8']]);
         let fetchInit = {method: 'GET', headers: myHeaders};
-		fetch(requestUrl, fetchInit).then((response) => {
-		    response.text().then((text) => {
+        fetch(requestUrl, fetchInit).then((response) => {
+            response.text().then((text) => {
 
-		        Milk.log('*************************************', debug);
+                Milk.log('*************************************', debug);
                 Milk.log(`Request.Url     : ${requestUrl}`, debug);
                 Milk.log(`Request.Method  : ${method}`, debug);
                 Milk.log(`Response.Text   : ${text}`, debug);
@@ -132,107 +130,107 @@ class Milk {
                 Milk.log(`        .SText  : ${response.statusText}`, debug);
                 Milk.log('*************************************', debug);
 
-		        if (response.status === 200) {
-		            let jsonData = JSON.parse(text);
-		            if (jsonData.rsp.stat === 'ok') {
-		                    complete(jsonData);
-		            } else {
-		                this.handleError(response, jsonData.rsp, error, () => {
-		                    this.get(method, params, complete, error);
-		                }, debug);
-		            }
-		        } else {
-		            this.handleError(response, undefined, error, () => {
-		                this.get(method, params, complete, error);
-		            }, debug);
-		        }
+                if (response.status === 200) {
+                    let jsonData = JSON.parse(text);
+                    if (jsonData.rsp.stat === 'ok') {
+                        complete(jsonData);
+                    } else {
+                        this.handleError(response, jsonData.rsp, error, () => {
+                            this.get(method, params, complete, error);
+                        }, debug);
+                    }
+                } else {
+                    this.handleError(response, undefined, error, () => {
+                        this.get(method, params, complete, error);
+                    }, debug);
+                }
             });
-		});
-	};
+        });
+    }
 
-	handleError(response, jsonData, error, retry, debug) {
-		if (response.status === 200) {
-			if (jsonData.err && jsonData.err.msg && jsonData.err.code) {
-				if (jsonData.err.code === '98') {
-					this.auth_token = INVALID;
+    handleError(response, jsonData, error, retry, debug) {
+        if (response.status === 200) {
+            if (jsonData.err && jsonData.err.msg && jsonData.err.code) {
+                if (jsonData.err.code === '98') {
+                    this.auth_token = INVALID;
                     browser.storage.local.set({token: INVALID}).then(() => {
                         this.fetchToken(retry, error, debug);
                     });
-					return;
-				} else if (jsonData.err.code === '101') {
-					this.auth_token = INVALID;
-					this.frob = INVALID;
-					browser.storage.local.set({token: INVALID, frob: INVALID}).then(() => {
+                    return;
+                } else if (jsonData.err.code === '101') {
+                    this.auth_token = INVALID;
+                    this.frob = INVALID;
+                    browser.storage.local.set({token: INVALID, frob: INVALID}).then(() => {
                         this.ensureFrob(debug);
                     });
-				} else if (jsonData.err.code === '300') { // Timeline is invalid
+                } else if (jsonData.err.code === '300') { // Timeline is invalid
                     this.setTimeline(debug, retry, error);
-				}
-			}
-			error(`Error ${jsonData.err.code}: ${jsonData.err.msg}`);
-		} else {
-			error(`Network Error:${response.status} ${response.statusText}`);
-		}
-	};
+                }
+            }
+            error(`Error ${jsonData.err.code}: ${jsonData.err.msg}`);
+        } else {
+            error(`Network Error:${response.status} ${response.statusText}`);
+        }
+    }
 
-	fetchToken(retry, error, debug) {
-	    Milk.log('Fetching new token', debug);
-		this.milkAuth.getToken(this, debug).then((resp) => {
-		    this.auth_token = resp.rsp.auth.token;
-		    this.setTimeline(debug, retry, error);
-		    browser.storage.local.set({token: resp.rsp.auth.token});
-		}).catch((reason) => {
-		    if (error) {
+    fetchToken(retry, error, debug) {
+        Milk.log('Fetching new token', debug);
+        this.milkAuth.getToken(this, debug).then((resp) => {
+            this.auth_token = resp.rsp.auth.token;
+            this.setTimeline(debug, retry, error);
+            browser.storage.local.set({token: resp.rsp.auth.token});
+        }).catch((reason) => {
+            if (error) {
                 Milk.log(`Error fetching new token ${reason.message}`, debug);
-		        error(reason.message);
-		    }
-		});
-	};
+                error(reason.message);
+            }
+        });
+    }
 
-	/**
-	 * Private - Encodes request parameters into URL format
-	 *
-	 * @param params    Array of parameters to be URL encoded
-	 * @return {string} Returns the URL encoded string of parameters
-	 */
-	encodeUrlParams(params) {
-		params = (params) ? params : {};
-		let paramString = '?';
+    /**
+     * Private - Encodes request parameters into URL format
+     *
+     * @param params    Array of parameters to be URL encoded
+     * @return {string} Returns the URL encoded string of parameters
+     */
+    encodeUrlParams(params) {
+        params = (params) ? params : {};
+        let paramString = '?';
         let firstParam = true;
 
-		params.api_key = this.data.a;
+        params.api_key = this.data.a;
 
-		for (let key in params) {
-			if (firstParam) {
-				paramString += `${key}=${encodeURIComponent(params[key])}`;
-			} else {
-				paramString += `&${key}=${encodeURIComponent(params[key])}`;
-			}
-			firstParam = false;
-		}
+        for (let key in params) {
+            if (firstParam) {
+                paramString += `${key}=${encodeURIComponent(params[key])}`;
+            } else {
+                paramString += `&${key}=${encodeURIComponent(params[key])}`;
+            }
+            firstParam = false;
+        }
 
-		paramString += this.generateSig(params);
-		return paramString;
-	};
+        paramString += this.generateSig(params);
+        return paramString;
+    }
 
-	/**
-	 * Private - Generates a URL encoded authentication signature
-	 *
-	 * @param params    The parameters used to generate the signature
-	 * @return {string} Returns the URL encoded authentication signature
-	 */
-	generateSig(params) {
-		params = (params) ? params : {};
-		let signature = '';
-		let keys = Object.keys(params);
+    /**
+     * Private - Generates a URL encoded authentication signature
+     *
+     * @param params    The parameters used to generate the signature
+     * @return {string} Returns the URL encoded authentication signature
+     */
+    generateSig(params) {
+        params = (params) ? params : {};
+        let signature = '';
+        let keys = Object.keys(params);
 
-		keys.sort();
-		for (let i = 0; i < keys.length; i++) {
-			signature += keys[i] + params[keys[i]];
-		}
-		signature = this.data.b + signature;
+        keys.sort();
+        for (let i = 0; i < keys.length; i++) {
+            signature += keys[i] + params[keys[i]];
+        }
+        signature = this.data.b + signature;
 
-		return `&api_sig=${this.hasher.md5(signature)}`;
-	};
+        return `&api_sig=${this.hasher.md5(signature)}`;
+    }
 
 }

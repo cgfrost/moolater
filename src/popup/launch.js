@@ -1,5 +1,3 @@
-/* global tabs:false, window:false, browser:false */
-
 (function () {
     'use strict';
 
@@ -67,8 +65,8 @@
         }
     }
 
-	// Initialization
-	document.addEventListener('DOMContentLoaded', () => {
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
 
         browser.runtime.getPlatformInfo().then((info) => {
             if(ANDROID === info.os) {
@@ -84,9 +82,9 @@
         });
 
         taskElement.addEventListener('keyup', (event) => {
-        	if (event.keyCode === 13) {
-        		linkElement.focus();
-        	}
+            if (event.keyCode === 13) {
+                linkElement.focus();
+            }
         }, false);
 
         linkElement.addEventListener('keyup', (event) => {
@@ -121,7 +119,7 @@
             }
         }).catch(handleFatalError);
 
-		addListSubmitButton.addEventListener('click', () => {
+        addListSubmitButton.addEventListener('click', () => {
             if (addListElement.value !== '') {
                 setIconState(addListStatusImg, 'loading');
                 setTextElement(addListLabel, 'New List:');
@@ -141,11 +139,11 @@
             } else {
                 setTextElement(addListLabel, 'New List: List name can\'t be empty.');
             }
-		}, false);
+        }, false);
 
-		addListCancelButton.addEventListener('click', () => {
-			showSection(addTaskSection);
-		}, false);
+        addListCancelButton.addEventListener('click', () => {
+            showSection(addTaskSection);
+        }, false);
 
         addTaskSubmitButton.addEventListener('click', () => {
             let formValid = true;
@@ -177,14 +175,14 @@
                 };
                 browser.runtime.sendMessage(addTaskArguments).catch(handleFatalError);
             }
-		}, false);
+        }, false);
 
-		permissionSubmitButton.addEventListener('click', () => {
+        permissionSubmitButton.addEventListener('click', () => {
             showMessage('Requesting permission', 'loading');
             browser.runtime.sendMessage({action: "authorise"}).catch(handleFatalError);
-		}, false);
+        }, false);
 
-		listRefreshButton.addEventListener('click', () => {
+        listRefreshButton.addEventListener('click', () => {
             setIconState(listRefreshButtonImg, 'loading');
             browser.runtime.sendMessage({action: "refreshLists"}).catch(() => {
                 setIconState(listRefreshButtonImg, 'error');
@@ -192,51 +190,51 @@
                     setIconState(listRefreshButtonImg, 'refresh');
                 }, 1000);
             });
-		}, false);
+        }, false);
 
-		listPlusButton.addEventListener('click', () => {
+        listPlusButton.addEventListener('click', () => {
             setTextElement(addListLabel, 'New List:');
             setIconState(addListStatusImg, 'blank');
             addListSubmitButton.disabled = false;
             addListCancelButton.disabled = false;
             addListElement.value = '';
-			showSection(addListSection);
-		}, false);
+            showSection(addListSection);
+        }, false);
 
-	});
+    });
 
     function handleMessage(message, sender) {
         log(`Message received in the popup script: ${message.action} - ${sender.id}`, message.debug);
         switch(message.action) {
-            case "listsRefreshed":
-                browser.storage.local.get('defaultList').then((setting) => {
-                    updateLists(message.lists, setting.defaultList, message.debug);
-                    setIconState(listRefreshButtonImg, 'done');
-                    setTimeout(() => {
-                        setIconState(listRefreshButtonImg, 'refresh');
-                    }, 1000);
-                }).catch(handleFatalError);
-                break;
-            case "listsRefreshedError":
-                browser.storage.local.get('defaultList').then((setting) => {
-                    updateLists(message.lists, setting.defaultList, message.debug);
-                    setIconState(listRefreshButtonImg, 'error');
-                    setTimeout(() => {
-                        setIconState(listRefreshButtonImg, 'refresh');
-                    }, 1000);
-                }).catch(handleFatalError);
-                break;
-            case "userSettingsRefreshed":
-                updateDueDates(message.settings);
-                break;
-            case "taskAdded":
-                showMessageThen('Task added', 'done');
-                break;
-            case "taskAddedError":
-                showMessageThen(`Error: ${message.reason}`, 'error');
-                break;
-            default:
-                console.log(`Unrecognised message with query "${message.action}"`);
+        case "listsRefreshed":
+            browser.storage.local.get('defaultList').then((setting) => {
+                updateLists(message.lists, setting.defaultList, message.debug);
+                setIconState(listRefreshButtonImg, 'done');
+                setTimeout(() => {
+                    setIconState(listRefreshButtonImg, 'refresh');
+                }, 1000);
+            }).catch(handleFatalError);
+            break;
+        case "listsRefreshedError":
+            browser.storage.local.get('defaultList').then((setting) => {
+                updateLists(message.lists, setting.defaultList, message.debug);
+                setIconState(listRefreshButtonImg, 'error');
+                setTimeout(() => {
+                    setIconState(listRefreshButtonImg, 'refresh');
+                }, 1000);
+            }).catch(handleFatalError);
+            break;
+        case "userSettingsRefreshed":
+            updateDueDates(message.settings);
+            break;
+        case "taskAdded":
+            showMessageThen('Task added', 'done');
+            break;
+        case "taskAddedError":
+            showMessageThen(`Error: ${message.reason}`, 'error');
+            break;
+        default:
+            console.log(`Unrecognised message with query "${message.action}"`);
         }
     }
 
@@ -263,43 +261,43 @@
         }
     };
 
-	let showMessage = (message, icon) => {
-	    if (activeTimeout) {
+    let showMessage = (message, icon) => {
+        if (activeTimeout) {
             clearTimeout(activeTimeout);
             activeTimeout = undefined;
         }
-		setTextElement(statusMsg, message);
-		setIconState(statusImg, icon);
-		showSection(statusSection);
-	};
+        setTextElement(statusMsg, message);
+        setIconState(statusImg, icon);
+        showSection(statusSection);
+    };
 
-	let showSection = (element) => {
-		let sections = document.getElementsByClassName("section");
-		for (let section of sections) {
-			section.classList.add('hide');
-		}
-		element.classList.remove('hide');
-	};
+    let showSection = (element) => {
+        let sections = document.getElementsByClassName("section");
+        for (let section of sections) {
+            section.classList.add('hide');
+        }
+        element.classList.remove('hide');
+    };
 
-	let setIconState = (icon, iconName) => {
-		icon.setAttribute('src', '../images/' + iconName + '.svg');
-	};
+    let setIconState = (icon, iconName) => {
+        icon.setAttribute('src', '../images/' + iconName + '.svg');
+    };
 
-	let setTextElement = (label, text) => {
-		let firstTextElement;
-		let children = label.childNodes;
-		for (let child of children) {
-			if (child.nodeName === '#text') {
-				firstTextElement = child;
-				break;
-			}
-		}
-		if (firstTextElement) {
-			label.replaceChild(document.createTextNode(text), firstTextElement);
-		} else {
-			label.appendChild(document.createTextNode(text));
-		}
-	};
+    let setTextElement = (label, text) => {
+        let firstTextElement;
+        let children = label.childNodes;
+        for (let child of children) {
+            if (child.nodeName === '#text') {
+                firstTextElement = child;
+                break;
+            }
+        }
+        if (firstTextElement) {
+            label.replaceChild(document.createTextNode(text), firstTextElement);
+        } else {
+            label.appendChild(document.createTextNode(text));
+        }
+    };
 
     let showAddTask = () => {
         browser.storage.local.get().then((settings) => {
@@ -443,4 +441,3 @@
     browser.runtime.onMessage.addListener(handleMessage);
 
 }());
-
