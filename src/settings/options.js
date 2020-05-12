@@ -1,5 +1,3 @@
-/* global addon:false, browser: false */
-
 (function () {
     'use strict';
 
