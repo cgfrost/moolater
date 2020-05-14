@@ -8,7 +8,11 @@
         'Wednesday',
         'Thursday',
         'Friday',
-        'Saturday'
+        'Saturday',
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday'
     ];
 
     const ANDROID = 'android';
