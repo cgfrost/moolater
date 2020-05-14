@@ -14,7 +14,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "moolater@codewax",
-      "strict_min_version": "75"
+      "strict_min_version": "75.0a1"
     }
   },
 
